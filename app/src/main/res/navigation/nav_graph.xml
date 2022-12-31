@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph">
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/forumFragment">
 
+    <fragment
+        android:id="@+id/forumFragment"
+        android:name="com.waffle22.wafflytime.ui.ForumFragment"
+        android:label="ForumFragment" >
+        <action
+            android:id="@+id/action_forumFragment_to_threadFragment"
+            app:destination="@id/threadFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/threadFragment"
+        android:name="com.waffle22.wafflytime.ui.ThreadFragment"
+        android:label="ThreadFragment" />
 </navigation>
