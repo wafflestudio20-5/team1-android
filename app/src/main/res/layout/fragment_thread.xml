@@ -18,116 +18,154 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
-        android:id="@+id/profilepic"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        app:layout_constraintBottom_toTopOf="@+id/new_comment_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
-        tools:src="@drawable/ic_baseline_notifications_24"/>
+        app:layout_constraintVertical_bias="0.445">
 
-    <TextView
-        android:id="@+id/nickname"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@id/profilepic"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        tools:text="Nickname"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:textSize="15sp"
-        app:layout_constraintStart_toEndOf="@id/profilepic"
-        app:layout_constraintTop_toBottomOf="@id/nickname"
-        tools:text="Written time"/>
+            <ImageView
+                android:id="@+id/profile_pic"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/ic_baseline_notifications_24" />
 
-    <TextView
-        android:id="@+id/main_text"
+            <TextView
+                android:id="@+id/nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:textSize="20sp"
+                app:layout_constraintStart_toEndOf="@id/profile_pic"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Nickname" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:textSize="15sp"
+                app:layout_constraintStart_toEndOf="@id/profile_pic"
+                app:layout_constraintTop_toBottomOf="@id/nickname"
+                tools:text="Written time" />
+
+            <TextView
+                android:id="@+id/main_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_pic"
+                tools:text="Hello World\nHello World!!" />
+
+            <ImageView
+                android:id="@+id/likes_icon"
+                android:layout_width="@dimen/thread_icon"
+                android:layout_height="@dimen/thread_icon"
+                android:src="@drawable/ic_baseline_thumb_up_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/main_text" />
+
+            <TextView
+                android:id="@+id/likes_text"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/thread_icon"
+                android:textSize="@dimen/thread_small_text"
+                app:layout_constraintStart_toEndOf="@+id/likes_icon"
+                app:layout_constraintTop_toBottomOf="@+id/main_text"
+                tools:text="100" />
+
+            <ImageView
+                android:id="@+id/comments_icon"
+                android:layout_width="@dimen/thread_icon"
+                android:layout_height="@dimen/thread_icon"
+                android:src="@drawable/ic_baseline_chat_bubble_24"
+                app:layout_constraintStart_toEndOf="@id/likes_text"
+                app:layout_constraintTop_toBottomOf="@+id/main_text" />
+
+            <TextView
+                android:id="@+id/comments_text"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/thread_icon"
+                android:textSize="@dimen/thread_small_text"
+                app:layout_constraintStart_toEndOf="@+id/comments_icon"
+                app:layout_constraintTop_toBottomOf="@+id/main_text"
+                tools:text="100" />
+
+            <ImageView
+                android:id="@+id/scraps_icon"
+                android:layout_width="@dimen/thread_icon"
+                android:layout_height="@dimen/thread_icon"
+                android:src="@drawable/ic_baseline_star_border_24"
+                app:layout_constraintStart_toEndOf="@id/comments_text"
+                app:layout_constraintTop_toBottomOf="@+id/main_text" />
+
+            <TextView
+                android:id="@+id/scraps_text"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/thread_icon"
+                android:textSize="@dimen/thread_small_text"
+                app:layout_constraintStart_toEndOf="@+id/scraps_icon"
+                app:layout_constraintTop_toBottomOf="@+id/main_text"
+                tools:text="100" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/like_post"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/thread_button_height"
+                android:drawableStart="@drawable/ic_baseline_thumb_up_24"
+                android:textSize="@dimen/thread_medium_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/likes_icon"
+                tools:text="like post" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/scrap_post"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/thread_button_height"
+                android:drawableStart="@drawable/ic_baseline_star_border_24"
+                android:textSize="@dimen/thread_medium_text"
+                app:layout_constraintStart_toEndOf="@id/like_post"
+                app:layout_constraintTop_toBottomOf="@id/likes_icon"
+                tools:text="scrap post" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/like_post" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <EditText
+        android:id="@+id/new_comment_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profilepic"
-        tools:text="Hello World\nHello World!!"/>
-
-    <ImageView
-        android:id="@+id/likes_icon"
-        android:layout_width="@dimen/thread_icon"
-        android:layout_height="@dimen/thread_icon"
-        android:src="@drawable/ic_baseline_thumb_up_24"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_text"/>
-
-    <TextView
-        android:id="@+id/likes_text"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/thread_icon"
-        android:textSize="@dimen/thread_small_text"
-        app:layout_constraintStart_toEndOf="@+id/likes_icon"
-        app:layout_constraintTop_toBottomOf="@+id/main_text"
-        tools:text="100"/>
-
-    <ImageView
-        android:id="@+id/comments_icon"
-        android:layout_width="@dimen/thread_icon"
-        android:layout_height="@dimen/thread_icon"
-        android:src="@drawable/ic_baseline_chat_bubble_24"
-        app:layout_constraintStart_toEndOf="@id/likes_text"
-        app:layout_constraintTop_toBottomOf="@+id/main_text"/>
-
-    <TextView
-        android:id="@+id/comments_text"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/thread_icon"
-        android:textSize="@dimen/thread_small_text"
-        app:layout_constraintStart_toEndOf="@+id/comments_icon"
-        app:layout_constraintTop_toBottomOf="@+id/main_text"
-        tools:text="100"/>
-
-    <ImageView
-        android:id="@+id/scraps_icon"
-        android:layout_width="@dimen/thread_icon"
-        android:layout_height="@dimen/thread_icon"
-        android:src="@drawable/ic_baseline_star_border_24"
-        app:layout_constraintStart_toEndOf="@id/comments_text"
-        app:layout_constraintTop_toBottomOf="@+id/main_text"/>
-
-    <TextView
-        android:id="@+id/scraps_text"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/thread_icon"
-        android:textSize="@dimen/thread_small_text"
-        app:layout_constraintStart_toEndOf="@+id/scraps_icon"
-        app:layout_constraintTop_toBottomOf="@+id/main_text"
-        tools:text="100"/>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/like_post"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/thread_button_height"
-        android:drawableStart="@drawable/ic_baseline_thumb_up_24"
-        android:textSize="@dimen/thread_medium_text"
-        app:layout_constraintTop_toBottomOf="@id/likes_icon"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="like post"/>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/scrap_post"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/thread_button_height"
-        android:drawableStart="@drawable/ic_baseline_star_border_24"
-        android:textSize="@dimen/thread_medium_text"
-        app:layout_constraintTop_toBottomOf="@id/likes_icon"
-        app:layout_constraintStart_toEndOf="@id/like_post"
-        tools:text="scrap post"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/like_post"/>
+        tools:text="Hello World!"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/new_comment_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_baseline_edit_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
