@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WafflyTime</string>
+    <string name="new_thread">New Thread</string>
 </resources>
