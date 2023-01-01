@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/notification"
+        android:icon="@drawable/ic_baseline_notifications_24"
+        android:title="Turn on Notifications"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/refresh"
+        android:title="Refresh"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/delete"
+        android:title="Delete thread"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/dm"
+        android:title="Direct Message"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/report"
+        android:title="Report"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/share"
+        android:title="Share URL"
+        app:showAsAction="never"/>
+</menu>

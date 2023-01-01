@@ -1,6 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:scrollbars="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/thread_actions"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="Forum title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/profilepic"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        tools:src="@drawable/ic_baseline_notifications_24"/>
+
+    <TextView
+        android:id="@+id/nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@id/profilepic"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        tools:text="Nickname"/>
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@id/profilepic"
+        app:layout_constraintTop_toBottomOf="@id/nickname"
+        tools:text="Written time"/>
+
+    <TextView
+        android:id="@+id/main_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profilepic"
+        tools:text="Hello World\nHello World!!"/>
+
+    <ImageView
+        android:id="@+id/likes_icon"
+        android:layout_width="@dimen/thread_icon"
+        android:layout_height="@dimen/thread_icon"
+        android:src="@drawable/ic_baseline_thumb_up_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_text"/>
+
+    <TextView
+        android:id="@+id/likes_text"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/thread_icon"
+        android:textSize="@dimen/thread_small_text"
+        app:layout_constraintStart_toEndOf="@+id/likes_icon"
+        app:layout_constraintTop_toBottomOf="@+id/main_text"
+        tools:text="100"/>
+
+    <ImageView
+        android:id="@+id/comments_icon"
+        android:layout_width="@dimen/thread_icon"
+        android:layout_height="@dimen/thread_icon"
+        android:src="@drawable/ic_baseline_chat_bubble_24"
+        app:layout_constraintStart_toEndOf="@id/likes_text"
+        app:layout_constraintTop_toBottomOf="@+id/main_text"/>
+
+    <TextView
+        android:id="@+id/comments_text"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/thread_icon"
+        android:textSize="@dimen/thread_small_text"
+        app:layout_constraintStart_toEndOf="@+id/comments_icon"
+        app:layout_constraintTop_toBottomOf="@+id/main_text"
+        tools:text="100"/>
+
+    <ImageView
+        android:id="@+id/scraps_icon"
+        android:layout_width="@dimen/thread_icon"
+        android:layout_height="@dimen/thread_icon"
+        android:src="@drawable/ic_baseline_star_border_24"
+        app:layout_constraintStart_toEndOf="@id/comments_text"
+        app:layout_constraintTop_toBottomOf="@+id/main_text"/>
+
+    <TextView
+        android:id="@+id/scraps_text"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/thread_icon"
+        android:textSize="@dimen/thread_small_text"
+        app:layout_constraintStart_toEndOf="@+id/scraps_icon"
+        app:layout_constraintTop_toBottomOf="@+id/main_text"
+        tools:text="100"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/like_post"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/thread_button_height"
+        android:drawableStart="@drawable/ic_baseline_thumb_up_24"
+        android:textSize="@dimen/thread_medium_text"
+        app:layout_constraintTop_toBottomOf="@id/likes_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="like post"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/scrap_post"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/thread_button_height"
+        android:drawableStart="@drawable/ic_baseline_star_border_24"
+        android:textSize="@dimen/thread_medium_text"
+        app:layout_constraintTop_toBottomOf="@id/likes_icon"
+        app:layout_constraintStart_toEndOf="@id/like_post"
+        tools:text="scrap post"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/like_post"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
