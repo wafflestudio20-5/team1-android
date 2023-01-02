@@ -4,6 +4,8 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.waffle22.wafflytime.network.dto.LoginRequest
 import com.waffle22.wafflytime.network.dto.LoginResponse
+import com.waffle22.wafflytime.network.dto.SignUpRequest
+import com.waffle22.wafflytime.network.dto.SignUpResponse
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
@@ -27,8 +29,11 @@ interface WafflyApiService {
     @GET("login")
     suspend fun getLogin(): List<WafflyLogin>
     */
-    @POST("api/auth/local/login")
+    @POST("/api/auth/local/login")
     suspend fun basicLogin(@Body() request: LoginRequest): LoginResponse
+
+    @POST("/api/auth/local/signup")
+    suspend fun signUp(@Body() request: SignUpRequest): SignUpResponse
 }
 
 object WafflyApi {
