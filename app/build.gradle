@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.waffle22.wafflytime'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.waffle22.wafflytime"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -38,18 +38,25 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'
 
-    // layout
+    // Layout
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    // navigation
+    // Navigation
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
-    // test
+    // Retrofit with Moshi Converter
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+    // Moshi
+    implementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
+    // Coil
+    implementation "io.coil-kt:coil:1.1.1"
+
+    // Test
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
