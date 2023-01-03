@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Tag"/>
+
+    <TextView
+        android:id="@+id/preview_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tag"
+        tools:text="Hello World!"/>
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/preview_text"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Written time"/>
+
+    <ImageView
+        android:id="@+id/likes_icon"
+        android:layout_width="@dimen/thread_icon"
+        android:layout_height="@dimen/thread_icon"
+        android:src="@drawable/ic_baseline_thumb_up_24"
+        app:layout_constraintEnd_toStartOf="@+id/likes_text"
+        app:layout_constraintTop_toBottomOf="@+id/preview_text" />
+
+    <TextView
+        android:id="@+id/likes_text"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/thread_icon"
+        android:textSize="@dimen/thread_small_text"
+        app:layout_constraintEnd_toStartOf="@+id/comments_icon"
+        app:layout_constraintTop_toBottomOf="@+id/preview_text"
+        tools:text="100" />
+
+    <ImageView
+        android:id="@+id/comments_icon"
+        android:layout_width="@dimen/thread_icon"
+        android:layout_height="@dimen/thread_icon"
+        android:src="@drawable/ic_baseline_chat_bubble_24"
+        app:layout_constraintEnd_toStartOf="@id/comments_text"
+        app:layout_constraintTop_toBottomOf="@+id/preview_text" />
+
+    <TextView
+        android:id="@+id/comments_text"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/thread_icon"
+        android:textSize="@dimen/thread_small_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preview_text"
+        tools:text="100" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

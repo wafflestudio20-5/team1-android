@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="thread_icon">15dp</dimen>
+    <dimen name="thread_small_text">10sp</dimen>
+    <dimen name="thread_medium_text">15sp</dimen>
+    <dimen name="thread_button_width">55dp</dimen>
+    <dimen name="thread_button_height">40dp</dimen>
+    <dimen name="comment_icon">30dp</dimen>
+    <dimen name="reply_margin">30dp</dimen>
+</resources>

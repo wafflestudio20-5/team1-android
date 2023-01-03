@@ -16,4 +16,24 @@
         android:id="@+id/signUpFragment"
         android:name="com.waffle22.wafflytime.ui.login.SignUpFragment"
         android:label="SignUpFragment" />
+
+    <fragment
+        android:id="@+id/boardFragment"
+        android:name="com.waffle22.wafflytime.ui.BoardFragment"
+        android:label="BoardFragment" >
+        <action
+            android:id="@+id/action_boardFragment_to_threadFragment"
+            app:destination="@id/threadFragment" />
+        <action
+            android:id="@+id/action_boardFragment_to_newThreadFragment"
+            app:destination="@id/newThreadFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/threadFragment"
+        android:name="com.waffle22.wafflytime.ui.ThreadFragment"
+        android:label="ThreadFragment" />
+    <fragment
+        android:id="@+id/newThreadFragment"
+        android:name="com.waffle22.wafflytime.ui.NewThreadFragment"
+        android:label="NewThreadFragment" />
 </navigation>
