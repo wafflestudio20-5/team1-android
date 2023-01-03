@@ -9,17 +9,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-private const val BASE_URL = "http://api.wafflytime.com"
-
-private val moshi = Moshi.Builder()
-    .add(KotlinJsonAdapterFactory())
-    .build()
-
-private val retrofit = Retrofit.Builder()
-    .addConverterFactory(MoshiConverterFactory.create(moshi))
-    .baseUrl(BASE_URL)
-    .build()
-
 interface WafflyApiService {
     // TODO: 이곳에 백엔드 api 추가하면 될것 같아요
     /*
@@ -31,9 +20,4 @@ interface WafflyApiService {
 
     @POST("/api/auth/local/signup")
     suspend fun signUp(@Body() request: SignUpRequest): AccessTokenContainer
-}
-
-object WafflyApi {
-    val retrofitService : WafflyApiService by lazy {
-        retrofit.create(WafflyApiService::class.java)}
 }
