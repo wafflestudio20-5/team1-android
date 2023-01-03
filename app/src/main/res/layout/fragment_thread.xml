@@ -25,7 +25,6 @@
         android:layout_marginTop="?attr/actionBarSize"
         app:layout_constraintBottom_toTopOf="@+id/new_comment_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintVertical_bias="0.445">
@@ -38,6 +37,7 @@
                 android:id="@+id/profile_pic"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:src="@drawable/ic_baseline_thumb_up_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/ic_baseline_notifications_24" />
@@ -140,6 +140,7 @@
                 tools:text="scrap post" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

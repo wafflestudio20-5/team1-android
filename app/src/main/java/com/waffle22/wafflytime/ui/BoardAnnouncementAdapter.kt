@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.data.ThreadPreview
 import com.waffle22.wafflytime.databinding.ForumAnnouncementBinding
 
-class ForumAnnouncementAdapter()
-    : ListAdapter<ThreadPreview, ForumAnnouncementAdapter.ForumAnnouncementViewHolder>(DiffCallback){
+class BoardAnnouncementAdapter()
+    : ListAdapter<ThreadPreview, BoardAnnouncementAdapter.ForumAnnouncementViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForumAnnouncementViewHolder {
         return ForumAnnouncementViewHolder(

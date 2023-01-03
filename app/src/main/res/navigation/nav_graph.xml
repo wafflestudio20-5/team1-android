@@ -2,18 +2,25 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/forumFragment">
+    app:startDestination="@id/newThreadFragment">
 
     <fragment
         android:id="@+id/forumFragment"
-        android:name="com.waffle22.wafflytime.ui.ForumFragment"
+        android:name="com.waffle22.wafflytime.ui.BoardFragment"
         android:label="ForumFragment" >
         <action
             android:id="@+id/action_forumFragment_to_threadFragment"
             app:destination="@id/threadFragment" />
+        <action
+            android:id="@+id/action_forumFragment_to_newThreadFragment"
+            app:destination="@id/newThreadFragment" />
     </fragment>
     <fragment
         android:id="@+id/threadFragment"
         android:name="com.waffle22.wafflytime.ui.ThreadFragment"
         android:label="ThreadFragment" />
+    <fragment
+        android:id="@+id/newThreadFragment"
+        android:name="com.waffle22.wafflytime.ui.NewThreadFragment"
+        android:label="NewThreadFragment" />
 </navigation>

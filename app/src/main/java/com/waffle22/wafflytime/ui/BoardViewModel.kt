@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.waffle22.wafflytime.data.ThreadPreview
 
-class ForumViewModel : ViewModel() {
+class BoardViewModel : ViewModel() {
     private var _threads = MutableLiveData<List<ThreadPreview>>()
     val threads: LiveData<List<ThreadPreview>>
         get() = _threads

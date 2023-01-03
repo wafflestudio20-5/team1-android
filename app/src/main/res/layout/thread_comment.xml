@@ -66,7 +66,7 @@
         tools:text="2023/01/01 00:00:00"/>
 
     <ImageView
-        android:id="@+id/like_cnt_icon"
+        android:id="@+id/likes_icon"
         android:layout_width="@dimen/thread_icon"
         android:layout_height="@dimen/thread_icon"
         android:src="@drawable/ic_baseline_thumb_up_24"
@@ -74,14 +74,15 @@
         app:layout_constraintTop_toBottomOf="@id/comment_text"/>
 
     <TextView
-        android:id="@+id/like_cnt"
+        android:id="@+id/likes_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/comment_text"
-        app:layout_constraintStart_toEndOf="@id/like_cnt_icon"
+        app:layout_constraintStart_toEndOf="@id/likes_icon"
         tools:text="100"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/replies"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"

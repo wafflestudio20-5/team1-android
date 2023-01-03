@@ -56,6 +56,7 @@ data class WaffThread(
     override val text: String,
     override val likes: Int,
     val comment_cnt: Int,
+    val tag: String,
     val clipped: Int,
     val comments: List<Comment>
 //) : Post (profilePic, nickname, userId, time, text, likes)

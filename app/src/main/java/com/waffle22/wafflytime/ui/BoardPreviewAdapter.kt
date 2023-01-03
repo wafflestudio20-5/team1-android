@@ -8,10 +8,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.data.ThreadPreview
 import com.waffle22.wafflytime.databinding.ForumThreadBinding
-import com.waffle22.wafflytime.databinding.FragmentForumBinding
 
-class ForumPreviewAdapter()
-    : ListAdapter<ThreadPreview, ForumPreviewAdapter.ForumPreviewViewHolder>(DiffCallback){
+class BoardPreviewAdapter()
+    : ListAdapter<ThreadPreview, BoardPreviewAdapter.ForumPreviewViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForumPreviewViewHolder {
         return ForumPreviewViewHolder(
