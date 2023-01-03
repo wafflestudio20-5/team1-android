@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.data.ThreadPreview
-import com.waffle22.wafflytime.databinding.ForumThreadBinding
+import com.waffle22.wafflytime.databinding.BoardThreadBinding
 
 class BoardPreviewAdapter()
     : ListAdapter<ThreadPreview, BoardPreviewAdapter.ForumPreviewViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForumPreviewViewHolder {
         return ForumPreviewViewHolder(
-            ForumThreadBinding.inflate(
+            BoardThreadBinding.inflate(
                 LayoutInflater.from(parent.context)
             ), parent.context
         )
@@ -25,7 +25,7 @@ class BoardPreviewAdapter()
         holder.bind(current)
     }
 
-    class ForumPreviewViewHolder(private var binding: ForumThreadBinding, private var context: Context)
+    class ForumPreviewViewHolder(private var binding: BoardThreadBinding, private var context: Context)
         : RecyclerView.ViewHolder(binding.root) {
             fun bind(threadPreview: ThreadPreview) {
                 binding.apply{

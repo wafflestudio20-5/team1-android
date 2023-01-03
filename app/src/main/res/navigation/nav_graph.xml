@@ -5,14 +5,14 @@
     app:startDestination="@id/newThreadFragment">
 
     <fragment
-        android:id="@+id/forumFragment"
+        android:id="@+id/boardFragment"
         android:name="com.waffle22.wafflytime.ui.BoardFragment"
-        android:label="ForumFragment" >
+        android:label="BoardFragment" >
         <action
-            android:id="@+id/action_forumFragment_to_threadFragment"
+            android:id="@+id/action_boardFragment_to_threadFragment"
             app:destination="@id/threadFragment" />
         <action
-            android:id="@+id/action_forumFragment_to_newThreadFragment"
+            android:id="@+id/action_boardFragment_to_newThreadFragment"
             app:destination="@id/newThreadFragment" />
     </fragment>
     <fragment
