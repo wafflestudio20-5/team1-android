@@ -2,10 +2,7 @@ package com.waffle22.wafflytime.network
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.waffle22.wafflytime.network.dto.LoginRequest
-import com.waffle22.wafflytime.network.dto.LoginResponse
-import com.waffle22.wafflytime.network.dto.SignUpRequest
-import com.waffle22.wafflytime.network.dto.SignUpResponse
+import com.waffle22.wafflytime.network.dto.*
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
@@ -30,10 +27,10 @@ interface WafflyApiService {
     suspend fun getLogin(): List<WafflyLogin>
     */
     @POST("/api/auth/local/login")
-    suspend fun basicLogin(@Body() request: LoginRequest): LoginResponse
+    suspend fun basicLogin(@Body() request: LoginRequest): AccessTokenContainer
 
     @POST("/api/auth/local/signup")
-    suspend fun signUp(@Body() request: SignUpRequest): SignUpResponse
+    suspend fun signUp(@Body() request: SignUpRequest): AccessTokenContainer
 }
 
 object WafflyApi {
