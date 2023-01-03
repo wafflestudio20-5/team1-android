@@ -4,12 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent">
 
     <ImageView
         android:id="@+id/profile_pic"
         android:layout_width="@dimen/comment_icon"
         android:layout_height="@dimen/comment_icon"
+        android:src="@drawable/ic_baseline_thumb_up_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ic_baseline_notifications_24"/>
@@ -36,8 +39,9 @@
     <TextView
         android:id="@+id/preview_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profile_pic"
         tools:text="Hello World\nHello World!!" />
 

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentForumBinding
 
 class ForumFragment : Fragment() {
@@ -24,5 +25,23 @@ class ForumFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val forumPreviewAdapter = ForumPreviewAdapter()
+        viewModel.threads.observe(this.viewLifecycleOwner){ items ->
+            items.let{
+                forumPreviewAdapter.submitList(it)
+            }
+        }
+        binding.threads.adapter = forumPreviewAdapter
+        binding.threads.layoutManager = LinearLayoutManager(this.context)
+
+        val forumAnnouncementAdapter = ForumAnnouncementAdapter()
+        viewModel.announcements.observe(this.viewLifecycleOwner){ items->
+            items.let{
+                forumAnnouncementAdapter.submitList(it)
+            }
+        }
+        binding.announcements.adapter = forumAnnouncementAdapter
+        binding.announcements.layoutManager = LinearLayoutManager(this.context)
     }
 }
