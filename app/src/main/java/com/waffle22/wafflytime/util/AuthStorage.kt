@@ -1,11 +1,12 @@
 package com.waffle22.wafflytime.util
-
+/*
 import android.content.Context
 import androidx.core.content.edit
 import com.waffle22.wafflytime.network.dto.UserDTO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-
+*/
+/*
 class AuthStorage(
     context: Context
 ) {
@@ -49,3 +50,4 @@ class AuthStorage(
         const val SharedPreferenceName = "auth_pref"
     }
 }
+ */
