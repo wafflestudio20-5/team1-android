@@ -1,5 +1,5 @@
 package com.waffle22.wafflytime.di
-/*
+
 import android.content.Context
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -10,8 +10,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-*/
-/*
+
+
 val appModule = module {
     single<Retrofit> {
         val context: Context = get()
@@ -54,10 +54,10 @@ val appModule = module {
     }
 
     // 이곳에 inject 되는 viewModel 추가
+    /*
     viewModel { UserViewModel(get(), get(), get()) }
     viewModel { PostListViewModel(get(), get()) }
     viewModel { (postId: Int) -> PostDetailViewModel(postId, get(), get(), get()) }
-
+*/
 }
 
- */
