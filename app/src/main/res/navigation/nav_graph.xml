@@ -4,6 +4,7 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
+
     <fragment
         android:id="@+id/boardFragment"
         android:name="com.waffle22.wafflytime.ui.BoardFragment"
