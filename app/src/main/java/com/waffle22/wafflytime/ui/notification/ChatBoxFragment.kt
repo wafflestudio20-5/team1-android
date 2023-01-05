@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.tabs.TabLayout
+import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentChatboxBinding
 import com.waffle22.wafflytime.databinding.FragmentNotificationBinding
 import com.waffle22.wafflytime.network.dto.Chat
@@ -33,6 +36,20 @@ class ChatBoxFragment : Fragment() {
 
         binding.apply {
             chatBoxRecyclerView.adapter = adapter
+            topTap.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    when(tab.position){
+                        0 -> findNavController().navigate(R.id.action_chatBoxFragment_to_notifyFragment)
+                        else -> null
+                    }
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                }
+            })
         }
 
 

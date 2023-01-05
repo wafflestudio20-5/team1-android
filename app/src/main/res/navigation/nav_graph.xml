@@ -39,5 +39,17 @@
     <fragment
         android:id="@+id/notifyFragment"
         android:name="com.waffle22.wafflytime.ui.notification.NotifyFragment"
-        android:label="NotifyFragment" />
+        android:label="NotifyFragment" >
+        <action
+            android:id="@+id/action_notifyFragment_to_chatBoxFragment"
+            app:destination="@id/chatBoxFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatBoxFragment"
+        android:name="com.waffle22.wafflytime.ui.notification.ChatBoxFragment"
+        android:label="ChatBoxFragment" >
+        <action
+            android:id="@+id/action_chatBoxFragment_to_notifyFragment"
+            app:destination="@id/notifyFragment" />
+    </fragment>
 </navigation>
