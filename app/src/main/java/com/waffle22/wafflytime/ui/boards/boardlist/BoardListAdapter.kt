@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.data.Board
 import com.waffle22.wafflytime.databinding.BoardSummaryBinding
 
-class BoardListAdapter()
+class BoardListAdapter(private val onClicked: () -> Unit)
     : ListAdapter<Board, BoardListAdapter.BoardListViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardListViewHolder {
@@ -22,15 +22,16 @@ class BoardListAdapter()
 
     override fun onBindViewHolder(holder: BoardListViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(current)
+        holder.bind(current, onClicked)
     }
 
     class BoardListViewHolder(private var binding: BoardSummaryBinding)
         : RecyclerView.ViewHolder(binding.root){
-            fun bind(board: Board) {
+            fun bind(board: Board, clicked: () -> Unit) {
                 binding.apply{
                     title.text = board.title
                     description.text = board.description
+                    layout.setOnClickListener{ clicked() }
                 }
                 if(binding.description.text == "")
                     binding.description.visibility = View.GONE

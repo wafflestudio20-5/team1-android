@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentBoardListBinding
 
@@ -27,7 +28,10 @@ class BoardListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val defaultBoardListAdapter = BoardListAdapter()
+        val defaultBoardListAdapter = BoardListAdapter{
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
+            this.findNavController().navigate(action)
+        }
 
         viewModel.defaultBoards.observe(this.viewLifecycleOwner){items->
             items.let{
@@ -37,7 +41,10 @@ class BoardListFragment : Fragment() {
         binding.defaultBoards.adapter = defaultBoardListAdapter
         binding.defaultBoards.layoutManager = LinearLayoutManager(this.context)
 
-        val allBoardListAdapter = BoardListAdapter()
+        val allBoardListAdapter = BoardListAdapter{
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
+            this.findNavController().navigate(action)
+        }
         viewModel.allBoardsFiltered.observe(this.viewLifecycleOwner){items ->
             items.let{
                 allBoardListAdapter.submitList(it)
@@ -46,7 +53,10 @@ class BoardListFragment : Fragment() {
         binding.allBoards.adapter = allBoardListAdapter
         binding.allBoards.layoutManager = LinearLayoutManager(this.context)
 
-        val taggedBoardsAdapter = TaggedBoardsAdapter()
+        val taggedBoardsAdapter = TaggedBoardsAdapter{
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
+            this.findNavController().navigate(action)
+        }
         viewModel.taggedBoards.observe(this.viewLifecycleOwner){ items ->
             items.let{
                 taggedBoardsAdapter.submitList(it)
@@ -54,5 +64,10 @@ class BoardListFragment : Fragment() {
         }
         binding.taggedBoards.adapter = taggedBoardsAdapter
         binding.taggedBoards.layoutManager = LinearLayoutManager(this.context)
+
+        binding.search.setOnClickListener{
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardSearchFragment()
+            this.findNavController().navigate(action)
+        }
     }
 }

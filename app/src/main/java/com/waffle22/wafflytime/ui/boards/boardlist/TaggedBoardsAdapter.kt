@@ -5,6 +5,8 @@ import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -12,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.data.Board
 import com.waffle22.wafflytime.databinding.BoardTaggedBinding
 
-class TaggedBoardsAdapter()
+class TaggedBoardsAdapter(private val clicked: () -> Unit)
     :ListAdapter<TaggedBoards, TaggedBoardsAdapter.TaggedBoardsViewHolder>(DiffCallback){
 
     private var expanded = SparseArray<Boolean>()
@@ -27,15 +29,16 @@ class TaggedBoardsAdapter()
 
     override fun onBindViewHolder(holder: TaggedBoardsViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(expanded,current)
+        holder.bind(expanded,current,clicked)
     }
 
     class TaggedBoardsViewHolder(private var binding: BoardTaggedBinding, private var context: Context)
         : RecyclerView.ViewHolder(binding.root){
-            fun bind(expanded: SparseArray<Boolean>, taggedBoards: TaggedBoards){
+            fun bind(expanded: SparseArray<Boolean>, taggedBoards: TaggedBoards,
+                clicked: () -> Unit){
                 binding.description.text = taggedBoards.tag
 
-                val boardListAdapter = BoardListAdapter()
+                val boardListAdapter = BoardListAdapter{clicked()}
                 boardListAdapter.submitList(taggedBoards.entries)
                 binding.recyclerview.adapter = boardListAdapter
                 binding.recyclerview.layoutManager = LinearLayoutManager(this.context)

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.data.ThreadPreview
 import com.waffle22.wafflytime.databinding.BoardAnnouncementBinding
 
-class BoardAnnouncementAdapter()
+class BoardAnnouncementAdapter(private val clicked: () -> Unit)
     : ListAdapter<ThreadPreview, BoardAnnouncementAdapter.ForumAnnouncementViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForumAnnouncementViewHolder {
@@ -22,18 +22,19 @@ class BoardAnnouncementAdapter()
 
     override fun onBindViewHolder(holder: ForumAnnouncementViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(current)
+        holder.bind(current, clicked)
     }
 
     class ForumAnnouncementViewHolder(private var binding: BoardAnnouncementBinding, private var context: Context)
         : RecyclerView.ViewHolder(binding.root){
-        fun bind(threadPreview: ThreadPreview){
+        fun bind(threadPreview: ThreadPreview, clicked: () -> Unit){
             binding.apply{
                 tag.text = threadPreview.tag
                 time.text = threadPreview.time
                 previewText.text = threadPreview.text
                 likesText.text = threadPreview.likes.toString()
                 commentsText.text = threadPreview.comment_cnt.toString()
+                layout.setOnClickListener{clicked()}
             }
         }
     }

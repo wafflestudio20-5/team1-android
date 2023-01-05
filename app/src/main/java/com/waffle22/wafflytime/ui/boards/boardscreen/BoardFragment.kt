@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentBoardBinding
 
@@ -26,7 +27,10 @@ class BoardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val threadPreviewAdapter = ThreadPreviewAdapter()
+        val threadPreviewAdapter = ThreadPreviewAdapter{
+            val action = BoardFragmentDirections.actionBoardFragmentToThreadFragment()
+            this.findNavController().navigate(action)
+        }
         viewModel.threads.observe(this.viewLifecycleOwner){ items ->
             items.let{
                 threadPreviewAdapter.submitList(it)
@@ -35,7 +39,10 @@ class BoardFragment : Fragment() {
         binding.threads.adapter = threadPreviewAdapter
         binding.threads.layoutManager = LinearLayoutManager(this.context)
 
-        val boardAnnouncementAdapter = BoardAnnouncementAdapter()
+        val boardAnnouncementAdapter = BoardAnnouncementAdapter{
+            val action = BoardFragmentDirections.actionBoardFragmentToThreadFragment()
+            this.findNavController().navigate(action)
+        }
         viewModel.announcements.observe(this.viewLifecycleOwner){ items->
             items.let{
                 boardAnnouncementAdapter.submitList(it)
@@ -43,5 +50,10 @@ class BoardFragment : Fragment() {
         }
         binding.announcements.adapter = boardAnnouncementAdapter
         binding.announcements.layoutManager = LinearLayoutManager(this.context)
+
+        binding.newThread.setOnClickListener{
+            val action = BoardFragmentDirections.actionBoardFragmentToNewThreadFragment()
+            this.findNavController().navigate(action)
+        }
     }
 }

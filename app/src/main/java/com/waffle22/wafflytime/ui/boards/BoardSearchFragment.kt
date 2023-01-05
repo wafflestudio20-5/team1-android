@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentSearchBoardBinding
 
@@ -30,7 +31,10 @@ class BoardSearchFragment : Fragment() {
             binding.searchResult.visibility = View.GONE
         else    binding.noSearchResult.visibility = View.GONE
 
-        val boardSearchAdapter  = BoardSearchAdapter()
+        val boardSearchAdapter  = BoardSearchAdapter{
+            val action = BoardSearchFragmentDirections.actionBoardSearchFragmentToBoardFragment()
+            this.findNavController().navigate(action)
+        }
         viewModel.searchResults.observe(this.viewLifecycleOwner) { items ->
             items.let{
                 boardSearchAdapter.submitList(it)

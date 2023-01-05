@@ -11,7 +11,7 @@ import com.waffle22.wafflytime.databinding.BoardSummaryBinding
 import com.waffle22.wafflytime.databinding.SearchBoardResultBinding
 import com.waffle22.wafflytime.ui.boards.boardlist.BoardListAdapter
 
-class BoardSearchAdapter()
+class BoardSearchAdapter(private val clicked: () -> Unit)
     : ListAdapter<Board, BoardSearchAdapter.BoardSearchViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardSearchAdapter.BoardSearchViewHolder {
@@ -24,15 +24,16 @@ class BoardSearchAdapter()
 
     override fun onBindViewHolder(holder: BoardSearchAdapter.BoardSearchViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(current)
+        holder.bind(current, clicked)
     }
 
     class BoardSearchViewHolder(private var binding: SearchBoardResultBinding)
         : RecyclerView.ViewHolder(binding.root){
-        fun bind(board: Board) {
+        fun bind(board: Board, clicked: () -> Unit) {
             binding.apply{
                 title.text = board.title
                 description.text = board.description
+                explanations.setOnClickListener{clicked()}
             }
             if(binding.description.text == "")
                 binding.description.visibility = View.GONE

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.data.ThreadPreview
 import com.waffle22.wafflytime.databinding.BoardThreadBinding
 
-class ThreadPreviewAdapter()
+class ThreadPreviewAdapter(private val clicked: () -> Unit)
     : ListAdapter<ThreadPreview, ThreadPreviewAdapter.ThreadPreviewViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThreadPreviewViewHolder {
@@ -22,18 +22,19 @@ class ThreadPreviewAdapter()
 
     override fun onBindViewHolder(holder: ThreadPreviewViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(current)
+        holder.bind(current, clicked)
     }
 
     class ThreadPreviewViewHolder(private var binding: BoardThreadBinding, private var context: Context)
         : RecyclerView.ViewHolder(binding.root) {
-            fun bind(threadPreview: ThreadPreview) {
+            fun bind(threadPreview: ThreadPreview, clicked: () -> Unit) {
                 binding.apply{
                     nickname.text = threadPreview.nickname
                     time.text = threadPreview.time
                     previewText.text = threadPreview.text
                     likesText.text = threadPreview.likes.toString()
                     commentsText.text = threadPreview.comment_cnt.toString()
+                    layout.setOnClickListener{clicked()}
                 }
             }
         }
