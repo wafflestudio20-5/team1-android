@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/boardListFragment">
+    app:startDestination="@id/boardSearchFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -42,6 +42,17 @@
         android:label="BoardListFragment" >
         <action
             android:id="@+id/action_boardListFragment_to_boardFragment"
+            app:destination="@id/boardFragment" />
+        <action
+            android:id="@+id/action_boardListFragment_to_boardSearchFragment"
+            app:destination="@id/boardSearchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/boardSearchFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.BoardSearchFragment"
+        android:label="BoardSearchFragment" >
+        <action
+            android:id="@+id/action_boardSearchFragment_to_boardFragment"
             app:destination="@id/boardFragment" />
     </fragment>
 </navigation>
