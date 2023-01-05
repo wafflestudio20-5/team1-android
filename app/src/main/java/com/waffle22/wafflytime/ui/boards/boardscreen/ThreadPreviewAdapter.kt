@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui
+package com.waffle22.wafflytime.ui.boards.boardscreen
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,23 +9,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.data.ThreadPreview
 import com.waffle22.wafflytime.databinding.BoardThreadBinding
 
-class BoardPreviewAdapter()
-    : ListAdapter<ThreadPreview, BoardPreviewAdapter.ForumPreviewViewHolder>(DiffCallback){
+class ThreadPreviewAdapter()
+    : ListAdapter<ThreadPreview, ThreadPreviewAdapter.ThreadPreviewViewHolder>(DiffCallback){
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForumPreviewViewHolder {
-        return ForumPreviewViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThreadPreviewViewHolder {
+        return ThreadPreviewViewHolder(
             BoardThreadBinding.inflate(
                 LayoutInflater.from(parent.context)
             ), parent.context
         )
     }
 
-    override fun onBindViewHolder(holder: ForumPreviewViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ThreadPreviewViewHolder, position: Int) {
         val current = getItem(position)
         holder.bind(current)
     }
 
-    class ForumPreviewViewHolder(private var binding: BoardThreadBinding, private var context: Context)
+    class ThreadPreviewViewHolder(private var binding: BoardThreadBinding, private var context: Context)
         : RecyclerView.ViewHolder(binding.root) {
             fun bind(threadPreview: ThreadPreview) {
                 binding.apply{

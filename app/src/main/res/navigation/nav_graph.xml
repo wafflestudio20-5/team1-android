@@ -2,11 +2,24 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/boardFragment">
+    app:startDestination="@id/boardListFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.waffle22.wafflytime.ui.login.LoginFragment"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.waffle22.wafflytime.ui.login.SignUpFragment"
+        android:label="SignUpFragment" />
 
     <fragment
         android:id="@+id/boardFragment"
-        android:name="com.waffle22.wafflytime.ui.BoardFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.boardscreen.BoardFragment"
         android:label="BoardFragment" >
         <action
             android:id="@+id/action_boardFragment_to_threadFragment"
@@ -17,10 +30,18 @@
     </fragment>
     <fragment
         android:id="@+id/threadFragment"
-        android:name="com.waffle22.wafflytime.ui.ThreadFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.threadscreen.ThreadFragment"
         android:label="ThreadFragment" />
     <fragment
         android:id="@+id/newThreadFragment"
-        android:name="com.waffle22.wafflytime.ui.NewThreadFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.NewThreadFragment"
         android:label="NewThreadFragment" />
+    <fragment
+        android:id="@+id/boardListFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.boardlist.BoardListFragment"
+        android:label="BoardListFragment" >
+        <action
+            android:id="@+id/action_boardListFragment_to_boardFragment"
+            app:destination="@id/boardFragment" />
+    </fragment>
 </navigation>

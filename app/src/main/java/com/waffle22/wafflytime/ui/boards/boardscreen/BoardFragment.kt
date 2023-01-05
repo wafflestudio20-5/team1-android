@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui
+package com.waffle22.wafflytime.ui.boards.boardscreen
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,13 +26,13 @@ class BoardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val boardPreviewAdapter = BoardPreviewAdapter()
+        val threadPreviewAdapter = ThreadPreviewAdapter()
         viewModel.threads.observe(this.viewLifecycleOwner){ items ->
             items.let{
-                boardPreviewAdapter.submitList(it)
+                threadPreviewAdapter.submitList(it)
             }
         }
-        binding.threads.adapter = boardPreviewAdapter
+        binding.threads.adapter = threadPreviewAdapter
         binding.threads.layoutManager = LinearLayoutManager(this.context)
 
         val boardAnnouncementAdapter = BoardAnnouncementAdapter()

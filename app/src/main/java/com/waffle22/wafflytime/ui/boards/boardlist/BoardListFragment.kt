@@ -1,0 +1,58 @@
+package com.waffle22.wafflytime.ui.boards.boardlist
+
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.waffle22.wafflytime.databinding.FragmentBoardListBinding
+
+class BoardListFragment : Fragment() {
+    private lateinit var binding: FragmentBoardListBinding
+
+    private val viewModel: BoardListViewModel by activityViewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentBoardListBinding.inflate(inflater,container,false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val defaultBoardListAdapter = BoardListAdapter()
+
+        viewModel.defaultBoards.observe(this.viewLifecycleOwner){items->
+            items.let{
+                defaultBoardListAdapter.submitList(it)
+            }
+        }
+        binding.defaultBoards.adapter = defaultBoardListAdapter
+        binding.defaultBoards.layoutManager = LinearLayoutManager(this.context)
+
+        val allBoardListAdapter = BoardListAdapter()
+        viewModel.allBoardsFiltered.observe(this.viewLifecycleOwner){items ->
+            items.let{
+                allBoardListAdapter.submitList(it)
+            }
+        }
+        binding.allBoards.adapter = allBoardListAdapter
+        binding.allBoards.layoutManager = LinearLayoutManager(this.context)
+
+        val taggedBoardsAdapter = TaggedBoardsAdapter()
+        viewModel.taggedBoards.observe(this.viewLifecycleOwner){ items ->
+            items.let{
+                taggedBoardsAdapter.submitList(it)
+            }
+        }
+        binding.taggedBoards.adapter = taggedBoardsAdapter
+        binding.taggedBoards.layoutManager = LinearLayoutManager(this.context)
+    }
+}

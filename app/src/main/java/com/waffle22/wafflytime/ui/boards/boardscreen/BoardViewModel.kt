@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui
+package com.waffle22.wafflytime.ui.boards.boardscreen
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
