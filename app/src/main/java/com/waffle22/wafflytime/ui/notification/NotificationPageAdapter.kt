@@ -15,4 +15,8 @@ class NotificationPageAdapter(fragmentActivity: FragmentActivity) : FragmentStat
         return fragments[position]
     }
 
+    fun addItems(fragment: Fragment){
+        fragments.add(fragment)
+    }
+
 }

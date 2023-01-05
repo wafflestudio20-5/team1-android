@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentNotificationBinding
 import com.waffle22.wafflytime.network.dto.Notification
@@ -34,7 +35,7 @@ class NotifyFragment : Fragment() {
 
         binding.apply {
             commentRecyclerView.adapter = adapter
-            topTap.setupWithViewPager(viewPager)
+            /*
             topTap.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     Log.d("debug",tab.position.toString())
@@ -50,6 +51,8 @@ class NotifyFragment : Fragment() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {
                 }
             })
+            *?
+             */
         }
 
 
