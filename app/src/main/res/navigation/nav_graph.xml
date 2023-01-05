@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/baseNotificationFragment">
+    app:startDestination="@id/loginFragment">
 
 
     <fragment
@@ -39,19 +39,11 @@
     <fragment
         android:id="@+id/notifyFragment"
         android:name="com.waffle22.wafflytime.ui.notification.NotifyFragment"
-        android:label="NotifyFragment" >
-        <action
-            android:id="@+id/action_notifyFragment_to_chatBoxFragment"
-            app:destination="@id/chatBoxFragment" />
-    </fragment>
+        android:label="NotifyFragment" />
     <fragment
         android:id="@+id/chatBoxFragment"
         android:name="com.waffle22.wafflytime.ui.notification.ChatBoxFragment"
-        android:label="ChatBoxFragment" >
-        <action
-            android:id="@+id/action_chatBoxFragment_to_notifyFragment"
-            app:destination="@id/notifyFragment" />
-    </fragment>
+        android:label="ChatBoxFragment" />
     <fragment
         android:id="@+id/baseNotificationFragment"
         android:name="com.waffle22.wafflytime.ui.notification.BaseNotificationFragment"
