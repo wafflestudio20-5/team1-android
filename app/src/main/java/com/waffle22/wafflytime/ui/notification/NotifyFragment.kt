@@ -35,24 +35,6 @@ class NotifyFragment : Fragment() {
 
         binding.apply {
             commentRecyclerView.adapter = adapter
-            /*
-            topTap.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    Log.d("debug",tab.position.toString())
-                    when(tab.position){
-                        1 -> findNavController().navigate(R.id.action_notifyFragment_to_chatBoxFragment)
-                        else -> null
-                    }
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {
-                }
-
-                override fun onTabReselected(tab: TabLayout.Tab?) {
-                }
-            })
-            *?
-             */
         }
 
 
