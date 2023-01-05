@@ -15,13 +15,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/tap_alarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="알림"
             />
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/tap_chatBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="쪽지함"
@@ -29,9 +27,10 @@
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/comment_grid"
+        android:id="@+id/comment_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/top_tap"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintStart_toStartOf="parent"

@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/notifyFragment">
 
 
     <fragment
@@ -36,4 +36,8 @@
         android:id="@+id/signUpFragment"
         android:name="com.waffle22.wafflytime.ui.login.SignUpFragment"
         android:label="SignUpFragment" />
+    <fragment
+        android:id="@+id/notifyFragment"
+        android:name="com.waffle22.wafflytime.ui.notification.NotifyFragment"
+        android:label="NotifyFragment" />
 </navigation>
