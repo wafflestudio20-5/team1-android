@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:layout="@layout/profile_card"/>
+
+    <PreferenceCategory
+        android:title="계정">
+
+        <Preference
+            android:key="authorize_school"
+            android:title="학교 인증" />
+        <Preference
+            android:key="change_password"
+            android:title="비밀번호 변경"
+            android:fragment="com.waffle22.wafflytime.ui.preferences.ChangePasswordFragment"/>
+        <Preference
+            android:key="change_email"
+            android:title="이메일 변경"
+            android:fragment="com.waffle22.wafflytime.ui.preferences.ChangeEmailFragment"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="커뮤니티">
+        <Preference
+            android:key="set_nickname"
+            android:title="닉네임 설정"
+            android:fragment="com.waffle22.wafflytime.ui.preferences.SetNicknameFragment" />
+        <Preference
+            android:key="change_profile_image"
+            android:title="프로필 이미지 변경"/>
+        <Preference
+            android:key="restriction_history"
+            android:title="이용 제한 내역"/>
+        <Preference
+            android:key="message_settings"
+            android:title="쪽지 설정"/>
+        <Preference
+            android:key="community_rules"
+            android:title="커뮤니티 이용규칙"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="앱 설정">
+        <ListPreference
+            android:defaultValue="system"
+            android:entries="@array/darkmode"
+            android:entryValues="@array/darkmode_value"
+            android:key="dark_mode"
+            android:title="다크 모드"/>
+        <Preference
+            android:key="notification_settings"
+            android:title="알림 설정"
+            android:fragment="com.waffle22.wafflytime.ui.preferences.NotificationSettingsFragment"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="이용 안내">
+        <Preference
+            android:key="app_version"
+            android:title="앱 버전"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="기타">
+        <Preference
+            android:key="withdraw_membership"
+            android:title="회원 탈퇴"/>
+        <Preference
+            android:key="Logout"
+            android:title="로그아웃"/>
+    </PreferenceCategory>
+</PreferenceScreen>
