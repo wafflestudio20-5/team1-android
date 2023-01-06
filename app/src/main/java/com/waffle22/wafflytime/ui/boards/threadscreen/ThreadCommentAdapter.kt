@@ -16,7 +16,7 @@ class ThreadCommentAdapter()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThreadCommentViewHolder {
         return ThreadCommentViewHolder(
             ThreadCommentBinding.inflate(
-                LayoutInflater.from(parent.context)
+                LayoutInflater.from(parent.context), parent, false
             ), parent.context
         )
     }

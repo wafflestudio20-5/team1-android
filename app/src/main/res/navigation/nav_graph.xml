@@ -68,4 +68,4 @@
             android:id="@+id/action_boardSearchFragment_to_boardFragment"
             app:destination="@id/boardFragment" />
     </fragment>
-</navigation>4
+</navigation>
