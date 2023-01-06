@@ -16,6 +16,19 @@
         android:id="@+id/signUpFragment"
         android:name="com.waffle22.wafflytime.ui.login.SignUpFragment"
         android:label="SignUpFragment" />
+    <fragment
+        android:id="@+id/notifyFragment"
+        android:name="com.waffle22.wafflytime.ui.notification.NotifyFragment"
+        android:label="NotifyFragment" />
+    <fragment
+        android:id="@+id/chatBoxFragment"
+        android:name="com.waffle22.wafflytime.ui.notification.ChatBoxFragment"
+        android:label="ChatBoxFragment" />
+    <fragment
+        android:id="@+id/baseNotificationFragment"
+        android:name="com.waffle22.wafflytime.ui.notification.BaseNotificationFragment"
+        android:label="BaseNotificationFragment" />
+
 
     <fragment
         android:id="@+id/boardFragment"
@@ -55,4 +68,4 @@
             android:id="@+id/action_boardSearchFragment_to_boardFragment"
             app:destination="@id/boardFragment" />
     </fragment>
-</navigation>
+</navigation>4
