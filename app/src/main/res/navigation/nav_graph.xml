@@ -39,7 +39,8 @@
             app:destination="@id/threadFragment" />
         <action
             android:id="@+id/action_boardFragment_to_newThreadFragment"
-            app:destination="@id/newThreadFragment" />
+            app:destination="@id/newThreadFragment"
+            app:popUpTo="@+id/boardFragment"/>
     </fragment>
     <fragment
         android:id="@+id/threadFragment"
@@ -48,7 +49,7 @@
     <fragment
         android:id="@+id/newThreadFragment"
         android:name="com.waffle22.wafflytime.ui.boards.NewThreadFragment"
-        android:label="NewThreadFragment" />
+        android:label="NewThreadFragment"/>
     <fragment
         android:id="@+id/boardListFragment"
         android:name="com.waffle22.wafflytime.ui.boards.boardlist.BoardListFragment"
@@ -66,6 +67,6 @@
         android:label="BoardSearchFragment" >
         <action
             android:id="@+id/action_boardSearchFragment_to_boardFragment"
-            app:destination="@id/boardFragment" />
+            app:destination="@id/boardFragment"/>
     </fragment>
 </navigation>

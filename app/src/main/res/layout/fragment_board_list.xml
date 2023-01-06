@@ -15,30 +15,35 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/my_posts"
             android:drawableStart="@drawable/ic_baseline_list_alt_24"
             android:text="내가 쓴 글"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/my_comments"
             android:drawableStart="@drawable/ic_baseline_chat_bubble_24"
             android:text="댓글 단 글"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/my_scraps"
             android:drawableStart="@drawable/ic_baseline_star_border_24"
             android:text="스크랩"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/hot_board"
             android:drawableStart="@drawable/ic_baseline_local_fire_department_24"
             android:text="HOT 게시판"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/best_board"
             android:drawableStart="@drawable/ic_baseline_thumb_up_24"
             android:text="BEST 게시판"
             android:layout_width="match_parent"

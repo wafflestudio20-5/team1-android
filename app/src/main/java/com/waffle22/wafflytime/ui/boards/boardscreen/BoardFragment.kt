@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentBoardBinding
 
@@ -54,6 +55,10 @@ class BoardFragment : Fragment() {
         binding.newThread.setOnClickListener{
             val action = BoardFragmentDirections.actionBoardFragmentToNewThreadFragment()
             this.findNavController().navigate(action)
+        }
+
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
     }
 }
