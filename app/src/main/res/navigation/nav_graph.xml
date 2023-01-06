@@ -2,7 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/boardFragment">
+    app:startDestination="@id/loginFragment">
+
 
     <fragment
         android:id="@+id/boardFragment"
@@ -23,4 +24,28 @@
         android:id="@+id/newThreadFragment"
         android:name="com.waffle22.wafflytime.ui.NewThreadFragment"
         android:label="NewThreadFragment" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.waffle22.wafflytime.ui.login.LoginFragment"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.waffle22.wafflytime.ui.login.SignUpFragment"
+        android:label="SignUpFragment" />
+    <fragment
+        android:id="@+id/notifyFragment"
+        android:name="com.waffle22.wafflytime.ui.notification.NotifyFragment"
+        android:label="NotifyFragment" />
+    <fragment
+        android:id="@+id/chatBoxFragment"
+        android:name="com.waffle22.wafflytime.ui.notification.ChatBoxFragment"
+        android:label="ChatBoxFragment" />
+    <fragment
+        android:id="@+id/baseNotificationFragment"
+        android:name="com.waffle22.wafflytime.ui.notification.BaseNotificationFragment"
+        android:label="BaseNotificationFragment" />
 </navigation>

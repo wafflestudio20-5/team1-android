@@ -51,10 +51,12 @@ val appModule = module {
             .add(KotlinJsonAdapterFactory())
             .build()
     }
-    /*
+
     // 이곳에 inject 되는 viewModel 추가
+    /*
     viewModel { UserViewModel(get(), get(), get()) }
     viewModel { PostListViewModel(get(), get()) }
     viewModel { (postId: Int) -> PostDetailViewModel(postId, get(), get(), get()) }
-    */
+*/
 }
+
