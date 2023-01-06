@@ -61,3 +61,12 @@ data class WaffThread(
     val comments: List<Comment>
 //) : Post (profilePic, nickname, userId, time, text, likes)
 ) : Post (postId, nickname, userId, time, text, likes)
+
+data class Board(
+    val id: Long,
+    val title: String,
+    val description: String,
+    val tag: List<String>,
+    val default: Boolean,
+    val pinned: Boolean
+)

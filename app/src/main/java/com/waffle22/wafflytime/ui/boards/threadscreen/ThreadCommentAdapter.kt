@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui
+package com.waffle22.wafflytime.ui.boards.threadscreen
 
 import android.content.Context
 import android.view.LayoutInflater

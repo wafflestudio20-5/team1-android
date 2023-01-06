@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui
+package com.waffle22.wafflytime.ui.boards.boardscreen
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,31 +9,32 @@ import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.data.ThreadPreview
 import com.waffle22.wafflytime.databinding.BoardThreadBinding
 
-class BoardPreviewAdapter()
-    : ListAdapter<ThreadPreview, BoardPreviewAdapter.ForumPreviewViewHolder>(DiffCallback){
+class ThreadPreviewAdapter(private val clicked: () -> Unit)
+    : ListAdapter<ThreadPreview, ThreadPreviewAdapter.ThreadPreviewViewHolder>(DiffCallback){
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForumPreviewViewHolder {
-        return ForumPreviewViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThreadPreviewViewHolder {
+        return ThreadPreviewViewHolder(
             BoardThreadBinding.inflate(
                 LayoutInflater.from(parent.context)
             ), parent.context
         )
     }
 
-    override fun onBindViewHolder(holder: ForumPreviewViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ThreadPreviewViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(current)
+        holder.bind(current, clicked)
     }
 
-    class ForumPreviewViewHolder(private var binding: BoardThreadBinding, private var context: Context)
+    class ThreadPreviewViewHolder(private var binding: BoardThreadBinding, private var context: Context)
         : RecyclerView.ViewHolder(binding.root) {
-            fun bind(threadPreview: ThreadPreview) {
+            fun bind(threadPreview: ThreadPreview, clicked: () -> Unit) {
                 binding.apply{
                     nickname.text = threadPreview.nickname
                     time.text = threadPreview.time
                     previewText.text = threadPreview.text
                     likesText.text = threadPreview.likes.toString()
                     commentsText.text = threadPreview.comment_cnt.toString()
+                    layout.setOnClickListener{clicked()}
                 }
             }
         }
