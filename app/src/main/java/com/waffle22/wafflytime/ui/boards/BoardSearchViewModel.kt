@@ -11,7 +11,7 @@ class BoardSearchViewModel : ViewModel() {
         get() = _searchResults
 
     init{
-        _searchResults.value = listOf(
+        /*_searchResults.value = listOf(
             Board(
                 1,
                 "자유게시판",
@@ -40,6 +40,7 @@ class BoardSearchViewModel : ViewModel() {
                 listOf("음식"),
                 false, true
             )
-        )
+        )*/
+        _searchResults.value = listOf()
     }
 }

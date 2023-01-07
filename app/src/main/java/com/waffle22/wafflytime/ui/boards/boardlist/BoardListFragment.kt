@@ -28,6 +28,27 @@ class BoardListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.myPosts.setOnClickListener{
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
+            this.findNavController().navigate(action)
+        }
+        binding.myComments.setOnClickListener{
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
+            this.findNavController().navigate(action)
+        }
+        binding.myScraps.setOnClickListener{
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
+            this.findNavController().navigate(action)
+        }
+        binding.hotBoard.setOnClickListener{
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
+            this.findNavController().navigate(action)
+        }
+        binding.bestBoard.setOnClickListener{
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
+            this.findNavController().navigate(action)
+        }
+
         val defaultBoardListAdapter = BoardListAdapter{
             val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
             this.findNavController().navigate(action)

@@ -22,7 +22,7 @@ class TaggedBoardsAdapter(private val clicked: () -> Unit)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaggedBoardsViewHolder {
         return TaggedBoardsViewHolder(
             BoardTaggedBinding.inflate(
-                LayoutInflater.from(parent.context)
+                LayoutInflater.from(parent.context), parent, false
             ), parent.context
         )
     }

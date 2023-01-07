@@ -17,7 +17,7 @@ class BoardSearchAdapter(private val clicked: () -> Unit)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardSearchAdapter.BoardSearchViewHolder {
         return BoardSearchAdapter.BoardSearchViewHolder(
             SearchBoardResultBinding.inflate(
-                LayoutInflater.from(parent.context)
+                LayoutInflater.from(parent.context), parent, false
             )
         )
     }

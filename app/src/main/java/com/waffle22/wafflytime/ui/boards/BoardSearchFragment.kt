@@ -42,5 +42,9 @@ class BoardSearchFragment : Fragment() {
         }
         binding.searchResult.adapter = boardSearchAdapter
         binding.searchResult.layoutManager = LinearLayoutManager(this.context)
+
+        binding.backButton.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 }
