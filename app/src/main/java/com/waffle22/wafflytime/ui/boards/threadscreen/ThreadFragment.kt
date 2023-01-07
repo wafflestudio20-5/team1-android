@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentThreadBinding
 
@@ -42,5 +43,9 @@ class ThreadFragment : Fragment() {
         }
         binding.comments.adapter = threadCommentAdapter
         binding.comments.layoutManager = LinearLayoutManager(this.context)
+
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 }

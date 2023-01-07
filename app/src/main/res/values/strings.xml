@@ -9,7 +9,10 @@
     <string name="notifications">학사\n공지</string>
     <string name="schedule">학사\n일정</string>
     <string name="library">도서관</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="formore_toboardlist">더보기</string>
+    <string name="my_information">내 정보</string>
+    <string name="change_password_button">비밀번호 변경</string>
+    <string name="change_email_button">이메일 변경</string>
+    <string name="set_nickname_button">닉네임 설정</string>
 </resources>

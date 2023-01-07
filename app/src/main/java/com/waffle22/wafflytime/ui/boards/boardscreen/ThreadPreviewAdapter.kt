@@ -15,7 +15,7 @@ class ThreadPreviewAdapter(private val clicked: () -> Unit)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThreadPreviewViewHolder {
         return ThreadPreviewViewHolder(
             BoardThreadBinding.inflate(
-                LayoutInflater.from(parent.context)
+                LayoutInflater.from(parent.context), parent, false
             ), parent.context
         )
     }

@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.waffle22.wafflytime.databinding.FragmentNewThreadBinding
+import com.waffle22.wafflytime.ui.boards.boardscreen.BoardFragmentDirections
 
 class NewThreadFragment : Fragment() {
     private lateinit var binding: FragmentNewThreadBinding
@@ -21,6 +23,11 @@ class NewThreadFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.submitButton.setOnClickListener{
+            findNavController().navigateUp()
+        }
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 }

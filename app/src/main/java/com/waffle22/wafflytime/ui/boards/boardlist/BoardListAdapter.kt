@@ -15,7 +15,7 @@ class BoardListAdapter(private val onClicked: () -> Unit)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardListViewHolder {
         return BoardListViewHolder(
             BoardSummaryBinding.inflate(
-                LayoutInflater.from(parent.context)
+                LayoutInflater.from(parent.context), parent, false
             )
         )
     }
