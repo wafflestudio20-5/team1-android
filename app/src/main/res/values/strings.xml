@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">WafflyTime</string>
     <string name="new_thread">New Thread</string>
+    <string name="my_information">My Information</string>
+    <string name="change_password_button">Change Password</string>
+    <string name="change_email_button">Change Email</string>
+    <string name="set_nickname_button">Set Nickname</string>
 </resources>
