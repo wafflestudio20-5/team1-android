@@ -76,4 +76,12 @@
             android:id="@+id/action_boardSearchFragment_to_boardFragment"
             app:destination="@id/boardFragment"/>
     </fragment>
+    <fragment
+        android:id="@+id/mainHomeFragment"
+        android:name="com.waffle22.wafflytime.ui.login.MainHomeFragment"
+        android:label="MainHomeFragment" >
+        <action
+            android:id="@+id/action_mainHomeFragment_to_boardListFragment"
+            app:destination="@id/boardListFragment" />
+    </fragment>
 </navigation>
