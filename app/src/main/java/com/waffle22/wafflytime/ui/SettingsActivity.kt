@@ -2,11 +2,11 @@ package com.waffle22.wafflytime.ui
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.ui.preferences.SettingsFragment
 

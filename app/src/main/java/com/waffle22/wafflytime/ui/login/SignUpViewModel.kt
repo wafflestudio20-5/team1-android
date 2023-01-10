@@ -1,5 +1,6 @@
 package com.waffle22.wafflytime.ui.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.waffle22.wafflytime.network.WafflyApiService
@@ -21,11 +22,11 @@ class SignUpViewModel(
 ): ViewModel() {
 
     // TODO: Change String type to Enum Class!!!
-    private val _signUpState = MutableStateFlow<String>("standby")
+    private val _signUpState = MutableStateFlow<String>("StandBy")
     val signUpState: StateFlow<String> = _signUpState
 
     fun resetSignUpState(){
-        _signUpState.value = "standby"
+        _signUpState.value = "StandBy"
     }
 
     fun signUp(id: String, password: String){
@@ -39,6 +40,10 @@ class SignUpViewModel(
                     }
                     "409" -> {
                         _signUpState.value = "SignUpConflict"
+                    }
+                    "500" -> {
+                        Log.d("debug","ami?")
+                        _signUpState.value = "500Error"
                     }
                 }
             } catch (e:java.lang.Exception) {

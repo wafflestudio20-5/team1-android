@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -39,16 +40,17 @@ class SignUpFragment : Fragment() {
                         null
                     }
                     "SignUpOk" -> {
-                        // TODO: 회원가입 성공했다는 메세지를 토스트메세지로 띄워줄것
-                        // TODO: 뒤로가기 누르면 로그인페이지로 다시 못오게 해야됨
-                        findNavController().navigate(R.id.action_signUpFragment_to_baseNotificationFragment)
+                        findNavController().navigate(SignUpFragmentDirections.actionGlobalMainHomeFragment())
                     }
                     "SignUpConflict" -> {
-                        Log.d("debug"," signup Failed by conflict")
-                    } // TODO: Generate ToastMessage (Login Failed, Check Id or Password)
+                        Toast.makeText(context, "이미 존재하는 아이디입니다", Toast.LENGTH_SHORT).show()
+                    }
+                    "500Error"-> {
+                        Toast.makeText(context, "500 Error", Toast.LENGTH_SHORT).show()
+                    }
                     else -> {
-                        Log.d("debug","unexpected error of signup")
-                    } // TODO: Generate ToastMessage (Unknown Error Occurred)
+                        Toast.makeText(context, "Unknown Error", Toast.LENGTH_SHORT).show()
+                    }
                 }
                 if (it != "StandBy"){
                     viewModel.resetSignUpState()

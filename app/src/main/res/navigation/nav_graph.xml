@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/mainHomeFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -11,26 +11,11 @@
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_baseNotificationFragment"
-            app:destination="@id/baseNotificationFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.waffle22.wafflytime.ui.login.SignUpFragment"
-        android:label="SignUpFragment" >
-        <action
-            android:id="@+id/action_signUpFragment_to_baseNotificationFragment"
-            app:destination="@id/baseNotificationFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/notifyFragment"
-        android:name="com.waffle22.wafflytime.ui.notification.NotifyFragment"
-        android:label="NotifyFragment" />
-    <fragment
-        android:id="@+id/chatBoxFragment"
-        android:name="com.waffle22.wafflytime.ui.notification.ChatBoxFragment"
-        android:label="ChatBoxFragment" />
+        android:label="SignUpFragment" />
     <fragment
         android:id="@+id/baseNotificationFragment"
         android:name="com.waffle22.wafflytime.ui.notification.BaseNotificationFragment"
@@ -76,4 +61,20 @@
             android:id="@+id/action_boardSearchFragment_to_boardFragment"
             app:destination="@id/boardFragment"/>
     </fragment>
+    <fragment
+        android:id="@+id/mainHomeFragment"
+        android:name="com.waffle22.wafflytime.ui.login.MainHomeFragment"
+        android:label="MainHomeFragment" />
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true"
+        />
+    <action
+        android:id="@+id/action_global_mainHomeFragment"
+        app:destination="@id/mainHomeFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true"
+        />
 </navigation>

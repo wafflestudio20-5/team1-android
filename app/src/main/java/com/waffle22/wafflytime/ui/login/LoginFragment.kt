@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -42,16 +43,17 @@ class LoginFragment :  Fragment() {
                         null
                     }
                     "LoginOk" -> {
-                        // TODO() 성공했다는 메세지 띄워주자 토스트메세지로
-                        // 뒤로가기 누르면 로그인페이지로 다시 못오게 해야됨
-                        findNavController().navigate(R.id.action_loginFragment_to_baseNotificationFragment)
+                        findNavController().navigate(LoginFragmentDirections.actionGlobalMainHomeFragment())
                     }
                     "LoginFailed" -> {
-                        Log.d("debug","login LoginFailed")
-                    } // TODO: Generate ToastMessage (Login Failed, Check Id or Password)
+                        Toast.makeText(context, "로그인 실패(id, password 다시 확인)", Toast.LENGTH_SHORT).show()
+                    }
+                    "500Error"-> {
+                        Toast.makeText(context, "500 Error", Toast.LENGTH_SHORT).show()
+                    }
                     else -> {
-                        Log.d("debug","login unexpected error")
-                    } // TODO: Generate ToastMessage (Unknown Error Occurred)
+                        Toast.makeText(context, "Unknown Error", Toast.LENGTH_SHORT).show()
+                    }
                 }
                 if (it != "StandBy"){
                     viewModel.resetAuthState()

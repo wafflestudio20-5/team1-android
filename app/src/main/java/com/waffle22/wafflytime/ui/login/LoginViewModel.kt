@@ -41,6 +41,9 @@ class LoginViewModel(
                     "404" -> {
                         _authState.value = "LoginFailed"
                     }
+                    "500" -> {
+                        _authState.value = "500Error"
+                    }
                 }
             } catch (e:java.lang.Exception) {
                 Log.d("debug",e.toString())
