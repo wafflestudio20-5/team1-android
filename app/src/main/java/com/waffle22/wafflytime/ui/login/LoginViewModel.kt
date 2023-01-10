@@ -22,11 +22,11 @@ class LoginViewModel(
 ) : ViewModel() {
 
     // TODO: Change String type to Enum Class!!!
-    private val _authState = MutableStateFlow<String>("StandBy")
-    val authState: StateFlow<String> = _authState
+    private val _loginState = MutableStateFlow<LoginStatus>(LoginStatus.StandBy)
+    val loginState: StateFlow<LoginStatus> = _loginState
 
     fun resetAuthState(){
-        _authState.value = "StandBy"
+        _loginState.value = LoginStatus.StandBy
     }
 
     fun login(id: String, password: String){
@@ -36,14 +36,17 @@ class LoginViewModel(
                 when (response.code().toString()){
                     "200" -> {
                         authStorage.setAuthInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
-                        _authState.value = "LoginOk"
+                        _loginState.value = LoginStatus.LoginOk
                     }
                     "404" -> {
-                        _authState.value = "LoginFailed"
+                        _loginState.value = LoginStatus.LoginFailed
+                    }
+                    "500" -> {
+                        _loginState.value = LoginStatus.Error_500
                     }
                 }
             } catch (e:java.lang.Exception) {
-                Log.d("debug",e.toString())
+                _loginState.value = LoginStatus.Corruption
             }
         }
     }

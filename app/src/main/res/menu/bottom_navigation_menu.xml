@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/page_home"
+        android:id="@+id/mainHomeFragment"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_home_24"
         android:title="TODO" />
     <item
-        android:id="@+id/page_board"
+        android:id="@+id/boardListFragment"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_list_alt_24"
         android:title="Board List" />
     <item
-        android:id="@+id/page_notification"
+        android:id="@+id/baseNotificationFragment"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_notifications_24"
         android:title="TODO" />
