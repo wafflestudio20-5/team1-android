@@ -1,6 +1,7 @@
 package com.waffle22.wafflytime.util
 
 import android.content.Context
+import android.util.Log
 import androidx.core.content.edit
 import com.waffle22.wafflytime.network.dto.UserDTO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,11 +27,24 @@ class AuthStorage(
     val authInfo: StateFlow<AuthInfo?> = _authInfo
 
     fun setAuthInfo(accessToken: String, refreshToken: String) {
-        _authInfo.value = AuthInfo(accessToken, refreshToken)
         sharedPref.edit {
             putString(AccessTokenKey, accessToken)
             putString(RefreshTokenKey, refreshToken)
         }
+        _authInfo.value =
+            if (accessToken.isEmpty()) {
+                null
+            } else {
+                AuthInfo(accessToken, refreshToken)
+            }
+    }
+
+    fun clearAuthInfo() {
+        sharedPref.edit {
+            putString(AccessTokenKey, "")
+            putString(RefreshTokenKey, "")
+        }
+        _authInfo.value = null
     }
 
     data class AuthInfo(
