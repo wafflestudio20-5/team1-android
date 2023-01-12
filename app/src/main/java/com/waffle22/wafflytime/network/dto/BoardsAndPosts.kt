@@ -42,6 +42,7 @@ data class EditPostRequest(
 data class PostResponse( // PostResponse
     @Json(name = "postId") val postId: Long,
     @Json(name = "writerId") val writerId: Long,
+    @Json(name = "nickname") val nickname: String?,
     @Json(name = "isWriterAnonymous") val isWriterAnonymous : Boolean,
     @Json(name = "title") val title: String,
     @Json(name = "contents") val contents: String,

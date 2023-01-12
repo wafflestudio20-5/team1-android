@@ -36,11 +36,11 @@
     </fragment>
     <fragment
         android:id="@+id/threadFragment"
-        android:name="com.waffle22.wafflytime.ui.boards.threadscreen.ThreadFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.postscreen.PostFragment"
         android:label="ThreadFragment" />
     <fragment
         android:id="@+id/newThreadFragment"
-        android:name="com.waffle22.wafflytime.ui.boards.NewThreadFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.NewPostFragment"
         android:label="NewThreadFragment"/>
     <fragment
         android:id="@+id/boardListFragment"

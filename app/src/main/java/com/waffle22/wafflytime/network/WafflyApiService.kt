@@ -19,35 +19,34 @@ interface WafflyApiService {
     @PUT("/api/auth/refresh")
     suspend fun refresh(@Header("Authorization") token: String): Response<TokenContainer>
 
-
     // Board 관련
     @GET("/api/board/{boardId}")
-    suspend fun getSingleBoard(boardId: Long): BoardDTO
+    suspend fun getSingleBoard(boardId: Long): Response<BoardDTO>
 
     @GET("/api/boards")
-    suspend fun getAllBoards(): List<BoardDTO>
+    suspend fun getAllBoards(): Response<List<BoardDTO>>
 
     @POST("/api/board")
-    suspend fun createBoard(@Body() boardDTO: BoardDTO): CreateBoardResponse
+    suspend fun createBoard(@Body() boardDTO: BoardDTO): Response<CreateBoardResponse>
 
     @DELETE("/api/board/{boardId}")
-    suspend fun deleteBoard(boardId: Long): DeleteBoardResponse
+    suspend fun deleteBoard(boardId: Long): Response<DeleteBoardResponse>
     // Post 관련
     @GET("/api/board/{boardId}/post/{postId}")
-    suspend fun getSinglePost(boardId: Long, postId: Long): PostResponse
+    suspend fun getSinglePost(boardId: Long, postId: Long): Response<PostResponse>
 
     // Todo: pagenation 알아보고 구현
     /*
     @GET("/api/board/{boardId}/posts?page={page}&size={size}")
-    suspend fun getAllPosts(boardId: Long, page: Int, size: Int): Page<PostDTO>
+    suspend fun getAllPosts(boardId: Long, page: Int, size: Int): Response<Page<PostDTO>>
     */
 
     @POST("/api/board/{boardId}/post")
-    suspend fun createPost(boardId: Long, @Body() postRequest: PostRequest): PostResponse
+    suspend fun createPost(boardId: Long, @Body() postRequest: PostRequest): Response<PostResponse>
 
     @DELETE("/api/board/{boardId}/post/{postId}")
-    suspend fun deletePost(boardId: Long, postId: Long): DeletePostResponse
+    suspend fun deletePost(boardId: Long, postId: Long): Response<DeletePostResponse>
 
     @PUT("/api/board/{boardId}/post/{postId}")
-    suspend fun editPost(boardId: Long, postId: Long, @Body() editPostRequest: EditPostRequest): EditPostResponse
+    suspend fun editPost(boardId: Long, postId: Long, @Body() editPostRequest: EditPostRequest): Response<EditPostResponse>
 }

@@ -4,58 +4,46 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.waffle22.wafflytime.data.Board
+import com.waffle22.wafflytime.network.WafflyApiService
+import com.waffle22.wafflytime.network.dto.BoardDTO
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+
+enum class BoardLoadingStatus {
+    Standby, Success, Corruption
+}
 
 data class TaggedBoards(
     val tag: String,
     val entries: MutableList<Board>
 )
 
-class BoardListViewModel : ViewModel() {
-    private var _allBoards = MutableLiveData<List<Board>>()
-    val allBoards: LiveData<List<Board>>
+class BoardListViewModel(
+    private val wafflyApiService: WafflyApiService
+) : ViewModel() {
+    private var _allBoards = MutableLiveData<List<BoardDTO>>()
+    val allBoards: LiveData<List<BoardDTO>>
         get() = _allBoards
-    private var _defaultBoards = MutableLiveData<List<Board>>()
-    val defaultBoards: LiveData<List<Board>>
+    private var _defaultBoards = MutableLiveData<List<BoardDTO>>()
+    val defaultBoards: LiveData<List<BoardDTO>>
         get() = _defaultBoards
-    private var _allBoardsFiltered = MutableLiveData<List<Board>>()
-    val allBoardsFiltered: LiveData<List<Board>>
+    private var _allBoardsFiltered = MutableLiveData<List<BoardDTO>>()
+    val allBoardsFiltered: LiveData<List<BoardDTO>>
         get() = _allBoardsFiltered
+    /*
     private var _taggedBoards = MutableLiveData<MutableList<TaggedBoards>>()
     val taggedBoards: LiveData<MutableList<TaggedBoards>>
-        get() = _taggedBoards
+        get() = _taggedBoards*/
+    private val _boardLoadingState = MutableStateFlow<BoardLoadingStatus>(BoardLoadingStatus.Standby)
+    val boardLoadingState: StateFlow<BoardLoadingStatus>
+        get() = _boardLoadingState
 
+    /*
     init{
-        _allBoards.value = listOf(
-            Board(
-                1,
-                "자유게시판",
-                "",
-                listOf(),
-                true, true
-            ),
-            Board(
-                2,
-                "새내기게시판",
-                "",
-                listOf(),
-                true, false
-            ),
-            Board(
-                3,
-                "홍보게시판",
-                "이것저것 홍보해요",
-                listOf("홍보"),
-                false, true
-            ),
-            Board(
-                4,
-                "야매요리 게시판",
-                "냠냠",
-                listOf("음식"),
-                false, true
-            )
-        )
+        _allBoards.value = apiService.getAllBoards()
         _defaultBoards.value = _allBoards.value!!.filter{it.default}
         _allBoardsFiltered.value = _allBoards.value!!.filter{!it.default}
         _taggedBoards.value = mutableListOf()
@@ -76,4 +64,23 @@ class BoardListViewModel : ViewModel() {
         }
         Log.v("ViewModel", _taggedBoards.value!!.size.toString())
     }
+    */
+
+    fun getAllBoards(){
+        viewModelScope.launch {
+            try{
+                val response = wafflyApiService.getAllBoards()
+                when (response.code().toString()){
+                    "" -> {
+                        _allBoards.value = response.body()
+
+                    }
+                }
+
+            } catch (e: java.lang.Exception){
+                _boardLoadingState.value = BoardLoadingStatus.Corruption
+            }
+        }
+    }
+
 }

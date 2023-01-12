@@ -4,8 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.waffle22.wafflytime.data.ThreadPreview
+import com.waffle22.wafflytime.network.dto.BoardDTO
 
-class BoardViewModel : ViewModel() {
+class BoardViewModel(
+    private val board: BoardDTO
+) : ViewModel() {
     private var _threads = MutableLiveData<List<ThreadPreview>>()
     val threads: LiveData<List<ThreadPreview>>
         get() = _threads
@@ -13,7 +16,7 @@ class BoardViewModel : ViewModel() {
     val announcements: LiveData<List<ThreadPreview>>
         get() = _announcements
 
-    init{
+    /*init{
         _threads.value = listOf(
             ThreadPreview(
                 1,
@@ -33,7 +36,9 @@ class BoardViewModel : ViewModel() {
             )
         )
         _announcements.value = _threads.value!!.filter { it.tag != "" }
+    }*/
+
+    fun getThreads(){
+
     }
-
-
 }

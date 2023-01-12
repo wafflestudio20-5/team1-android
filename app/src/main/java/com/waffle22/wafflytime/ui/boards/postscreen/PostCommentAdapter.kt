@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.boards.threadscreen
+package com.waffle22.wafflytime.ui.boards.postscreen
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.data.Comment
 import com.waffle22.wafflytime.databinding.ThreadCommentBinding
 
-class ThreadCommentAdapter()
-    : ListAdapter<Comment, ThreadCommentAdapter.ThreadCommentViewHolder>(DiffCallback){
+class PostCommentAdapter()
+    : ListAdapter<Comment, PostCommentAdapter.ThreadCommentViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThreadCommentViewHolder {
         return ThreadCommentViewHolder(
@@ -35,9 +35,9 @@ class ThreadCommentAdapter()
                 commentText.text = comment.text
                 likesText.text = comment.likes.toString()
             }
-            val threadReplyAdapter = ThreadReplyAdapter()
-            threadReplyAdapter.submitList(comment.replies)
-            binding.replies.adapter = threadReplyAdapter
+            val postReplyAdapter = PostReplyAdapter()
+            postReplyAdapter.submitList(comment.replies)
+            binding.replies.adapter = postReplyAdapter
             binding.replies.layoutManager = LinearLayoutManager(this.context)
         }
     }
