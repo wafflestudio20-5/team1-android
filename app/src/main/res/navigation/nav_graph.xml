@@ -33,6 +33,9 @@
             android:id="@+id/action_boardFragment_to_newThreadFragment"
             app:destination="@id/newThreadFragment"
             app:popUpTo="@+id/boardFragment"/>
+        <argument
+            android:name="boardId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/threadFragment"

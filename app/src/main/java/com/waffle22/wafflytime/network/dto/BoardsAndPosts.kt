@@ -2,6 +2,19 @@ package com.waffle22.wafflytime.network.dto
 
 import com.squareup.moshi.Json
 
+data class BoardAbstract(
+    @Json(name = "boardId") val boardId : Long,
+    @Json(name = "name") val name: String
+)
+
+data class BoardListResponse(
+    @Json(name = "id") val id : Long,
+    @Json(name = "category") val category : String,
+    @Json(name = "size") val size : Int,
+    @Json(name = "defaultDisplayColumnSize") val defaultDisplayColumnSize : Int,
+    @Json(name = "boards") val boards : List<BoardAbstract>
+)
+
 data class BoardDTO(    //BoardResponse
     @Json(name = "boardId") val boardId: Long,
     @Json(name = "boardType") val boardType: String,

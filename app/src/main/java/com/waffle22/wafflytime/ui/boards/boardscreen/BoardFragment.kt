@@ -7,14 +7,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentBoardBinding
 
-class BoardFragment : Fragment() {
+class BoardFragment() : Fragment() {
     private lateinit var binding: FragmentBoardBinding
 
     private val viewModel: BoardViewModel by activityViewModels()
+
+    private val navigationArgs: BoardFragmentArgs by navArgs()
+
+    var boardId: Long = 0L
 
     override fun onCreateView(
         inflater: LayoutInflater,

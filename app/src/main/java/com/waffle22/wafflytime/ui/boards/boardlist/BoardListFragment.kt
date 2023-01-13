@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentBoardListBinding
@@ -28,67 +29,81 @@ class BoardListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.getAllBoards()
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.boardLoadingState.collect{
+                showBoardsLogic(it)
+            }
+        }
+
         binding.myPosts.setOnClickListener{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0)
             this.findNavController().navigate(action)
         }
         binding.myComments.setOnClickListener{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0)
             this.findNavController().navigate(action)
         }
         binding.myScraps.setOnClickListener{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0)
             this.findNavController().navigate(action)
         }
         binding.hotBoard.setOnClickListener{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0)
             this.findNavController().navigate(action)
         }
         binding.bestBoard.setOnClickListener{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0)
             this.findNavController().navigate(action)
         }
-
-        val defaultBoardListAdapter = BoardListAdapter{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
-            this.findNavController().navigate(action)
-        }
-
-        viewModel.defaultBoards.observe(this.viewLifecycleOwner){items->
-            items.let{
-                defaultBoardListAdapter.submitList(it)
-            }
-        }
-        binding.defaultBoards.adapter = defaultBoardListAdapter
-        binding.defaultBoards.layoutManager = LinearLayoutManager(this.context)
-
-        val allBoardListAdapter = BoardListAdapter{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
-            this.findNavController().navigate(action)
-        }
-        viewModel.allBoardsFiltered.observe(this.viewLifecycleOwner){items ->
-            items.let{
-                allBoardListAdapter.submitList(it)
-            }
-        }
-        binding.allBoards.adapter = allBoardListAdapter
-        binding.allBoards.layoutManager = LinearLayoutManager(this.context)
-
-        val taggedBoardsAdapter = TaggedBoardsAdapter{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment()
-            this.findNavController().navigate(action)
-        }
-        viewModel.taggedBoards.observe(this.viewLifecycleOwner){ items ->
-            items.let{
-                taggedBoardsAdapter.submitList(it)
-            }
-        }
-        binding.taggedBoards.adapter = taggedBoardsAdapter
-        binding.taggedBoards.layoutManager = LinearLayoutManager(this.context)
 
         binding.search.setOnClickListener{
             val action = BoardListFragmentDirections.actionBoardListFragmentToBoardSearchFragment()
             this.findNavController().navigate(action)
+        }
+    }
+
+    private fun showBoardsLogic(status: BoardLoadingStatus){
+        when (status){
+            BoardLoadingStatus.Standby -> null
+            BoardLoadingStatus.Success -> {
+                val basicBoardListAdapter = BoardListAdapter{
+                    val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(it.boardId)
+                    this.findNavController().navigate(action)
+                }
+                viewModel.basicBoards.observe(this.viewLifecycleOwner){items->
+                    items.let{
+                        basicBoardListAdapter.submitList(it)
+                    }
+                }
+                binding.defaultBoards.adapter = basicBoardListAdapter
+                binding.defaultBoards.layoutManager = LinearLayoutManager(this.context)
+
+                val customBoardListAdapter = BoardListAdapter{
+                    val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(it.boardId)
+                    this.findNavController().navigate(action)
+                }
+                viewModel.customBoards.observe(this.viewLifecycleOwner){ items ->
+                    items.let{
+                        customBoardListAdapter.submitList(it)
+                    }
+                }
+                binding.allBoards.adapter = customBoardListAdapter
+                binding.allBoards.layoutManager = LinearLayoutManager(this.context)
+
+                val taggedBoardsAdapter = TaggedBoardsAdapter(this)
+                viewModel.taggedBoards.observe(this.viewLifecycleOwner){ items ->
+                    items.let{
+                        taggedBoardsAdapter.submitList(it)
+                    }
+                }
+                binding.taggedBoards.adapter = taggedBoardsAdapter
+                binding.taggedBoards.layoutManager = LinearLayoutManager(this.context)
+            }
+            else -> {
+
+            }
         }
     }
 }

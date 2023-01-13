@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.waffle22.wafflytime.data.Board
 import com.waffle22.wafflytime.network.WafflyApiService
+import com.waffle22.wafflytime.network.dto.BoardAbstract
 import com.waffle22.wafflytime.network.dto.BoardDTO
+import com.waffle22.wafflytime.network.dto.BoardListResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -24,19 +26,18 @@ data class TaggedBoards(
 class BoardListViewModel(
     private val wafflyApiService: WafflyApiService
 ) : ViewModel() {
-    private var _allBoards = MutableLiveData<List<BoardDTO>>()
-    val allBoards: LiveData<List<BoardDTO>>
+    private var _allBoards = MutableLiveData<List<BoardListResponse>>()
+    val allBoards: LiveData<List<BoardListResponse>>
         get() = _allBoards
-    private var _defaultBoards = MutableLiveData<List<BoardDTO>>()
-    val defaultBoards: LiveData<List<BoardDTO>>
-        get() = _defaultBoards
-    private var _allBoardsFiltered = MutableLiveData<List<BoardDTO>>()
-    val allBoardsFiltered: LiveData<List<BoardDTO>>
-        get() = _allBoardsFiltered
-    /*
-    private var _taggedBoards = MutableLiveData<MutableList<TaggedBoards>>()
-    val taggedBoards: LiveData<MutableList<TaggedBoards>>
-        get() = _taggedBoards*/
+    private var _basicBoards = MutableLiveData<List<BoardAbstract>>()
+    val basicBoards: LiveData<List<BoardAbstract>>
+        get() = _basicBoards
+    private var _customBoards = MutableLiveData<List<BoardAbstract>>()
+    val customBoards: LiveData<List<BoardAbstract>>
+        get() = _customBoards
+    private var _taggedBoards = MutableLiveData<MutableList<BoardListResponse>>()
+    val taggedBoards: LiveData<MutableList<BoardListResponse>>
+        get() = _taggedBoards
     private val _boardLoadingState = MutableStateFlow<BoardLoadingStatus>(BoardLoadingStatus.Standby)
     val boardLoadingState: StateFlow<BoardLoadingStatus>
         get() = _boardLoadingState
@@ -71,9 +72,17 @@ class BoardListViewModel(
             try{
                 val response = wafflyApiService.getAllBoards()
                 when (response.code().toString()){
-                    "" -> {
+                    "200" -> {
+                        _boardLoadingState.value = BoardLoadingStatus.Success
                         _allBoards.value = response.body()
-
+                        _taggedBoards.value = mutableListOf()
+                        for (boardListResponse in _allBoards.value!!){
+                            when (boardListResponse.category){
+                                "BASIC" -> _basicBoards.value = boardListResponse.boards
+                                "OTHER" -> _customBoards.value = boardListResponse.boards
+                                else -> _taggedBoards.value?.plusAssign(boardListResponse)
+                            }
+                        }
                     }
                 }
 
