@@ -5,6 +5,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.ui.login.LoginViewModel
+import com.waffle22.wafflytime.ui.login.SignUpEmailViewModel
 import com.waffle22.wafflytime.ui.login.SignUpViewModel
 import com.waffle22.wafflytime.ui.mainpage.MainHomeViewModel
 import com.waffle22.wafflytime.util.AuthStorage
@@ -64,6 +65,7 @@ val appModule = module {
 */
     viewModel { LoginViewModel(get(), get()) }
     viewModel { SignUpViewModel(get(), get()) }
+    viewModel { SignUpEmailViewModel(get(), get()) }
     viewModel { MainHomeViewModel(get(), get()) }
 }
 

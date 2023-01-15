@@ -7,3 +7,7 @@ enum class LoginStatus {
 enum class SignUpStatus {
     StandBy, SignUpOk, SignUpConflict, Error_500, Corruption
 }
+
+enum class SignUpEmailStatus {
+    StandBy, RequestOk, VerifyOk, BadRequest, Conflict, Error_500, Corruption
+}

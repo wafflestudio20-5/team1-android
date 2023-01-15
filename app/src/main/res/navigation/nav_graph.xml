@@ -15,7 +15,11 @@
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.waffle22.wafflytime.ui.login.SignUpFragment"
-        android:label="SignUpFragment" />
+        android:label="SignUpFragment" >
+        <action
+            android:id="@+id/action_signUpFragment_to_signUpEmailFragment"
+            app:destination="@id/signUpEmailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/baseNotificationFragment"
         android:name="com.waffle22.wafflytime.ui.notification.BaseNotificationFragment"
@@ -77,4 +81,16 @@
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true"
         />
+    <fragment
+        android:id="@+id/signUpEmailFragment"
+        android:name="com.waffle22.wafflytime.ui.login.SignUpEmailFragment"
+        android:label="SignUpEmailFragment" >
+        <action
+            android:id="@+id/action_signUpEmailFragment_to_signUpCodeFragment"
+            app:destination="@id/signUpCodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpCodeFragment"
+        android:name="com.waffle22.wafflytime.ui.login.SignUpCodeFragment"
+        android:label="SignUpCodeFragment" />
 </navigation>

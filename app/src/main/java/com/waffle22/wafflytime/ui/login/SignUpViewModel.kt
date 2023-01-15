@@ -29,10 +29,10 @@ class SignUpViewModel(
         _signUpState.value = SignUpStatus.StandBy
     }
 
-    fun signUp(id: String, password: String){
+    fun signUp(id: String, password: String, nickName: String){
         viewModelScope.launch {
             try {
-                val response: Response<TokenContainer> = wafflyApiService.signUp(SignUpRequest(id, password))
+                val response: Response<TokenContainer> = wafflyApiService.signUp(SignUpRequest(id, password, nickName))
                 when (response.code().toString()){
                     "200" -> {
                         authStorage.setAuthInfo(response.body()!!.accessToken, response.body()!!.refreshToken)

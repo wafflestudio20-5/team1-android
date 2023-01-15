@@ -5,11 +5,7 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface WafflyApiService {
-    // TODO: 이곳에 백엔드 api 추가하면 될것 같아요
-    /*
-    @GET("login")
-    suspend fun getLogin(): List<WafflyLogin>
-    */
+    // Auth 관련
     @POST("/api/auth/local/login")
     suspend fun basicLogin(@Body() request: LoginRequest): Response<TokenContainer>
 
@@ -18,6 +14,9 @@ interface WafflyApiService {
 
     @PUT("/api/auth/refresh")
     suspend fun refresh(@Header("Authorization") token: String): Response<TokenContainer>
+
+    @POST("/api/user/verify-mail")
+    suspend fun emailAuth(@Header("Authorization") token: String, @Body() email: EmailRequest): Response<EmailCode>
 
 
     // Board 관련
