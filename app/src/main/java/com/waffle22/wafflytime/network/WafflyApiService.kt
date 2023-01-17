@@ -24,7 +24,7 @@ interface WafflyApiService {
     suspend fun getSingleBoard(boardId: Long): BoardDTO
 
     @GET("/api/boards")
-    suspend fun getAllBoards(): List<BoardDTO>
+    suspend fun getAllBoards(@Header("Authorization") token: String): List<BoardDTO>
 
     @POST("/api/board")
     suspend fun createBoard(@Body() boardDTO: BoardDTO): CreateBoardResponse

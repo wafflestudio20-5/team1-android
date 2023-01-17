@@ -8,6 +8,7 @@ import com.waffle22.wafflytime.network.dto.LoginRequest
 import com.waffle22.wafflytime.network.dto.SignUpRequest
 import com.waffle22.wafflytime.network.dto.TokenContainer
 import com.waffle22.wafflytime.util.AuthStorage
+import com.waffle22.wafflytime.util.StateStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,13 +23,37 @@ class LoginViewModel(
 ) : ViewModel() {
 
     // TODO: Change String type to Enum Class!!!
-    private val _loginState = MutableStateFlow<LoginStatus>(LoginStatus.StandBy)
-    val loginState: StateFlow<LoginStatus> = _loginState
+    private val _loginState = MutableStateFlow<StateStorage>(StateStorage("0",null,null))
+    val loginState: StateFlow<StateStorage> = _loginState
 
     fun resetAuthState(){
-        _loginState.value = LoginStatus.StandBy
+        _loginState.value = StateStorage("0",null,null)
     }
 
+    fun login(id: String, password: String){
+        viewModelScope.launch {
+            try {
+                val response = wafflyApiService.basicLogin(LoginRequest(id, password))
+                when (response.code().toString()){
+                    "200" -> {
+                        authStorage.setAuthInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
+                        _loginState.value = StateStorage("200",null,null)
+                    }
+                    else -> {
+                        /*
+                        "404" -> {
+                            _loginState.value = StateStorage("404",null,null)
+                        }
+                         */
+                    }
+                }
+
+            } catch (e:java.lang.Exception) {
+                _loginState.value = StateStorage("-1",null,"System Corruption")
+            }
+        }
+    }
+/*
     fun login(id: String, password: String){
         viewModelScope.launch {
             try{
@@ -50,18 +75,5 @@ class LoginViewModel(
             }
         }
     }
-    /*
-    fun refresh(){
-        viewModelScope.launch {
-            try {
-                val response = wafflyApiService.refresh("Bearer "+authStorage.authInfo.value!!.refreshToken)
-                val signUpResponse = response.body()
-                authStorage.setAuthInfo(signUpResponse!!.accessToken, signUpResponse!!.refreshToken)
-                Log.d("debug",response.code().toString())
-            } catch (e:java.lang.Exception) {
-                Log.d("debug",e.toString())
-            }
-        }
-    }
-    */
+ */
 }

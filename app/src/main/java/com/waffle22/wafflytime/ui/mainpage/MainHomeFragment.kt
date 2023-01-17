@@ -49,8 +49,9 @@ class MainHomeFragment :  Fragment() {
         }
 
         binding.buttonMyPage.setOnClickListener {
-            val intent = Intent(requireContext(), SettingsActivity::class.java)
-            startActivity(intent)
+            viewModel.exp()
+            //val intent = Intent(requireContext(), SettingsActivity::class.java)
+            //startActivity(intent)
         }
 
     }

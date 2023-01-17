@@ -1,5 +1,6 @@
 package com.waffle22.wafflytime.network.dto
 
+import com.squareup.moshi.Json
 import java.time.LocalDateTime
 
 data class CommentDTO(
@@ -15,6 +16,8 @@ data class UserDTO(
 )
 
 data class ErrorDTO(
-    val statusCode: Int?,
-    val message: String?,
+    @Json(name = "timestamp") val timeStamp: String,
+    @Json(name = "status") val statusCode: String,
+    @Json(name = "error-code") val errorCode: String,
+    @Json(name = "default-message") val message: String,
 )

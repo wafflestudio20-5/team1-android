@@ -3,13 +3,21 @@ package com.waffle22.wafflytime.util
 import android.content.Context
 import android.util.Log
 import androidx.core.content.edit
+import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.network.dto.UserDTO
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import okhttp3.Request
+import kotlin.coroutines.coroutineContext
 
 
 class AuthStorage(
-    context: Context
+    private val wafflyApiService: WafflyApiService,
+    private val context: Context
 ) {
     private val sharedPref =
         context.getSharedPreferences(SharedPreferenceName, Context.MODE_PRIVATE)
@@ -45,6 +53,22 @@ class AuthStorage(
             putString(RefreshTokenKey, "")
         }
         _authInfo.value = null
+    }
+
+    fun refreshAuth() {
+        runBlocking{
+            try {
+                val newTokenSet = wafflyApiService.refresh("Bearer "+authInfo.value!!.refreshToken)
+                if (newTokenSet.isSuccessful) {
+                    // When Refresh successful
+                    setAuthInfo(newTokenSet.body()!!.accessToken,newTokenSet.body()!!.accessToken)
+                } else {
+                    null
+                }
+            } catch (e:java.lang.Exception) {
+                null
+            }
+        }
     }
 
     data class AuthInfo(

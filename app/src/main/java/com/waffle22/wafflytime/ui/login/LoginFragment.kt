@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentLoginBinding
+import com.waffle22.wafflytime.util.StateStorage
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class LoginFragment :  Fragment() {
@@ -60,25 +61,25 @@ class LoginFragment :  Fragment() {
         alertDialog.setCanceledOnTouchOutside(false)
     }
 
-    private fun loginLogic(status: LoginStatus){
-        when (status){
-            LoginStatus.StandBy -> {
+    private fun loginLogic(status: StateStorage){
+        when (status.status){
+             "0" -> {
                 null
             }
             else -> {
                 alertDialog.dismiss()
-                when(status) {
-                    LoginStatus.LoginOk -> {
+                when(status.status) {
+                    "200" -> {
                         findNavController().navigate(LoginFragmentDirections.actionGlobalMainHomeFragment())
                     }
-                    LoginStatus.LoginFailed -> {
+                    "401" -> {
                         Toast.makeText(
                             context,
                             "로그인 실패(id, password 다시 확인)",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                    LoginStatus.Error_500 -> {
+                    "500" -> {
                         Toast.makeText(context, "500 Error", Toast.LENGTH_SHORT).show()
                     }
                     else -> {
