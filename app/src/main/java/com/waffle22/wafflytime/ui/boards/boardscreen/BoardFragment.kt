@@ -11,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentBoardBinding
+import com.waffle22.wafflytime.network.dto.TimeDTO
 
 class BoardFragment() : Fragment() {
     private lateinit var binding: FragmentBoardBinding

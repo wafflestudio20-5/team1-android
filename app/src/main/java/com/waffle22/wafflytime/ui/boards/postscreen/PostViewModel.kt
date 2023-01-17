@@ -49,12 +49,8 @@ class PostViewModel(
                                 _curPost.value = response.body()
                                 _postState.value = PostStatus.Success
                             }
-                            "404" -> {
-                                when(response.message().toString()){
-                                    "Not Found" -> _postState.value = PostStatus.NotFound
-                                    "Bad Request" -> _postState.value = PostStatus.BadRequest
-                                }
-                            }
+                            "505" -> _postState.value = PostStatus.NotFound
+                            "506" -> _postState.value = PostStatus.BadRequest
                         }
                     }
                     "404" -> _postState.value = PostStatus.NotFound

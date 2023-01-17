@@ -58,7 +58,7 @@
     </fragment>
     <fragment
         android:id="@+id/boardSearchFragment"
-        android:name="com.waffle22.wafflytime.ui.boards.BoardSearchFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.boardlist.BoardSearchFragment"
         android:label="BoardSearchFragment" >
         <action
             android:id="@+id/action_boardSearchFragment_to_boardFragment"

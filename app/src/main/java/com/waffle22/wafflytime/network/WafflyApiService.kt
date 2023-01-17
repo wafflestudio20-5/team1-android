@@ -1,6 +1,7 @@
 package com.waffle22.wafflytime.network
 
 import com.waffle22.wafflytime.network.dto.*
+import org.json.JSONArray
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -21,19 +22,32 @@ interface WafflyApiService {
 
     // Board 관련
     @GET("/api/board/{boardId}")
-    suspend fun getSingleBoard(boardId: Long): Response<BoardDTO>
+    suspend fun getSingleBoard(
+        //@Header("Authorization") token: String,
+        boardId: Long
+    ): Response<BoardDTO>
 
     @GET("/api/boards")
-    suspend fun getAllBoards(): Response<List<BoardListResponse>>
+    suspend fun getAllBoards(@Header("Authorization") token: String): Response<List<BoardListResponse>>
 
     @POST("/api/board")
-    suspend fun createBoard(@Body() boardDTO: BoardDTO): Response<CreateBoardResponse>
+    suspend fun createBoard(
+        //@Header("Authorization") token: String,
+        @Body() boardDTO: BoardDTO
+    ): Response<CreateBoardResponse>
 
     @DELETE("/api/board/{boardId}")
-    suspend fun deleteBoard(boardId: Long): Response<DeleteBoardResponse>
+    suspend fun deleteBoard(
+        //@Header("Authorization") token: String,
+        boardId: Long
+    ): Response<DeleteBoardResponse>
+
     // Post 관련
     @GET("/api/board/{boardId}/post/{postId}")
-    suspend fun getSinglePost(boardId: Long, postId: Long): Response<PostResponse>
+    suspend fun getSinglePost(
+        //@Header("Authorization") token: String,
+        boardId: Long, postId: Long
+    ): Response<PostResponse>
 
     // Todo: pagenation 알아보고 구현
     /*
@@ -42,7 +56,11 @@ interface WafflyApiService {
     */
 
     @POST("/api/board/{boardId}/post")
-    suspend fun createPost(boardId: Long, @Body() postRequest: PostRequest): Response<PostResponse>
+    suspend fun createPost(
+        //@Header("Authorization") token: String,
+        boardId: Long,
+        @Body() postRequest: PostRequest
+    ): Response<PostResponse>
 
     @DELETE("/api/board/{boardId}/post/{postId}")
     suspend fun deletePost(boardId: Long, postId: Long): Response<DeletePostResponse>

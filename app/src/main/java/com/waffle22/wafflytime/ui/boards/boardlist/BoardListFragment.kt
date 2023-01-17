@@ -11,11 +11,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentBoardListBinding
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class BoardListFragment : Fragment() {
     private lateinit var binding: FragmentBoardListBinding
 
-    private val viewModel: BoardListViewModel by activityViewModels()
+    private val viewModel: BoardListViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +30,39 @@ class BoardListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val basicBoardListAdapter = BoardListAdapter{
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(it.boardId)
+            this.findNavController().navigate(action)
+        }
+        viewModel.basicBoards.observe(this.viewLifecycleOwner){items->
+            items.let{
+                basicBoardListAdapter.submitList(it)
+            }
+        }
+        binding.defaultBoards.adapter = basicBoardListAdapter
+        binding.defaultBoards.layoutManager = LinearLayoutManager(this.context)
+
+        val customBoardListAdapter = BoardListAdapter{
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(it.boardId)
+            this.findNavController().navigate(action)
+        }
+        viewModel.customBoards.observe(this.viewLifecycleOwner){ items ->
+            items.let{
+                customBoardListAdapter.submitList(it)
+            }
+        }
+        binding.allBoards.adapter = customBoardListAdapter
+        binding.allBoards.layoutManager = LinearLayoutManager(this.context)
+
+        val taggedBoardsAdapter = TaggedBoardsAdapter(this)
+        viewModel.taggedBoards.observe(this.viewLifecycleOwner){ items ->
+            items.let{
+                taggedBoardsAdapter.submitList(it)
+            }
+        }
+        binding.taggedBoards.adapter = taggedBoardsAdapter
+        binding.taggedBoards.layoutManager = LinearLayoutManager(this.context)
+
         viewModel.getAllBoards()
 
         lifecycleScope.launchWhenStarted {
@@ -37,6 +71,7 @@ class BoardListFragment : Fragment() {
             }
         }
 
+        //TODO: 내 게시물 관련 기능들과 연결
         binding.myPosts.setOnClickListener{
             val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0)
             this.findNavController().navigate(action)
@@ -66,43 +101,14 @@ class BoardListFragment : Fragment() {
 
     private fun showBoardsLogic(status: BoardLoadingStatus){
         when (status){
-            BoardLoadingStatus.Standby -> null
             BoardLoadingStatus.Success -> {
-                val basicBoardListAdapter = BoardListAdapter{
-                    val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(it.boardId)
-                    this.findNavController().navigate(action)
-                }
-                viewModel.basicBoards.observe(this.viewLifecycleOwner){items->
-                    items.let{
-                        basicBoardListAdapter.submitList(it)
-                    }
-                }
-                binding.defaultBoards.adapter = basicBoardListAdapter
-                binding.defaultBoards.layoutManager = LinearLayoutManager(this.context)
-
-                val customBoardListAdapter = BoardListAdapter{
-                    val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(it.boardId)
-                    this.findNavController().navigate(action)
-                }
-                viewModel.customBoards.observe(this.viewLifecycleOwner){ items ->
-                    items.let{
-                        customBoardListAdapter.submitList(it)
-                    }
-                }
-                binding.allBoards.adapter = customBoardListAdapter
-                binding.allBoards.layoutManager = LinearLayoutManager(this.context)
-
-                val taggedBoardsAdapter = TaggedBoardsAdapter(this)
-                viewModel.taggedBoards.observe(this.viewLifecycleOwner){ items ->
-                    items.let{
-                        taggedBoardsAdapter.submitList(it)
-                    }
-                }
-                binding.taggedBoards.adapter = taggedBoardsAdapter
-                binding.taggedBoards.layoutManager = LinearLayoutManager(this.context)
+                Log.v("BoardListFragment", "Board Loading Success")
+            }
+            BoardLoadingStatus.TokenExpired -> {
+                viewModel.refresh()
+                viewModel.getAllBoards()
             }
             else -> {
-
             }
         }
     }
