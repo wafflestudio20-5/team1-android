@@ -38,16 +38,4 @@ class MainHomeViewModel(
 
         }
     }
-
-    fun refresh() {
-        viewModelScope.launch {
-            val response = wafflyApiService.refresh("Bearerf " + authStorage.authInfo.value!!.accessToken)
-            if (response.isSuccessful) {
-                Log.d("debug","right")
-            } else {
-                val errorResponse = HttpException(response).parseError(moshi)
-                Log.d("debug",errorResponse!!.errorCode)
-            }
-        }
-    }
 }

@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.databinding.FragmentSignupBinding
 import com.waffle22.wafflytime.databinding.FragmentSignupEmailBinding
+import com.waffle22.wafflytime.util.StateStorage
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SignUpEmailFragment: Fragment() {
@@ -52,28 +53,19 @@ class SignUpEmailFragment: Fragment() {
         alertDialog.setCanceledOnTouchOutside(false)
     }
 
-    private fun signUpEmailLogic(status: SignUpEmailStatus){
-        when (status){
-            SignUpEmailStatus.StandBy -> {
+    private fun signUpEmailLogic(state: StateStorage){
+        when (state.status){
+            "0" -> {
                 null
             }
             else -> {
                 alertDialog.dismiss()
-                when(status) {
-                    SignUpEmailStatus.RequestOk -> {
+                when(state.status) {
+                    "200" -> {
                         findNavController().navigate(SignUpEmailFragmentDirections.actionSignUpEmailFragmentToSignUpCodeFragment())
                     }
-                    SignUpEmailStatus.BadRequest -> {
-                        Toast.makeText(context, "snu 아이디를 쳐주세요", Toast.LENGTH_SHORT).show()
-                    }
-                    SignUpEmailStatus.Conflict -> {
-                        Toast.makeText(context, "이미 해당 메일로 가입된 계정이 존재합니다", Toast.LENGTH_SHORT).show()
-                    }
-                    SignUpEmailStatus.Error_500 -> {
-                        Toast.makeText(context, "500 Error", Toast.LENGTH_SHORT).show()
-                    }
                     else -> {
-                        Toast.makeText(context, "Unknown Error", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
                 viewModel.resetSignUpEmailState()

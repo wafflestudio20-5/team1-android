@@ -13,10 +13,13 @@ interface WafflyApiService {
     suspend fun signUp(@Body() request: SignUpRequest): Response<TokenContainer>
 
     @PUT("/api/auth/refresh")
-    suspend fun refresh(@Header("Authorization") token: String): Response<TokenContainer>
+    suspend fun refresh(): Response<TokenContainer>
 
     @POST("/api/user/verify-mail")
-    suspend fun emailAuth(@Header("Authorization") token: String, @Body() email: EmailRequest): Response<EmailCode>
+    suspend fun emailAuth(@Body() email: EmailRequest): Response<EmailCode>
+
+    @PATCH("/api/user/verified-mail")
+    suspend fun emailPatch(@Body() email: EmailRequest): Response<TokenContainer>
 
     // 실험
     @GET("/api/user/me")

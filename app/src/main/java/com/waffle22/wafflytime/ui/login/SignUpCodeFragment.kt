@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.databinding.FragmentSignupEmailBinding
 import com.waffle22.wafflytime.databinding.FragmentSignupEmailCodeBinding
+import com.waffle22.wafflytime.util.StateStorage
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SignUpCodeFragment: Fragment() {
@@ -34,14 +35,45 @@ class SignUpCodeFragment: Fragment() {
         binding.apply{
             btnCheckEmailCode.setOnClickListener { codeVerify() }
         }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.signUpCodeState.collect {
+                signUpCodeLogic(it)
+            }
+        }
     }
 
     private fun codeVerify(){
-        if(viewModel.signUpCode(binding.codeEditText.text.toString())) {
-            Toast.makeText(context, "회원가입이 모두 완료되었습니다!!", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(SignUpCodeFragmentDirections.actionGlobalMainHomeFragment())
-        } else {
-            Toast.makeText(context, "코드를 다시 입력해주세요...", Toast.LENGTH_SHORT).show()
+        viewModel.signUpCode(binding.codeEditText.text.toString())
+
+        alertDialog = MaterialAlertDialogBuilder(this.requireContext())
+            .setView(ProgressBar(this.requireContext()))
+            .setMessage("Loading...")
+            .show()
+        alertDialog.setCanceledOnTouchOutside(false)
+    }
+
+    private fun signUpCodeLogic(state: StateStorage){
+        when (state.status){
+            "0" -> {
+                null
+            }
+            else -> {
+                alertDialog.dismiss()
+                when(state.status) {
+                    "200" -> {
+                        Toast.makeText(context, "회원가입이 모두 완료되었습니다!!", Toast.LENGTH_SHORT).show()
+                        findNavController().navigate(SignUpCodeFragmentDirections.actionGlobalMainHomeFragment())
+                    }
+                    "-2" -> {
+                        Toast.makeText(context, "코드를 다시 입력해주세요...", Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                viewModel.resetSignUpCodeState()
+            }
         }
     }
 }
