@@ -29,8 +29,13 @@ class MainHomeViewModel(
 
     fun exp() {
         viewModelScope.launch {
-            authStorage.setAuthInfo(authStorage.authInfo.value!!.accessToken+"a",authStorage.authInfo.value!!.refreshToken)
-            val response = wafflyApiService.getAllBoards(authStorage.authInfo.value!!.accessToken)
+            try{
+                //authStorage.setAuthInfo(authStorage.authInfo.value!!.accessToken,authStorage.authInfo.value!!.refreshToken)
+                val response = wafflyApiService.getMe()
+            } catch (e:java.lang.Exception) {
+                Log.d("debug",e.toString())
+            }
+
         }
     }
 

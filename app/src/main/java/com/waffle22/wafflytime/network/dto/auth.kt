@@ -30,3 +30,11 @@ data class TokenContainer(
 data class EmailCode(
     @Json(name = "code") val emailCode: String
 )
+
+data class UserInfo(
+    @Json(name = "loginId") val loginId: String?,
+    @Json(name = "socialEmail") val em: String?,
+    @Json(name = "univEmail") val uv: String?,
+    @Json(name = "nickname") val nick: String,
+    @Json(name = "profilePreSignedUrl") val pro: String?,
+)

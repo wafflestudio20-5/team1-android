@@ -18,10 +18,13 @@ interface WafflyApiService {
     @POST("/api/user/verify-mail")
     suspend fun emailAuth(@Header("Authorization") token: String, @Body() email: EmailRequest): Response<EmailCode>
 
+    // 실험
+    @GET("/api/user/me")
+    suspend fun getMe(): Response<UserInfo>
 
     // Board 관련
-    @GET("/api/board/{boardId}")
-    suspend fun getSingleBoard(boardId: Long): BoardDTO
+    @GET("/api/board/0")
+    suspend fun getSingleBoard(): Response<BoardDTO>
 
     @GET("/api/boards")
     suspend fun getAllBoards(@Header("Authorization") token: String): List<BoardDTO>

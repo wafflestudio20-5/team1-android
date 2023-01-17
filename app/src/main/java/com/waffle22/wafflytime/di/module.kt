@@ -9,7 +9,7 @@ import com.waffle22.wafflytime.ui.login.SignUpEmailViewModel
 import com.waffle22.wafflytime.ui.login.SignUpViewModel
 import com.waffle22.wafflytime.ui.mainpage.MainHomeViewModel
 import com.waffle22.wafflytime.util.AuthStorage
-import com.waffle22.wafflytime.util.TokenAuthenticator
+import com.waffle22.wafflytime.util.TokenInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -28,8 +28,10 @@ val appModule = module {
             .addConverterFactory(MoshiConverterFactory.create(get()))
             .client(
                 OkHttpClient.Builder()
-                    .authenticator(TokenAuthenticator(get()))
                     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                    .addInterceptor (
+                        TokenInterceptor(sharedPreference, get(), get())
+                    )
                     .build()
             )
             .build()
@@ -39,7 +41,7 @@ val appModule = module {
         get<Retrofit>().create(WafflyApiService::class.java)
     }
 
-    single { AuthStorage(get(), get()) }
+    single { AuthStorage(get()) }
 
 
     single<Moshi> {

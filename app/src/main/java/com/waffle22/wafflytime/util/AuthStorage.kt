@@ -16,7 +16,6 @@ import kotlin.coroutines.coroutineContext
 
 
 class AuthStorage(
-    private val wafflyApiService: WafflyApiService,
     private val context: Context
 ) {
     private val sharedPref =
@@ -53,22 +52,6 @@ class AuthStorage(
             putString(RefreshTokenKey, "")
         }
         _authInfo.value = null
-    }
-
-    fun refreshAuth() {
-        runBlocking{
-            try {
-                val newTokenSet = wafflyApiService.refresh("Bearer "+authInfo.value!!.refreshToken)
-                if (newTokenSet.isSuccessful) {
-                    // When Refresh successful
-                    setAuthInfo(newTokenSet.body()!!.accessToken,newTokenSet.body()!!.accessToken)
-                } else {
-                    null
-                }
-            } catch (e:java.lang.Exception) {
-                null
-            }
-        }
     }
 
     data class AuthInfo(
