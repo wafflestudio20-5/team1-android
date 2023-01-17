@@ -56,8 +56,8 @@ val appModule = module {
     viewModel { PostListViewModel(get(), get()) }
     viewModel { (postId: Int) -> PostDetailViewModel(postId, get(), get(), get()) }
 */
-    viewModel { LoginViewModel(get(), get()) }
-    viewModel { SignUpViewModel(get(), get()) }
+    viewModel { LoginViewModel(get(), get(), get()) }
+    viewModel { SignUpViewModel(get(), get(), get()) }
     viewModel { SignUpEmailViewModel(get(), get()) }
     viewModel { MainHomeViewModel(get(), get(), get()) }
 }

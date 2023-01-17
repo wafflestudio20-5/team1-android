@@ -51,7 +51,6 @@ class LoginFragment :  Fragment() {
     }
 
     private fun login(){
-        // TODO: 이거 눌렸을때 다른버튼 안눌리게 하기, 그러니까 로그인버튼과 회원가입버튼이 동시에 눌리면? 이런거 방지
         viewModel.login(binding.idEditText.text.toString(), binding.passwordEditText.text.toString())
 
         alertDialog =MaterialAlertDialogBuilder(this.requireContext())
@@ -72,18 +71,8 @@ class LoginFragment :  Fragment() {
                     "200" -> {
                         findNavController().navigate(LoginFragmentDirections.actionGlobalMainHomeFragment())
                     }
-                    "401" -> {
-                        Toast.makeText(
-                            context,
-                            "로그인 실패(id, password 다시 확인)",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    "500" -> {
-                        Toast.makeText(context, "500 Error", Toast.LENGTH_SHORT).show()
-                    }
                     else -> {
-                        Toast.makeText(context, "Unknown Error", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, status.errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
                 viewModel.resetAuthState()

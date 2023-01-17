@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentSignupBinding
+import com.waffle22.wafflytime.util.StateStorage
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SignUpFragment : Fragment() {
@@ -54,25 +55,19 @@ class SignUpFragment : Fragment() {
         alertDialog.setCanceledOnTouchOutside(false)
     }
 
-    private fun signUpLogic(status: SignUpStatus){
-        when (status){
-            SignUpStatus.StandBy -> {
+    private fun signUpLogic(state: StateStorage){
+        when (state.status){
+            "0" -> {
                 null
             }
             else -> {
                 alertDialog.dismiss()
-                when(status) {
-                    SignUpStatus.SignUpOk -> {
+                when(state.status) {
+                    "200" -> {
                         dialogForEmail()
                     }
-                    SignUpStatus.SignUpConflict -> {
-                        Toast.makeText(context, "이미 존재하는 아이디입니다", Toast.LENGTH_SHORT).show()
-                    }
-                    SignUpStatus.Error_500 -> {
-                        Toast.makeText(context, "500 Error", Toast.LENGTH_SHORT).show()
-                    }
                     else -> {
-                        Toast.makeText(context, "Unknown Error", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
                 viewModel.resetSignUpState()

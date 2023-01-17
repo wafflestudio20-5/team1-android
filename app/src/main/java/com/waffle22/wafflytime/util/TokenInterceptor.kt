@@ -26,12 +26,10 @@ class TokenInterceptor(
         }
         // 2. 요청을 보내본다. 돌아온 요청을 파싱하여 토큰에 문제가 없으면 넘긴다. 문제있으면 로직 계속
         val responseOriginal = chain.proceed(requestOriginal)
-        Log.d("debug","hello")
+
         if (responseOriginal.isTokenInvalid()) {
             // 3. 현재 Access Token 에 문제가 있음으로 refresh 해야한다.
-            Log.d("debug","invalid token")
             val requestRefresh: Request = makeRefreshRequest()
-            Log.d("debug",requestRefresh.toString())
             val responseRefresh = chain.proceed(requestRefresh)
 
             if (responseRefresh.isSuccessful) {
@@ -47,7 +45,6 @@ class TokenInterceptor(
             // 7. 만약 refresh 요청마저 실패했다면? -> 각각 viewModel 에서 로그아웃 처리할것ㅏㅡㅓ
             return responseRefresh
         }
-        Log.d("debug","hi")
         return responseOriginal
     }
 
@@ -78,7 +75,6 @@ class TokenInterceptor(
     }
 
     private fun Response.isTokenInvalid(): Boolean {
-
         // 1. 먼저 응답에 에러가 있는지 확인
         if (!this.isSuccessful){
 
