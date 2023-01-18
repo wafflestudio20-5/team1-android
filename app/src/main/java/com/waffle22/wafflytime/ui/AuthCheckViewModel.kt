@@ -33,10 +33,12 @@ class AuthCheckViewModel(
                     authStorage.setUserDtoInfo(responseUserInfo.body()!!)
                     _authState.value = StateStorage("200",null,null)
                 } else {
+                    authStorage.clearAuthInfo()
                     val errorResponse = HttpException(responseUserInfo).parseError(moshi)!!
                     _authState.value = StateStorage(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message)
                 }
             } catch (e:java.lang.Exception) {
+                authStorage.clearAuthInfo()
                 _authState.value = StateStorage("-1",null,"System Corruption")
             }
         }
