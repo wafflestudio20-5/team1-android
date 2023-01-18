@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainHomeFragment">
+    app:startDestination="@id/authCheckFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -75,12 +75,6 @@
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true"
         />
-    <action
-        android:id="@+id/action_global_mainHomeFragment"
-        app:destination="@id/mainHomeFragment"
-        app:popUpTo="@id/nav_graph"
-        app:popUpToInclusive="true"
-        />
     <fragment
         android:id="@+id/signUpEmailFragment"
         android:name="com.waffle22.wafflytime.ui.login.SignUpEmailFragment"
@@ -93,4 +87,17 @@
         android:id="@+id/signUpCodeFragment"
         android:name="com.waffle22.wafflytime.ui.login.SignUpCodeFragment"
         android:label="SignUpCodeFragment" />
+    <fragment
+        android:id="@+id/authCheckFragment"
+        android:name="com.waffle22.wafflytime.ui.AuthCheckFragment"
+        android:label="AuthCheckFragment" >
+        <action
+            android:id="@+id/action_authCheckFragment_to_mainHomeFragment"
+            app:destination="@id/mainHomeFragment" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_authCheckFragment"
+        app:destination="@id/authCheckFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true"/>
 </navigation>

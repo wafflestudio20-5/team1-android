@@ -11,8 +11,11 @@ data class CommentDTO(
 )
 
 data class UserDTO(
-    val id: Int,
-    val username: String
+    @Json(name = "loginId") val loginId: String?,
+    @Json(name = "socialEmail") val socialEmail: String?,
+    @Json(name = "univEmail") val univEmail: String?,
+    @Json(name = "nickname") val nickname: String,
+    @Json(name = "profilePreSignedUrl") val profileUrl: String?
 )
 
 data class ErrorDTO(

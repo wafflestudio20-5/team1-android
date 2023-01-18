@@ -26,16 +26,4 @@ class MainHomeViewModel(
     fun logOut() {
         authStorage.clearAuthInfo()
     }
-
-    fun exp() {
-        viewModelScope.launch {
-            try{
-                //authStorage.setAuthInfo(authStorage.authInfo.value!!.accessToken,authStorage.authInfo.value!!.refreshToken)
-                val response = wafflyApiService.getMe()
-            } catch (e:java.lang.Exception) {
-                Log.d("debug",e.toString())
-            }
-
-        }
-    }
 }

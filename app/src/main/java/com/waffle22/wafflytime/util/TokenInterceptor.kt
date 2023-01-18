@@ -35,7 +35,7 @@ class TokenInterceptor(
             if (responseRefresh.isSuccessful) {
                 // 4. 만약 refresh 요청이 정상적이라면 authStorage 를 통해 refresh 등록
                 val tokenContainer = responseRefresh.parseRefresh(moshi)!!
-                authStorage.setAuthInfo(tokenContainer.accessToken, tokenContainer.refreshToken)
+                authStorage.setTokenInfo(tokenContainer.accessToken, tokenContainer.refreshToken)
                 // 5. Access Token 새로 넣어서 요청 다시 보내기
                 val newAccessToken: String = getAccessToken()
                 val requestModified = requestOriginal.replaceTokenHeader(newAccessToken)

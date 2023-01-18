@@ -23,7 +23,7 @@ interface WafflyApiService {
 
     // 실험
     @GET("/api/user/me")
-    suspend fun getMe(): Response<UserInfo>
+    suspend fun getUserInfo(): Response<UserDTO>
 
     // Board 관련
     @GET("/api/board/0")

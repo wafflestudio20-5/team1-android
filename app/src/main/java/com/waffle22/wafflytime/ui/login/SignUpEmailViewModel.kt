@@ -65,7 +65,7 @@ class SignUpEmailViewModel(
                     // 이메일 확인요청 보내기
                     val response = wafflyApiService.emailPatch(EmailRequest(email!!))
                     if (response.isSuccessful){
-                        authStorage.setAuthInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
+                        authStorage.setTokenInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
                         _signUpCodeState.value = StateStorage("200",null,null)
                     } else {
                         val errorResponse = HttpException(response).parseError(moshi)!!
@@ -79,5 +79,20 @@ class SignUpEmailViewModel(
             }
         }
     }
-
+    /*
+    private suspend fun getUserInfo(): StateStorage{
+        try {
+            val responseUserInfo = wafflyApiService.getUserInfo()
+            if (responseUserInfo.isSuccessful){
+                authStorage.setUserDtoInfo(responseUserInfo.body()!!)
+                return StateStorage("200",null,null)
+            } else {
+                val errorResponse = HttpException(responseUserInfo).parseError(moshi)!!
+                return StateStorage(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message)
+            }
+        } catch (e:java.lang.Exception) {
+            return StateStorage("-1",null,"System Corruption")
+        }
+    }
+     */
 }

@@ -69,7 +69,7 @@ class LoginFragment :  Fragment() {
                 alertDialog.dismiss()
                 when(status.status) {
                     "200" -> {
-                        findNavController().navigate(LoginFragmentDirections.actionGlobalMainHomeFragment())
+                        findNavController().navigate(LoginFragmentDirections.actionGlobalAuthCheckFragment())
                     }
                     else -> {
                         Toast.makeText(context, status.errorMessage, Toast.LENGTH_SHORT).show()

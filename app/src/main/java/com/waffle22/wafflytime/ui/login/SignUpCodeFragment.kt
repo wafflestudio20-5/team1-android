@@ -63,7 +63,7 @@ class SignUpCodeFragment: Fragment() {
                 when(state.status) {
                     "200" -> {
                         Toast.makeText(context, "회원가입이 모두 완료되었습니다!!", Toast.LENGTH_SHORT).show()
-                        findNavController().navigate(SignUpCodeFragmentDirections.actionGlobalMainHomeFragment())
+                        findNavController().navigate(SignUpCodeFragmentDirections.actionGlobalAuthCheckFragment())
                     }
                     "-2" -> {
                         Toast.makeText(context, "코드를 다시 입력해주세요...", Toast.LENGTH_SHORT).show()

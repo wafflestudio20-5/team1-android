@@ -84,7 +84,7 @@ class SignUpFragment : Fragment() {
             }
             .setNegativeButton("아니요") { dialog, which ->
                 alertDialog.dismiss()
-                findNavController().navigate(SignUpFragmentDirections.actionGlobalMainHomeFragment())
+                findNavController().navigate(SignUpFragmentDirections.actionGlobalAuthCheckFragment())
             }
             .show()
         alertDialog.setCanceledOnTouchOutside(false)

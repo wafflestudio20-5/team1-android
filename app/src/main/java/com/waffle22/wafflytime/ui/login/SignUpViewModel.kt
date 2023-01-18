@@ -39,7 +39,7 @@ class SignUpViewModel(
             try {
                 val response: Response<TokenContainer> = wafflyApiService.signUp(SignUpRequest(id, password, nickName))
                 if (response.isSuccessful) {
-                    authStorage.setAuthInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
+                    authStorage.setTokenInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
                     _signUpState.value = StateStorage("200",null,null)
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
