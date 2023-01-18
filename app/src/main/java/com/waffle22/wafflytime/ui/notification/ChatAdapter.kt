@@ -1,15 +1,12 @@
-package com.waffle22.wafflytime.util
+package com.waffle22.wafflytime.ui.notification
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.databinding.ChatboxItemBinding
-import com.waffle22.wafflytime.databinding.NotificationItemBinding
 import com.waffle22.wafflytime.network.dto.Chat
-import com.waffle22.wafflytime.network.dto.Notification
 
 class ChatAdapter: ListAdapter<Chat, ChatAdapter.ChatViewHolder>(DiffCallback){
 

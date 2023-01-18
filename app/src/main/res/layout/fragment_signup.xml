@@ -63,6 +63,30 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/nickNameField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="2dp"
+        android:hint="닉네임"
+        app:boxCornerRadiusBottomEnd="20dp"
+        app:boxCornerRadiusTopEnd="20dp"
+        app:boxCornerRadiusBottomStart="20dp"
+        app:boxCornerRadiusTopStart="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordField" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/nickNameEditText"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <Button
         android:id="@+id/btn_signup"
         android:layout_width="match_parent"
@@ -73,6 +97,6 @@
         android:layout_marginTop="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordField" />
+        app:layout_constraintTop_toBottomOf="@+id/nickNameField" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

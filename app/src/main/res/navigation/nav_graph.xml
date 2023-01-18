@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainHomeFragment">
+    app:startDestination="@id/authCheckFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -15,7 +15,11 @@
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.waffle22.wafflytime.ui.login.SignUpFragment"
-        android:label="SignUpFragment" />
+        android:label="SignUpFragment" >
+        <action
+            android:id="@+id/action_signUpFragment_to_signUpEmailFragment"
+            app:destination="@id/signUpEmailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/baseNotificationFragment"
         android:name="com.waffle22.wafflytime.ui.notification.BaseNotificationFragment"
@@ -71,10 +75,29 @@
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true"
         />
+    <fragment
+        android:id="@+id/signUpEmailFragment"
+        android:name="com.waffle22.wafflytime.ui.login.SignUpEmailFragment"
+        android:label="SignUpEmailFragment" >
+        <action
+            android:id="@+id/action_signUpEmailFragment_to_signUpCodeFragment"
+            app:destination="@id/signUpCodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpCodeFragment"
+        android:name="com.waffle22.wafflytime.ui.login.SignUpCodeFragment"
+        android:label="SignUpCodeFragment" />
+    <fragment
+        android:id="@+id/authCheckFragment"
+        android:name="com.waffle22.wafflytime.ui.AuthCheckFragment"
+        android:label="AuthCheckFragment" >
+        <action
+            android:id="@+id/action_authCheckFragment_to_mainHomeFragment"
+            app:destination="@id/mainHomeFragment" />
+    </fragment>
     <action
-        android:id="@+id/action_global_mainHomeFragment"
-        app:destination="@id/mainHomeFragment"
+        android:id="@+id/action_global_authCheckFragment"
+        app:destination="@id/authCheckFragment"
         app:popUpTo="@id/nav_graph"
-        app:popUpToInclusive="true"
-        />
+        app:popUpToInclusive="true"/>
 </navigation>

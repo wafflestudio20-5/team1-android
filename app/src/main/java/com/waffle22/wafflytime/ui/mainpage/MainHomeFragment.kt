@@ -8,9 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentLoginBinding
 import com.waffle22.wafflytime.databinding.FragmentMainHomeBinding
@@ -23,6 +26,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class MainHomeFragment :  Fragment() {
     private lateinit var binding: FragmentMainHomeBinding
     private val viewModel: MainHomeViewModel by sharedViewModel()
+    private lateinit var alertDialog: AlertDialog
 
 
     override fun onCreateView(
@@ -32,11 +36,12 @@ class MainHomeFragment :  Fragment() {
     ): View? {
         binding = FragmentMainHomeBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // 현재 가지고있는 Auth 데이터로 UserInfo Fetch 를 시도한다.
+
 
         // Login Verification
         if(!viewModel.isLogin()){
@@ -55,11 +60,5 @@ class MainHomeFragment :  Fragment() {
 
     }
 
-        /*
-        val MainHomeListAdapter = BoardListAdapter {
-            val action_2boardlist = MainHomeFragmentDirections.actionMainHomeFragmentToBoardListFragment()
-            this.findNavController().navigate(action_2boardlist)
-        }
-        */
-    }
+}
 
