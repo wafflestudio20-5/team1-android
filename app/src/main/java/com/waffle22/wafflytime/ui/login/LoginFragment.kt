@@ -51,13 +51,13 @@ class LoginFragment :  Fragment() {
     }
 
     private fun login(){
-        viewModel.login(binding.idEditText.text.toString(), binding.passwordEditText.text.toString())
-
         alertDialog =MaterialAlertDialogBuilder(this.requireContext())
             .setView(ProgressBar(this.requireContext()))
             .setMessage("Loading...")
             .show()
         alertDialog.setCanceledOnTouchOutside(false)
+
+        viewModel.login(binding.idEditText.text.toString(), binding.passwordEditText.text.toString())
     }
 
     private fun loginLogic(status: StateStorage){

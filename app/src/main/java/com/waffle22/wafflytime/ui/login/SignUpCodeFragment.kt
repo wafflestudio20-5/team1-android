@@ -44,13 +44,13 @@ class SignUpCodeFragment: Fragment() {
     }
 
     private fun codeVerify(){
-        viewModel.signUpCode(binding.codeEditText.text.toString())
-
         alertDialog = MaterialAlertDialogBuilder(this.requireContext())
             .setView(ProgressBar(this.requireContext()))
             .setMessage("Loading...")
             .show()
         alertDialog.setCanceledOnTouchOutside(false)
+
+        viewModel.signUpCode(binding.codeEditText.text.toString())
     }
 
     private fun signUpCodeLogic(state: StateStorage){
