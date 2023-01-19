@@ -144,6 +144,20 @@ data class ReplyResponse(
     @Json(name = "isPostWriter") val isPostWriter: Boolean
 )
 
+data class RepliesPage(
+    @Json(name = "content") val content: List<PostResponse>?,
+    @Json(name = "pageable") val pageable: Pageable,
+    @Json(name = "totalPages") val totalPages: Int,
+    @Json(name = "totalElements") val totalElements: Int,
+    @Json(name = "last") val last: Boolean,
+    @Json(name = "size")  val size: Int,
+    @Json(name = "number") val number: Int,
+    @Json(name = "sort") val sort: PageableSorted,
+    @Json(name = "numberOfElements") val numberOfElements: Int,
+    @Json(name = "first") val first: Boolean,
+    @Json(name = "empty") val empty: Boolean
+)
+
 enum class BoardType{
     Common, MyPosts, MyReplies, Scraps, Hot, Best
 }

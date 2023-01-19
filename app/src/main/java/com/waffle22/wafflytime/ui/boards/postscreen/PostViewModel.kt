@@ -3,6 +3,7 @@ package com.waffle22.wafflytime.ui.boards.postscreen
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.network.dto.BoardDTO
 import com.waffle22.wafflytime.network.dto.PostResponse
@@ -30,12 +31,8 @@ class PostViewModel(
     private var _comments = MutableLiveData<List<ReplyResponse>>()
     val comments: LiveData<List<ReplyResponse>>
         get() = _comments
-    /*
-    init{
 
-    }*/
-
-    /*fun getPost(boardId: Long, postId: Long){
+    fun getPost(boardId: Long, postId: Long){
         viewModelScope.launch {
             try{
                 val boardResponse = wafflyApiService.getSingleBoard(boardId)
@@ -58,5 +55,5 @@ class PostViewModel(
                 _postState.value = PostStatus.Corruption
             }
         }
-    }*/
+    }
 }
