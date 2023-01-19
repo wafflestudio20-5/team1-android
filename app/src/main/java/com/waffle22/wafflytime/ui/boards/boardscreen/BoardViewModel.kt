@@ -46,18 +46,9 @@ class BoardViewModel(
         viewModelScope.launch {
             try{
                 val response = when(boardType){
-                    BoardType.Common -> wafflyApiService.getAllPosts(
-                        authStorage.authInfo.value!!.accessToken,
-                        boardId, _page, PAGE_SIZE
-                    )
-                    BoardType.MyPosts -> wafflyApiService.getMyPosts(
-                        authStorage.authInfo.value!!.accessToken,
-                        _page, PAGE_SIZE
-                    )
-                    BoardType.Scraps -> wafflyApiService.getMyScraps(
-                        authStorage.authInfo.value!!.accessToken,
-                        _page, PAGE_SIZE
-                    )
+                    BoardType.Common -> wafflyApiService.getAllPosts(boardId, _page, PAGE_SIZE)
+                    BoardType.MyPosts -> wafflyApiService.getMyPosts(_page, PAGE_SIZE)
+                    BoardType.Scraps -> wafflyApiService.getMyScraps(_page, PAGE_SIZE)
                     else -> {null}
                 }
                 when(response!!.code().toString()){
@@ -86,29 +77,8 @@ class BoardViewModel(
                     }
                 }
             } catch (e: java.lang.Exception){
-                Log.v("BoardViewModel", e.toString())
-            }
-        }
-    }
-
-    fun refreshToken(){
-        viewModelScope.launch {
-            //Log.v("BoardViewModel", "try refresh")
-            try {
-                val response = wafflyApiService.refresh(authStorage.authInfo.value!!.refreshToken)
-                when (response.code().toString()) {
-                    "200" -> {
-                        //Log.v("BoardViewModel", "refresh success")
-                        authStorage.setAuthInfo(
-                            response.body()!!.accessToken,
-                            response.body()!!.refreshToken
-                        )
-                        _postsLoadingState.value = PostsLoadingStatus.Standby
-                    }
-                    else -> _postsLoadingState.value = PostsLoadingStatus.Error
-                }
-            } catch (e:java.lang.Exception) {
                 _postsLoadingState.value = PostsLoadingStatus.Corruption
+                Log.v("BoardViewModel", e.toString())
             }
         }
     }

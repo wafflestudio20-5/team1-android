@@ -5,15 +5,12 @@ import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.waffle22.wafflytime.data.Board
 import com.waffle22.wafflytime.databinding.BoardTaggedBinding
-import com.waffle22.wafflytime.network.dto.BoardAbstract
 import com.waffle22.wafflytime.network.dto.BoardListResponse
 import com.waffle22.wafflytime.network.dto.BoardType
 

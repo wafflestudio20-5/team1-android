@@ -49,7 +49,7 @@ class BoardListViewModel(
         viewModelScope.launch {
             try{
                 //Log.v("BoardListViewModel", "getAllBoards()")
-                val response = wafflyApiService.getAllBoards(authStorage.authInfo.value!!.accessToken)
+                val response = wafflyApiService.getAllBoards()
                 //Log.v("BoardListViewModel", response.toString())
                 when(response.code().toString()) {
                     "200" -> {
@@ -91,28 +91,6 @@ class BoardListViewModel(
         for (board in _allBoards.value!!){
             if (board.name.contains(keyword))
                 _searchResults.value?.plusAssign(board)
-        }
-    }
-
-    fun refreshToken(){
-        viewModelScope.launch {
-            //Log.v("BoardListViewModel", "try refresh")
-            try {
-                val response = wafflyApiService.refresh(authStorage.authInfo.value!!.refreshToken)
-                when (response.code().toString()) {
-                    "200" -> {
-                        //Log.v("BoardListViewModel", "refresh success")
-                        authStorage.setAuthInfo(
-                            response.body()!!.accessToken,
-                            response.body()!!.refreshToken
-                        )
-                        _boardLoadingState.value = BoardLoadingStatus.Standby
-                    }
-                    else -> _boardLoadingState.value = BoardLoadingStatus.Error
-                }
-            } catch (e:java.lang.Exception) {
-                _boardLoadingState.value = BoardLoadingStatus.Corruption
-            }
         }
     }
 }

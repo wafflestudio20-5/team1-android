@@ -1,7 +1,6 @@
 package com.waffle22.wafflytime.network
 
 import com.waffle22.wafflytime.network.dto.*
-import org.json.JSONArray
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -29,53 +28,45 @@ interface WafflyApiService {
     // Board 관련
     @GET("/api/board/{boardId}")
     suspend fun getSingleBoard(
-        //@Header("Authorization") token: String,
         boardId: Long
     ): Response<BoardDTO>
 
     @GET("/api/boards")
-    suspend fun getAllBoards(@Header("Authorization") token: String): Response<List<BoardListResponse>>
+    suspend fun getAllBoards(): Response<List<BoardListResponse>>
 
     @POST("/api/board")
     suspend fun createBoard(
-        //@Header("Authorization") token: String,
         @Body() boardDTO: BoardDTO
     ): Response<CreateBoardResponse>
 
     @DELETE("/api/board/{boardId}")
     suspend fun deleteBoard(
-        //@Header("Authorization") token: String,
         boardId: Long
     ): Response<DeleteBoardResponse>
 
     // Post 관련
     @GET("/api/board/{boardId}/post/{postId}")
     suspend fun getSinglePost(
-        @Header("Authorization") token: String,
         boardId: Long, postId: Long
     ): Response<PostResponse>
 
-    @GET("/api/board/{boardId}/posts?")
+    @GET("/api/board/{boardId}/posts")
     suspend fun getAllPosts(
-        @Header("Authorization") token: String,
-        boardId: Long, @Body() page: Int, @Body() size: Int
+        @Path("boardId") boardId: Long, @Query("page") page: Int, @Query("size") size: Int
     ): Response<PostsPage>
 
     @GET("/api/user/mypost?")
     suspend fun getMyPosts(
-        @Header("Authorization") token: String,
         @Body() page: Int, @Body() size: Int
     ): Response<PostsPage>
 
     @GET("/api/user/myscrap?")
     suspend fun getMyScraps(
-        @Header("Authorization") token: String,
         @Body() page: Int, @Body() size: Int
     ): Response<PostsPage>
 
     @POST("/api/board/{boardId}/post")
     suspend fun createPost(
-        //@Header("Authorization") token: String,
         boardId: Long,
         @Body() postRequest: PostRequest
     ): Response<PostRequest>
