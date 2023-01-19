@@ -103,10 +103,6 @@ class BoardListFragment : Fragment() {
             BoardLoadingStatus.Success -> {
                 Log.v("BoardListFragment", "Board Loading Success")
             }
-            BoardLoadingStatus.TokenExpired -> {
-                viewModel.refreshToken()
-                viewModel.getAllBoards()
-            }
             else -> {
             }
         }

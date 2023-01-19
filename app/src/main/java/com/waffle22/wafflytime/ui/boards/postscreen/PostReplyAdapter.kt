@@ -6,9 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.waffle22.wafflytime.data.Reply
 import com.waffle22.wafflytime.databinding.ThreadReplyBinding
-
+/*
 class PostReplyAdapter()
     : ListAdapter<Reply, PostReplyAdapter.ThreadReplyViewHolder>(DiffCallback){
 
@@ -51,4 +50,4 @@ class PostReplyAdapter()
             }
         }
     }
-}
+}*/

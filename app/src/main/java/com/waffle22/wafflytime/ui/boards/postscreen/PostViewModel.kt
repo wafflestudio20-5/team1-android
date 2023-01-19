@@ -3,10 +3,10 @@ package com.waffle22.wafflytime.ui.boards.postscreen
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.waffle22.wafflytime.data.Comment
 import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.network.dto.BoardDTO
 import com.waffle22.wafflytime.network.dto.PostResponse
+import com.waffle22.wafflytime.network.dto.ReplyResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -27,8 +27,8 @@ class PostViewModel(
     private var _curPost = MutableLiveData<PostResponse>()
     val curPost: LiveData<PostResponse>
         get() = _curPost
-    private var _comments = MutableLiveData<List<Comment>>()
-    val comments: LiveData<List<Comment>>
+    private var _comments = MutableLiveData<List<ReplyResponse>>()
+    val comments: LiveData<List<ReplyResponse>>
         get() = _comments
     /*
     init{

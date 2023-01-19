@@ -3,12 +3,9 @@ package com.waffle22.wafflytime.ui.boards.boardlist
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.waffle22.wafflytime.R
-import com.waffle22.wafflytime.data.Board
 import com.waffle22.wafflytime.databinding.BoardSummaryBinding
 import com.waffle22.wafflytime.network.dto.BoardAbstract
 

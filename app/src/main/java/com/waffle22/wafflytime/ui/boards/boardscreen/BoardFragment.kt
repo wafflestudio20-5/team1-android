@@ -87,7 +87,6 @@ class BoardFragment() : Fragment() {
         when (status) {
             PostsLoadingStatus.Success -> Log.v("BoardFragment", "Posts Loading Success")
             PostsLoadingStatus.TokenExpired -> {
-                viewModel.refreshToken()
                 viewModel.getPosts(boardId,boardType)
             }
             else -> {
