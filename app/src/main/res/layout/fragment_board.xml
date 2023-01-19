@@ -26,7 +26,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
+            android:descendantFocusability="blocksDescendants"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -47,7 +48,7 @@
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

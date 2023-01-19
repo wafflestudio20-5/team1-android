@@ -11,7 +11,7 @@ import com.waffle22.wafflytime.network.dto.PostResponse
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import java.time.LocalDate
 
-class BoardAnnouncementAdapter(private val clicked: () -> Unit)
+class BoardAnnouncementAdapter(private val clicked: (PostResponse) -> Unit)
     : ListAdapter<PostResponse, BoardAnnouncementAdapter.ForumAnnouncementViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForumAnnouncementViewHolder {
@@ -29,14 +29,14 @@ class BoardAnnouncementAdapter(private val clicked: () -> Unit)
 
     class ForumAnnouncementViewHolder(private var binding: BoardAnnouncementBinding, private var context: Context)
         : RecyclerView.ViewHolder(binding.root){
-        fun bind(postAbstract: PostResponse, clicked: () -> Unit){
+        fun bind(postAbstract: PostResponse, clicked: (PostResponse) -> Unit){
             binding.apply{
                 tag.text = "질문"
                 time.text = timeToText(postAbstract.createdAt)
-                previewText.text = postAbstract.contents
+                previewText.text = postAbstract.title ?: postAbstract.contents
                 likesText.text = postAbstract.nlikes.toString()
                 commentsText.text = postAbstract.nreplies.toString()
-                layout.setOnClickListener{clicked()}
+                layout.setOnClickListener{clicked(postAbstract)}
             }
         }
         private fun timeToText(time: TimeDTO): String{
