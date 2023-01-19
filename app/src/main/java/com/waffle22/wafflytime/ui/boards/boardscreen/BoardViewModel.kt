@@ -21,7 +21,7 @@ enum class PostsLoadingStatus{
     Standby, Success, Corruption, Error, TokenExpired
 }
 
-//TODO: 앱 구동 후 첫 번째로 게시판을 로딩하면 질문글이 보이지 않는 오류가 있음
+//TODO: 앱 구동 후 첫 번째로 게시판을 로딩하면 질문글(혹은 게시물 전체)이 보이지 않는 오류가 있음
 
 class BoardViewModel(
     private val wafflyApiService: WafflyApiService,
@@ -50,13 +50,21 @@ class BoardViewModel(
     }
 
     fun refreshBoard(boardId: Long, boardType: BoardType){
+        _postsLoadingState.value = PostsLoadingStatus.Standby
         _page = 0
         getPosts(boardId, boardType)
     }
 
     fun getBoardInfo(boardId: Long, boardType: BoardType){
         if (boardType != BoardType.Common){
-            _boardInfo.value = BoardDTO(-1,"SPECIAL", "특수 게시판", "", true)
+            when(boardType){
+                BoardType.MyPosts -> _boardInfo.value = BoardDTO(-1,"SPECIAL", "내가 작성한 글", "", true)
+                BoardType.MyReplies -> _boardInfo.value = BoardDTO(-1,"SPECIAL", "내가 댓글을 단 글", "", true)
+                BoardType.Scraps -> _boardInfo.value = BoardDTO(-1,"SPECIAL", "스크랩한 글", "", true)
+                BoardType.Hot -> _boardInfo.value = BoardDTO(-1,"SPECIAL", "HOT 게시판", "", true)
+                BoardType.Best -> _boardInfo.value = BoardDTO(-1,"SPECIAL", "BEST 게시판", "", true)
+                else -> null
+            }
         }
         else{
             viewModelScope.launch {
@@ -94,6 +102,8 @@ class BoardViewModel(
                     BoardType.Common -> wafflyApiService.getAllPosts(_boardId, _page, PAGE_SIZE)
                     BoardType.MyPosts -> wafflyApiService.getMyPosts(_page, PAGE_SIZE)
                     BoardType.Scraps -> wafflyApiService.getMyScraps(_page, PAGE_SIZE)
+                    BoardType.Hot -> wafflyApiService.getHotPosts(_page, PAGE_SIZE)
+                    BoardType.Best -> wafflyApiService.getBestPosts(_page, PAGE_SIZE)
                     else -> {null}
                 }
                 if (_page == 0){

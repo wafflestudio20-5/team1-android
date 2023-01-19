@@ -40,7 +40,7 @@ class BoardFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val postPreviewAdapter = PostPreviewAdapter{
-            val action = BoardFragmentDirections.actionBoardFragmentToPostFragment()
+            val action = BoardFragmentDirections.actionBoardFragmentToPostFragment(it.boardId, it.postId)
             this.findNavController().navigate(action)
         }
         viewModel.posts.observe(this.viewLifecycleOwner){ items ->
@@ -52,7 +52,7 @@ class BoardFragment() : Fragment() {
         binding.threads.layoutManager = LinearLayoutManager(this.context)
 
         val boardAnnouncementAdapter = BoardAnnouncementAdapter{
-            val action = BoardFragmentDirections.actionBoardFragmentToPostFragment()
+            val action = BoardFragmentDirections.actionBoardFragmentToPostFragment(it.boardId, it.postId)
             this.findNavController().navigate(action)
         }
         viewModel.announcements.observe(this.viewLifecycleOwner){ items->
@@ -82,6 +82,15 @@ class BoardFragment() : Fragment() {
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            if((binding.announcements.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() == 0)
+                viewModel.refreshBoard(boardId, boardType)
+            else if((binding.threads.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() == viewModel.posts.value!!.size)
+                viewModel.getPosts(boardId, boardType)
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
+
     }
 
     private fun showPostsLogic(status: PostsLoadingStatus){
