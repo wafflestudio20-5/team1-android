@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentSearchBoardBinding
+import com.waffle22.wafflytime.network.dto.BoardType
 
 class BoardSearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBoardBinding
@@ -33,7 +34,7 @@ class BoardSearchFragment : Fragment() {
         else    binding.noSearchResult.visibility = View.GONE
 
         val boardSearchAdapter  = BoardListAdapter{
-            val action = BoardSearchFragmentDirections.actionBoardSearchFragmentToBoardFragment(it.boardId)
+            val action = BoardSearchFragmentDirections.actionBoardSearchFragmentToBoardFragment(it.boardId, BoardType.Common)
             this.findNavController().navigate(action)
         }
         viewModel.searchResults.observe(this.viewLifecycleOwner) { items ->

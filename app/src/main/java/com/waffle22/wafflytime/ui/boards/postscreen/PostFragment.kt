@@ -33,7 +33,7 @@ class PostFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getPost(boardId, postId)
+        //viewModel.getPost(boardId, postId)
 
         lifecycleScope.launchWhenStarted {
             viewModel.postState.collect {

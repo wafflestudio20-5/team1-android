@@ -15,6 +15,7 @@ import com.waffle22.wafflytime.data.Board
 import com.waffle22.wafflytime.databinding.BoardTaggedBinding
 import com.waffle22.wafflytime.network.dto.BoardAbstract
 import com.waffle22.wafflytime.network.dto.BoardListResponse
+import com.waffle22.wafflytime.network.dto.BoardType
 
 class TaggedBoardsAdapter(private val parentFragment: BoardListFragment)
     :ListAdapter<BoardListResponse, TaggedBoardsAdapter.TaggedBoardsViewHolder>(DiffCallback){
@@ -41,7 +42,7 @@ class TaggedBoardsAdapter(private val parentFragment: BoardListFragment)
                 binding.description.text = taggedBoards.category
 
                 val boardListAdapter = BoardListAdapter{
-                    val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(it.boardId)
+                    val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(it.boardId, BoardType.Common)
                     parentFragment.findNavController().navigate(action)
                 }
                 boardListAdapter.submitList(taggedBoards.boards)

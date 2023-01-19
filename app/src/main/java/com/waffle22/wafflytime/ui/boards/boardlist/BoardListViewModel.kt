@@ -5,16 +5,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.network.dto.BoardAbstract
 import com.waffle22.wafflytime.network.dto.BoardListResponse
-import com.waffle22.wafflytime.ui.login.LoginStatus
 import com.waffle22.wafflytime.util.AuthStorage
+import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import com.waffle22.wafflytime.util.parseError
 
 enum class BoardLoadingStatus {
     Standby, Success, Corruption, TokenExpired, Error
@@ -22,7 +22,8 @@ enum class BoardLoadingStatus {
 
 class BoardListViewModel(
     private val wafflyApiService: WafflyApiService,
-    private val authStorage: AuthStorage
+    private val authStorage: AuthStorage,
+    private val moshi: Moshi
 ) : ViewModel() {
     private var _allBoards = MutableLiveData<MutableList<BoardAbstract>>()
     val allBoards: LiveData<MutableList<BoardAbstract>>
@@ -47,34 +48,35 @@ class BoardListViewModel(
     fun getAllBoards(){
         viewModelScope.launch {
             try{
-                Log.v("BoardListViewModel", "getAllBoards()")
+                //Log.v("BoardListViewModel", "getAllBoards()")
                 val response = wafflyApiService.getAllBoards(authStorage.authInfo.value!!.accessToken)
-                Log.v("BoardListViewModel", response.toString())
+                //Log.v("BoardListViewModel", response.toString())
                 when(response.code().toString()) {
                     "200" -> {
                         _boardLoadingState.value = BoardLoadingStatus.Success
-                        _allBoards . value = mutableListOf ()
-                        _taggedBoards . value = mutableListOf ()
+                        _allBoards.value = mutableListOf ()
+                        _taggedBoards.value = mutableListOf ()
+                        _customBoards.value = mutableListOf()
+                        Log.v("BoardListViewModel", "LiveData init")
                         for (boardListResponse in response.body()!!) {
-                            for (board in boardListResponse.boards!!)
-                                _allBoards.value?.plusAssign(board)
+                            if(boardListResponse.boards != null)
+                                for (board in boardListResponse.boards)
+                                    _allBoards.value?.plusAssign(board)
                             when (boardListResponse.category) {
-                                "BASIC" -> _basicBoards.value = boardListResponse.boards!!
-                                "OTHER" -> _customBoards.value = boardListResponse.boards!!
+                                "BASIC" -> _basicBoards.value = boardListResponse.boards ?: mutableListOf()
+                                "OTHER" -> _customBoards.value = boardListResponse.boards ?: mutableListOf()
                                 else -> _taggedBoards.value?.plusAssign(boardListResponse)
                             }
+                            Log.v("BoardListViewModel", boardListResponse.category)
                         }
                     }
                     else -> {
-                        _boardLoadingState.value = BoardLoadingStatus.Error
+                        when(HttpException(response).parseError(moshi)?.errorCode){
+                            "103" -> _boardLoadingState.value = BoardLoadingStatus.TokenExpired
+                            else -> _boardLoadingState.value = BoardLoadingStatus.Error
+                        }
+                        Log.v("BoardListViewModel", response.errorBody()!!.string())
                     }
-                    /*"401" -> {
-                        _boardLoadingState.value = BoardLoadingStatus.TokenExpired
-                    }
-                    else -> {
-                        _boardLoadingState.value = BoardLoadingStatus.Error
-                        Log.v("BoardListViewModel", "request failed: "+response.errorBody()?.string())
-                    }*/
                 }
             } catch (e: java.lang.Exception){
                 _boardLoadingState.value = BoardLoadingStatus.Corruption
@@ -92,20 +94,21 @@ class BoardListViewModel(
         }
     }
 
-    fun refresh(){
+    fun refreshToken(){
         viewModelScope.launch {
-            Log.v("BoardListViewModel", "try refresh")
+            //Log.v("BoardListViewModel", "try refresh")
             try {
                 val response = wafflyApiService.refresh(authStorage.authInfo.value!!.refreshToken)
                 when (response.code().toString()) {
                     "200" -> {
-                        Log.v("BoardListViewModel", "refresh success")
+                        //Log.v("BoardListViewModel", "refresh success")
                         authStorage.setAuthInfo(
                             response.body()!!.accessToken,
                             response.body()!!.refreshToken
                         )
                         _boardLoadingState.value = BoardLoadingStatus.Standby
                     }
+                    else -> _boardLoadingState.value = BoardLoadingStatus.Error
                 }
             } catch (e:java.lang.Exception) {
                 _boardLoadingState.value = BoardLoadingStatus.Corruption

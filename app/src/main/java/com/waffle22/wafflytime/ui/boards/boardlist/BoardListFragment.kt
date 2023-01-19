@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentBoardListBinding
+import com.waffle22.wafflytime.network.dto.BoardType
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class BoardListFragment : Fragment() {
@@ -31,7 +31,7 @@ class BoardListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val basicBoardListAdapter = BoardListAdapter{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(it.boardId)
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(it.boardId, BoardType.Common)
             this.findNavController().navigate(action)
         }
         viewModel.basicBoards.observe(this.viewLifecycleOwner){items->
@@ -43,7 +43,7 @@ class BoardListFragment : Fragment() {
         binding.defaultBoards.layoutManager = LinearLayoutManager(this.context)
 
         val customBoardListAdapter = BoardListAdapter{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(it.boardId)
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(it.boardId, BoardType.Common)
             this.findNavController().navigate(action)
         }
         viewModel.customBoards.observe(this.viewLifecycleOwner){ items ->
@@ -71,25 +71,24 @@ class BoardListFragment : Fragment() {
             }
         }
 
-        //TODO: 내 게시물 관련 기능들과 연결
         binding.myPosts.setOnClickListener{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0)
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0, BoardType.MyPosts)
             this.findNavController().navigate(action)
         }
         binding.myComments.setOnClickListener{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0)
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0, BoardType.MyReplies)
             this.findNavController().navigate(action)
         }
         binding.myScraps.setOnClickListener{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0)
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0, BoardType.Scraps)
             this.findNavController().navigate(action)
         }
         binding.hotBoard.setOnClickListener{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0)
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0, BoardType.Hot)
             this.findNavController().navigate(action)
         }
         binding.bestBoard.setOnClickListener{
-            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0)
+            val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(0, BoardType.Best)
             this.findNavController().navigate(action)
         }
 
@@ -105,7 +104,7 @@ class BoardListFragment : Fragment() {
                 Log.v("BoardListFragment", "Board Loading Success")
             }
             BoardLoadingStatus.TokenExpired -> {
-                viewModel.refresh()
+                viewModel.refreshToken()
                 viewModel.getAllBoards()
             }
             else -> {

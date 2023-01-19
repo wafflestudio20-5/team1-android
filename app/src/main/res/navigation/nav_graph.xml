@@ -36,6 +36,9 @@
         <argument
             android:name="boardId"
             app:argType="long" />
+        <argument
+            android:name="boardType"
+            app:argType="com.waffle22.wafflytime.network.dto.BoardType" />
     </fragment>
     <fragment
         android:id="@+id/threadFragment"

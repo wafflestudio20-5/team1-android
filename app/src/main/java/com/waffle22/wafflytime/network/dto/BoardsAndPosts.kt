@@ -68,7 +68,8 @@ data class PostResponse( // PostResponse
     @Json(name = "writerId") val writerId: Long,
     @Json(name = "nickname") val nickname: String?,
     @Json(name = "isWriterAnonymous") val isWriterAnonymous : Boolean,
-    @Json(name = "title") val title: String,
+    @Json(name = "isQuestion") val isQuestion: Boolean,
+    @Json(name = "title") val title: String?,
     @Json(name = "contents") val contents: String,
     @Json(name = "images") val images: List<ImageResponse>,
     @Json(name = "nlikes") val nlikes: Int,
@@ -105,3 +106,34 @@ data class EditPostResponse(
     @Json(name = "contents") val contents: Boolean
 )
 
+data class PageableSorted(
+    @Json(name = "empty") val empty: Boolean,
+    @Json(name = "sorted") val sorted: Boolean,
+    @Json(name = "unsorted") val unsorted: Boolean
+)
+
+data class Pageable(
+    @Json(name = "sort") val sort: PageableSorted,
+    @Json(name = "offset") val offset: Int,
+    @Json(name = "pageNumber") val pageNumber: Int,
+    @Json(name = "pageSize") val pageSize: Int,
+    @Json(name = "paged") val paged: Boolean,
+    @Json(name = "unpaged") val unpaged: Boolean
+)
+
+data class PostsPage(
+    @Json(name = "contents") val contents: List<PostResponse>?,
+    @Json(name = "pageable") val pageable: Pageable,
+    @Json(name = "totalPages") val totalPages: Boolean,
+    @Json(name = "totalElements") val totalElements: Boolean,
+    @Json(name = "last") val last: Boolean,
+    @Json(name = "size")  val size: Int,
+    @Json(name = "number") val number: Int,
+    @Json(name = "sort") val sort: PageableSorted,
+    @Json(name = "numberOfElements") val first: Boolean,
+    @Json(name = "empty") val empty: Boolean
+)
+
+enum class BoardType{
+    Common, MyPosts, MyReplies, Scraps, Hot, Best
+}

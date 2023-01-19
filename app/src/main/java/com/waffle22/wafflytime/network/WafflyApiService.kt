@@ -45,22 +45,34 @@ interface WafflyApiService {
     // Post 관련
     @GET("/api/board/{boardId}/post/{postId}")
     suspend fun getSinglePost(
-        //@Header("Authorization") token: String,
+        @Header("Authorization") token: String,
         boardId: Long, postId: Long
     ): Response<PostResponse>
 
-    // Todo: pagenation 알아보고 구현
-    /*
-    @GET("/api/board/{boardId}/posts?page={page}&size={size}")
-    suspend fun getAllPosts(boardId: Long, page: Int, size: Int): Response<Page<PostDTO>>
-    */
+    @GET("/api/board/{boardId}/posts?")
+    suspend fun getAllPosts(
+        @Header("Authorization") token: String,
+        boardId: Long, @Body() page: Int, @Body() size: Int
+    ): Response<PostsPage>
+
+    @GET("/api/user/mypost?")
+    suspend fun getMyPosts(
+        @Header("Authorization") token: String,
+        @Body() page: Int, @Body() size: Int
+    ): Response<PostsPage>
+
+    @GET("/api/user/myscrap?")
+    suspend fun getMyScraps(
+        @Header("Authorization") token: String,
+        @Body() page: Int, @Body() size: Int
+    ): Response<PostsPage>
 
     @POST("/api/board/{boardId}/post")
     suspend fun createPost(
         //@Header("Authorization") token: String,
         boardId: Long,
         @Body() postRequest: PostRequest
-    ): Response<PostResponse>
+    ): Response<PostRequest>
 
     @DELETE("/api/board/{boardId}/post/{postId}")
     suspend fun deletePost(boardId: Long, postId: Long): Response<DeletePostResponse>
