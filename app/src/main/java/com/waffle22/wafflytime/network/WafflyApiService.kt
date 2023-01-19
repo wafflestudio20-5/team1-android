@@ -28,7 +28,7 @@ interface WafflyApiService {
     // Board 관련
     @GET("/api/board/{boardId}")
     suspend fun getSingleBoard(
-        boardId: Long
+        @Path("boardId") boardId: Long
     ): Response<BoardDTO>
 
     @GET("/api/boards")
@@ -41,13 +41,13 @@ interface WafflyApiService {
 
     @DELETE("/api/board/{boardId}")
     suspend fun deleteBoard(
-        boardId: Long
+        @Path("boardId") boardId: Long
     ): Response<DeleteBoardResponse>
 
     // Post 관련
     @GET("/api/board/{boardId}/post/{postId}")
     suspend fun getSinglePost(
-        boardId: Long, postId: Long
+        @Path("boardId") boardId: Long, @Path("postId") postId: Long
     ): Response<PostResponse>
 
     @GET("/api/board/{boardId}/posts")
@@ -57,23 +57,28 @@ interface WafflyApiService {
 
     @GET("/api/user/mypost?")
     suspend fun getMyPosts(
-        @Body() page: Int, @Body() size: Int
+        @Query("page") page: Int, @Query("size") size: Int
     ): Response<PostsPage>
 
     @GET("/api/user/myscrap?")
     suspend fun getMyScraps(
-        @Body() page: Int, @Body() size: Int
+        @Query("page") page: Int, @Query("size") size: Int
     ): Response<PostsPage>
 
     @POST("/api/board/{boardId}/post")
     suspend fun createPost(
-        boardId: Long,
+        @Path("boardId") boardId: Long,
         @Body() postRequest: PostRequest
     ): Response<PostRequest>
 
     @DELETE("/api/board/{boardId}/post/{postId}")
-    suspend fun deletePost(boardId: Long, postId: Long): Response<DeletePostResponse>
+    suspend fun deletePost(
+        @Path("boardId") boardId: Long,
+        @Path("postId") postId: Long): Response<DeletePostResponse>
 
     @PUT("/api/board/{boardId}/post/{postId}")
-    suspend fun editPost(boardId: Long, postId: Long, @Body() editPostRequest: EditPostRequest): Response<EditPostResponse>
+    suspend fun editPost(
+        @Path("boardId") boardId: Long,
+        @Path("postId") postId: Long,
+        @Body() editPostRequest: EditPostRequest): Response<EditPostResponse>
 }

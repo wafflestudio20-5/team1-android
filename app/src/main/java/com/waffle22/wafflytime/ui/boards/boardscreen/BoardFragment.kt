@@ -40,7 +40,7 @@ class BoardFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val postPreviewAdapter = PostPreviewAdapter{
-            val action = BoardFragmentDirections.actionBoardFragmentToThreadFragment()
+            val action = BoardFragmentDirections.actionBoardFragmentToPostFragment()
             this.findNavController().navigate(action)
         }
         viewModel.posts.observe(this.viewLifecycleOwner){ items ->
@@ -52,7 +52,7 @@ class BoardFragment() : Fragment() {
         binding.threads.layoutManager = LinearLayoutManager(this.context)
 
         val boardAnnouncementAdapter = BoardAnnouncementAdapter{
-            val action = BoardFragmentDirections.actionBoardFragmentToThreadFragment()
+            val action = BoardFragmentDirections.actionBoardFragmentToPostFragment()
             this.findNavController().navigate(action)
         }
         viewModel.announcements.observe(this.viewLifecycleOwner){ items->
@@ -65,6 +65,7 @@ class BoardFragment() : Fragment() {
 
         boardId = navigationArgs.boardId
         boardType = navigationArgs.boardType
+        viewModel.getBoardInfo(boardId, boardType)
         viewModel.getPosts(boardId, boardType)
 
         lifecycleScope.launchWhenStarted {
@@ -74,7 +75,7 @@ class BoardFragment() : Fragment() {
         }
 
         binding.newThread.setOnClickListener{
-            val action = BoardFragmentDirections.actionBoardFragmentToNewThreadFragment()
+            val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment()
             this.findNavController().navigate(action)
         }
 
@@ -85,7 +86,11 @@ class BoardFragment() : Fragment() {
 
     private fun showPostsLogic(status: PostsLoadingStatus){
         when (status) {
-            PostsLoadingStatus.Success -> Log.v("BoardFragment", "Posts Loading Success")
+            PostsLoadingStatus.Success ->{
+                Log.v("BoardFragment", "Posts Loading Success")
+                binding.toolbar.title = viewModel.boardInfo.value!!.title
+                //binding.toolbar.title = viewModel.boardInfo.value!!.title + "\n" + viewModel.boardInfo.value!!.description
+            }
             PostsLoadingStatus.TokenExpired -> {
                 viewModel.getPosts(boardId,boardType)
             }

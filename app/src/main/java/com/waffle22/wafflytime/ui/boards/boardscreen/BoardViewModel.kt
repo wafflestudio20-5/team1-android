@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService
+import com.waffle22.wafflytime.network.dto.BoardDTO
 import com.waffle22.wafflytime.network.dto.BoardType
 import com.waffle22.wafflytime.network.dto.PostResponse
 import com.waffle22.wafflytime.util.AuthStorage
@@ -20,11 +21,16 @@ enum class PostsLoadingStatus{
     Standby, Success, Corruption, Error, TokenExpired
 }
 
+//TODO: 앱 구동 후 첫 번째로 게시판을 로딩하면 질문글이 보이지 않는 오류가 있음
+
 class BoardViewModel(
     private val wafflyApiService: WafflyApiService,
     private val authStorage: AuthStorage,
     private val moshi: Moshi
 ) : ViewModel() {
+    private var _boardInfo = MutableLiveData<BoardDTO>()
+    val boardInfo: LiveData<BoardDTO>
+        get() = _boardInfo
     private var _posts = MutableLiveData<MutableList<PostResponse>>()
     val posts: LiveData<MutableList<PostResponse>>
         get() = _posts
@@ -35,18 +41,57 @@ class BoardViewModel(
     val postsLoadingState: StateFlow<PostsLoadingStatus>
         get() = _postsLoadingState
     private var _page = 0
-    private val PAGE_SIZE = 20;
+    private val PAGE_SIZE = 20
+    private var _boardId = -1L
 
     init{
         _posts.value = mutableListOf()
         _announcements.value = mutableListOf()
     }
 
+    fun refreshBoard(boardId: Long, boardType: BoardType){
+        _page = 0
+        getPosts(boardId, boardType)
+    }
+
+    fun getBoardInfo(boardId: Long, boardType: BoardType){
+        if (boardType != BoardType.Common){
+            _boardInfo.value = BoardDTO(-1,"SPECIAL", "특수 게시판", "", true)
+        }
+        else{
+            viewModelScope.launch {
+                try{
+                    val response = wafflyApiService.getSingleBoard(boardId)
+                    when(response!!.code().toString()){
+                        "200" -> {
+                            Log.v("BoardViewModel", response.body()!!.title)
+                            _boardInfo.value = response.body()
+                        }
+                        else -> {
+                            Log.v("BoardViewModel", response.errorBody()!!.string())
+                            when(HttpException(response!!).parseError(moshi)!!.errorCode){
+                                "103" -> _postsLoadingState.value = PostsLoadingStatus.TokenExpired
+                                else -> _postsLoadingState.value = PostsLoadingStatus.Error
+                            }
+                        }
+                    }
+                } catch (e: java.lang.Exception){
+                    _postsLoadingState.value = PostsLoadingStatus.Corruption
+                    Log.v("BoardViewModel", e.toString())
+                }
+            }
+        }
+    }
+
     fun getPosts(boardId: Long, boardType: BoardType){
         viewModelScope.launch {
             try{
+                if (_boardId != boardId || boardType != BoardType.Common){
+                    _page = 0
+                    _boardId = boardId
+                }
                 val response = when(boardType){
-                    BoardType.Common -> wafflyApiService.getAllPosts(boardId, _page, PAGE_SIZE)
+                    BoardType.Common -> wafflyApiService.getAllPosts(_boardId, _page, PAGE_SIZE)
                     BoardType.MyPosts -> wafflyApiService.getMyPosts(_page, PAGE_SIZE)
                     BoardType.Scraps -> wafflyApiService.getMyScraps(_page, PAGE_SIZE)
                     else -> {null}
@@ -58,20 +103,23 @@ class BoardViewModel(
                 when(response!!.code().toString()){
                     "200" -> {
                         _postsLoadingState.value = PostsLoadingStatus.Success
-                        for (newPost in response.body()!!.content!!){
-                            Log.v("BoardViewModel", newPost.contents)
-                            var alreadyExists = false
-                            for (oldPost in _posts.value!!){
-                                if (newPost.postId == oldPost.postId){
-                                    alreadyExists = true
-                                    break
+                        if(response.body()!!.content!!.isNotEmpty()){
+                            for (newPost in response.body()!!.content!!){
+                                var alreadyExists = false
+                                for (oldPost in _posts.value!!){
+                                    if (newPost.postId == oldPost.postId){
+                                        alreadyExists = true
+                                        break
+                                    }
+                                }
+                                if (! alreadyExists) {
+                                    _posts.value!! += newPost
+                                    if(newPost.isQuestion)  Log.v("BoardViewModel", newPost.contents)
+                                    if(newPost.isQuestion && _announcements.value!!.size < 2)
+                                        _announcements.value!! += newPost
                                 }
                             }
-                            if (! alreadyExists) {
-                                _posts.value!! += newPost
-                                if(newPost.isQuestion)
-                                    _announcements.value!! += newPost
-                            }
+                            _page += 1
                         }
                     }
                     else -> {

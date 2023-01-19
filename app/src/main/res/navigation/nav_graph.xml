@@ -32,11 +32,11 @@
         android:name="com.waffle22.wafflytime.ui.boards.boardscreen.BoardFragment"
         android:label="BoardFragment" >
         <action
-            android:id="@+id/action_boardFragment_to_threadFragment"
-            app:destination="@id/threadFragment" />
+            android:id="@+id/action_boardFragment_to_postFragment"
+            app:destination="@id/postFragment" />
         <action
-            android:id="@+id/action_boardFragment_to_newThreadFragment"
-            app:destination="@id/newThreadFragment"
+            android:id="@+id/action_boardFragment_to_newPostFragment"
+            app:destination="@id/newPostFragment"
             app:popUpTo="@+id/boardFragment"/>
         <argument
             android:name="boardId"
@@ -46,13 +46,13 @@
             app:argType="com.waffle22.wafflytime.network.dto.BoardType" />
     </fragment>
     <fragment
-        android:id="@+id/threadFragment"
+        android:id="@+id/postFragment"
         android:name="com.waffle22.wafflytime.ui.boards.postscreen.PostFragment"
-        android:label="ThreadFragment" />
+        android:label="PostFragment" />
     <fragment
-        android:id="@+id/newThreadFragment"
+        android:id="@+id/newPostFragment"
         android:name="com.waffle22.wafflytime.ui.boards.NewPostFragment"
-        android:label="NewThreadFragment"/>
+        android:label="NewPostFragment"/>
     <fragment
         android:id="@+id/boardListFragment"
         android:name="com.waffle22.wafflytime.ui.boards.boardlist.BoardListFragment"

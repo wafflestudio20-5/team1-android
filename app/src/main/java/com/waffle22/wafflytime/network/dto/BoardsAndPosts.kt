@@ -71,7 +71,7 @@ data class PostResponse( // PostResponse
     @Json(name = "isQuestion") val isQuestion: Boolean,
     @Json(name = "title") val title: String?,
     @Json(name = "contents") val contents: String,
-    @Json(name = "images") val images: List<ImageResponse>,
+    @Json(name = "images") val images: List<ImageResponse>?,
     @Json(name = "nlikes") val nlikes: Int,
     @Json(name = "nscraps") val nscraps: Int,
     @Json(name = "nreplies") val nreplies: Int
