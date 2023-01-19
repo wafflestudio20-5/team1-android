@@ -22,18 +22,18 @@ class PostViewModel(
     private val _postState = MutableStateFlow<PostStatus>(PostStatus.StandBy)
     val postState: StateFlow<PostStatus>
         get() = _postState
-    private val _commentsState = MutableStateFlow(PostStatus.StandBy)
-    val commentsState: StateFlow<PostStatus>
-        get() = _commentsState
+    private val _repliesState = MutableStateFlow(PostStatus.StandBy)
+    val repliesState: StateFlow<PostStatus>
+        get() = _repliesState
     private lateinit var _curBoard : BoardDTO
     val curBoard: BoardDTO
         get() = _curBoard
     private var _curPost = MutableLiveData<PostResponse>()
     val curPost: LiveData<PostResponse>
         get() = _curPost
-    private var _comments = MutableLiveData<List<ReplyResponse>>()
-    val comments: LiveData<List<ReplyResponse>>
-        get() = _comments
+    private var _replies = MutableLiveData<List<ReplyResponse>>()
+    val replies: LiveData<List<ReplyResponse>>
+        get() = _replies
 
     fun getPost(boardId: Long, postId: Long){
         viewModelScope.launch {
@@ -60,20 +60,20 @@ class PostViewModel(
         }
     }
 
-    fun getComments(boardId: Long, postId: Long){
+    fun getReplies(boardId: Long, postId: Long){
         viewModelScope.launch {
             try{
-                val response = wafflyApiService.getComments(boardId, postId)
+                val response = wafflyApiService.getReplies(boardId, postId)
                 when (response.code().toString()){
                     "200" -> {
-                        _comments.value = response.body()!!.content ?: listOf()
-                        _commentsState.value = PostStatus.Success
+                        _replies.value = response.body()!!.content ?: listOf()
+                        _repliesState.value = PostStatus.Success
                     }
-                    "505" -> _commentsState.value = PostStatus.NotFound
-                    "506" -> _commentsState.value = PostStatus.BadRequest
+                    "505" -> _repliesState.value = PostStatus.NotFound
+                    "506" -> _repliesState.value = PostStatus.BadRequest
                 }
             } catch (e: java.lang.Exception) {
-                _commentsState.value = PostStatus.Corruption
+                _repliesState.value = PostStatus.Corruption
             }
         }
     }

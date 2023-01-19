@@ -49,7 +49,7 @@ class PostFragment() : Fragment() {
 
         // 댓글 부분
         val postReplyAdapter = PostReplyAdapter()
-        viewModel.comments.observe(this.viewLifecycleOwner){items ->
+        viewModel.replies.observe(this.viewLifecycleOwner){ items ->
             items.let{
                 postReplyAdapter.submitList(it)
             }
@@ -57,9 +57,9 @@ class PostFragment() : Fragment() {
         binding.comments.adapter = postReplyAdapter
         binding.comments.layoutManager = LinearLayoutManager(this.context)
 
-        viewModel.getComments(boardId, postId)
+        viewModel.getReplies(boardId, postId)
         lifecycleScope.launchWhenStarted {
-            viewModel.commentsState.collect{
+            viewModel.repliesState.collect{
                 showRepliesLogic(it)
             }
         }
