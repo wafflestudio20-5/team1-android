@@ -122,7 +122,7 @@ data class Pageable(
 )
 
 data class PostsPage(
-    @Json(name = "contents") val contents: List<PostResponse>?,
+    @Json(name = "content") val content: List<PostResponse>?,
     @Json(name = "pageable") val pageable: Pageable,
     @Json(name = "totalPages") val totalPages: Int,
     @Json(name = "totalElements") val totalElements: Int,
