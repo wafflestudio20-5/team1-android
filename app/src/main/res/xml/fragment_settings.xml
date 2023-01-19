@@ -3,7 +3,7 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
+    <com.waffle22.wafflytime.ui.preferences.ProfileCardPreference
         android:layout="@layout/profile_card"/>
 
     <PreferenceCategory

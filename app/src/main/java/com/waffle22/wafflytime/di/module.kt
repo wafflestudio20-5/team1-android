@@ -9,6 +9,7 @@ import com.waffle22.wafflytime.ui.login.LoginViewModel
 import com.waffle22.wafflytime.ui.login.SignUpEmailViewModel
 import com.waffle22.wafflytime.ui.login.SignUpViewModel
 import com.waffle22.wafflytime.ui.mainpage.MainHomeViewModel
+import com.waffle22.wafflytime.ui.preferences.SetNicknameViewModel
 import com.waffle22.wafflytime.util.AuthStorage
 import com.waffle22.wafflytime.util.TokenInterceptor
 import okhttp3.OkHttpClient
@@ -62,5 +63,6 @@ val appModule = module {
     viewModel { SignUpEmailViewModel(get(), get(), get()) }
     viewModel { MainHomeViewModel(get(), get(), get()) }
     viewModel { AuthCheckViewModel(get(), get(), get()) }
+    viewModel { SetNicknameViewModel(get(), get(), get()) }
 }
 

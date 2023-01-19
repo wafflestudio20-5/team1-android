@@ -25,6 +25,9 @@ interface WafflyApiService {
     @GET("/api/user/me")
     suspend fun getUserInfo(): Response<UserDTO>
 
+    @PUT("api/user/me")
+    suspend fun changeNickname(@Body() request: ChangeNicknameRequest): Response<UserDTO>
+
     // Board 관련
     @GET("/api/board/0")
     suspend fun getSingleBoard(): Response<BoardDTO>
