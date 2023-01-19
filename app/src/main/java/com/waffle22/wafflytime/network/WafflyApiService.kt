@@ -93,7 +93,7 @@ interface WafflyApiService {
         @Body() editPostRequest: EditPostRequest): Response<EditPostResponse>
 
     @GET("/api/board/{boardId}/post/{postId}/replies")
-    suspend fun getComments(
+    suspend fun getReplies(
         @Path("boardId") boardId: Long, @Path("postId") postId: Long
     ): Response<RepliesPage>
 }
