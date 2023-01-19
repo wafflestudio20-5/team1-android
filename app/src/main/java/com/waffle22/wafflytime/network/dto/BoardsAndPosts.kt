@@ -140,12 +140,13 @@ data class ReplyResponse(
     @Json(name = "writerId") val writerId: Long,
     @Json(name = "nickname") val nickname: String,
     @Json(name = "isRoot") val isRoot: Boolean,
+    @Json(name = "contents") val contents: String,
     @Json(name = "isDeleted") val isDeleted: Boolean,
     @Json(name = "isPostWriter") val isPostWriter: Boolean
 )
 
 data class RepliesPage(
-    @Json(name = "content") val content: List<PostResponse>?,
+    @Json(name = "content") val content: List<ReplyResponse>?,
     @Json(name = "pageable") val pageable: Pageable,
     @Json(name = "totalPages") val totalPages: Int,
     @Json(name = "totalElements") val totalElements: Int,
