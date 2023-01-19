@@ -1,6 +1,7 @@
 package com.waffle22.wafflytime.ui.boards.postscreen
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,7 @@ class PostFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //게시글 부분
         boardId = navigationArgs.boardId
         postId = navigationArgs.postId
         viewModel.getPost(boardId, postId)
@@ -45,15 +47,24 @@ class PostFragment() : Fragment() {
             }
         }
 
-        val postCommentAdapter = PostCommentAdapter()
+        // 댓글 부분
+        val postReplyAdapter = PostReplyAdapter()
         viewModel.comments.observe(this.viewLifecycleOwner){items ->
             items.let{
-                postCommentAdapter.submitList(it)
+                postReplyAdapter.submitList(it)
             }
         }
-        binding.comments.adapter = postCommentAdapter
+        binding.comments.adapter = postReplyAdapter
         binding.comments.layoutManager = LinearLayoutManager(this.context)
 
+        viewModel.getComments(boardId, postId)
+        lifecycleScope.launchWhenStarted {
+            viewModel.commentsState.collect{
+                showRepliesLogic(it)
+            }
+        }
+
+        //툴바
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -72,6 +83,22 @@ class PostFragment() : Fragment() {
                     commentsText.text = viewModel.curPost.value!!.nreplies.toString()
                     scrapsText.text = viewModel.curPost.value!!.nreplies.toString()
                 }
+            }
+            else -> {
+                binding.errorText.text = when(status){
+                    PostStatus.NotFound -> "존재하지 않는 게시물입니다."
+                    PostStatus.BadRequest -> "해당 게시판의 게시물이 아닙니다."
+                    else -> "알 수 없는 오류"
+                }
+            }
+        }
+    }
+
+    private fun showRepliesLogic(status: PostStatus){
+        when (status){
+            PostStatus.StandBy -> null
+            PostStatus.Success -> {
+                Log.v("PostFragment", "댓글 받아오기 성공!")
             }
             else -> {
                 binding.errorText.text = when(status){

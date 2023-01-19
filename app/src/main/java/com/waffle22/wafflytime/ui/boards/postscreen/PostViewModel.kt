@@ -22,6 +22,9 @@ class PostViewModel(
     private val _postState = MutableStateFlow<PostStatus>(PostStatus.StandBy)
     val postState: StateFlow<PostStatus>
         get() = _postState
+    private val _commentsState = MutableStateFlow(PostStatus.StandBy)
+    val commentsState: StateFlow<PostStatus>
+        get() = _commentsState
     private lateinit var _curBoard : BoardDTO
     val curBoard: BoardDTO
         get() = _curBoard
@@ -53,6 +56,24 @@ class PostViewModel(
                 }
             } catch (e: java.lang.Exception){
                 _postState.value = PostStatus.Corruption
+            }
+        }
+    }
+
+    fun getComments(boardId: Long, postId: Long){
+        viewModelScope.launch {
+            try{
+                val response = wafflyApiService.getComments(boardId, postId)
+                when (response.code().toString()){
+                    "200" -> {
+                        _comments.value = response.body()!!.content ?: listOf()
+                        _commentsState.value = PostStatus.Success
+                    }
+                    "505" -> _commentsState.value = PostStatus.NotFound
+                    "506" -> _commentsState.value = PostStatus.BadRequest
+                }
+            } catch (e: java.lang.Exception) {
+                _commentsState.value = PostStatus.Corruption
             }
         }
     }
