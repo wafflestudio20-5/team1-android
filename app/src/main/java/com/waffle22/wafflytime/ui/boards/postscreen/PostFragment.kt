@@ -5,21 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentPostBinding
 import com.waffle22.wafflytime.network.dto.TimeDTO
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.LocalDate
 
-class PostFragment(
-    private val boardId: Long,
-    private val postId: Long
-) : Fragment() {
+class PostFragment() : Fragment() {
     private lateinit var binding: FragmentPostBinding
 
-    private val viewModel: PostViewModel by activityViewModels()
+    private val viewModel: PostViewModel by sharedViewModel()
+    private val navigationArgs: PostFragmentArgs by navArgs()
+
+    private var boardId = 0L
+    private var postId = 0L
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,7 +35,9 @@ class PostFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //viewModel.getPost(boardId, postId)
+        boardId = navigationArgs.boardId
+        postId = navigationArgs.postId
+        viewModel.getPost(boardId, postId)
 
         lifecycleScope.launchWhenStarted {
             viewModel.postState.collect {

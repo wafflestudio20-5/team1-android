@@ -2,6 +2,7 @@ package com.waffle22.wafflytime.ui.boards.boardscreen
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -11,7 +12,7 @@ import com.waffle22.wafflytime.network.dto.PostResponse
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import java.time.LocalDate
 
-class PostPreviewAdapter(private val clicked: () -> Unit)
+class PostPreviewAdapter(private val clicked: (PostResponse) -> Unit)
     : ListAdapter<PostResponse, PostPreviewAdapter.PostAbstractViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostAbstractViewHolder {
@@ -29,14 +30,16 @@ class PostPreviewAdapter(private val clicked: () -> Unit)
 
     class PostAbstractViewHolder(private var binding: BoardThreadBinding, private var context: Context)
         : RecyclerView.ViewHolder(binding.root) {
-        fun bind(postAbstract: PostResponse, clicked: () -> Unit) {
+        fun bind(postAbstract: PostResponse, clicked: (PostResponse) -> Unit) {
             binding.apply{
                 nickname.text = postAbstract.nickname
                 time.text = timeToText(postAbstract.createdAt)
                 previewText.text = postAbstract.contents
                 likesText.text = postAbstract.nlikes.toString()
                 commentsText.text = postAbstract.nreplies.toString()
-                layout.setOnClickListener{clicked()}
+                if (postAbstract.title != null) title.text = postAbstract.title
+                else    title.visibility = View.GONE
+                layout.setOnClickListener{clicked(postAbstract)}
             }
         }
         private fun timeToText(time: TimeDTO): String{

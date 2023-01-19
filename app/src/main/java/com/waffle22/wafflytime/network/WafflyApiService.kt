@@ -55,13 +55,23 @@ interface WafflyApiService {
         @Path("boardId") boardId: Long, @Query("page") page: Int, @Query("size") size: Int
     ): Response<PostsPage>
 
-    @GET("/api/user/mypost?")
+    @GET("/api/user/mypost")
     suspend fun getMyPosts(
         @Query("page") page: Int, @Query("size") size: Int
     ): Response<PostsPage>
 
-    @GET("/api/user/myscrap?")
+    @GET("/api/user/myscrap")
     suspend fun getMyScraps(
+        @Query("page") page: Int, @Query("size") size: Int
+    ): Response<PostsPage>
+
+    @GET("/api/hotpost")
+    suspend fun getHotPosts(
+        @Query("page") page: Int, @Query("size") size: Int
+    ): Response<PostsPage>
+
+    @GET("/api/bestpost")
+    suspend fun getBestPosts(
         @Query("page") page: Int, @Query("size") size: Int
     ): Response<PostsPage>
 
@@ -81,4 +91,9 @@ interface WafflyApiService {
         @Path("boardId") boardId: Long,
         @Path("postId") postId: Long,
         @Body() editPostRequest: EditPostRequest): Response<EditPostResponse>
+
+    @GET("/api/board/{boardId}/post/{postId}/replies")
+    suspend fun getComments(
+        @Path("boardId") boardId: Long, @Path("postId") postId: Long
+    ): Response<RepliesPage>
 }
