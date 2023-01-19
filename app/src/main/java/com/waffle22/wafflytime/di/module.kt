@@ -5,6 +5,9 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.ui.AuthCheckViewModel
+import com.waffle22.wafflytime.ui.boards.boardlist.BoardListViewModel
+import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
+import com.waffle22.wafflytime.ui.boards.postscreen.PostViewModel
 import com.waffle22.wafflytime.ui.login.LoginViewModel
 import com.waffle22.wafflytime.ui.login.SignUpEmailViewModel
 import com.waffle22.wafflytime.ui.login.SignUpViewModel
@@ -62,5 +65,8 @@ val appModule = module {
     viewModel { SignUpEmailViewModel(get(), get(), get()) }
     viewModel { MainHomeViewModel(get(), get(), get()) }
     viewModel { AuthCheckViewModel(get(), get(), get()) }
+    viewModel { BoardListViewModel(get(), get(), get()) }
+    viewModel { BoardViewModel(get(), get(), get()) }
+    viewModel { PostViewModel(get()) }
 }
 
