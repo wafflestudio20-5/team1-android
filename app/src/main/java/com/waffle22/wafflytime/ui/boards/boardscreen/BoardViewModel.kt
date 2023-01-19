@@ -51,10 +51,15 @@ class BoardViewModel(
                     BoardType.Scraps -> wafflyApiService.getMyScraps(_page, PAGE_SIZE)
                     else -> {null}
                 }
+                if (_page == 0){
+                    _posts.value = mutableListOf()
+                    _announcements.value = mutableListOf()
+                }
                 when(response!!.code().toString()){
                     "200" -> {
                         _postsLoadingState.value = PostsLoadingStatus.Success
-                        for (newPost in response!!.body()!!.contents!!){
+                        for (newPost in response.body()!!.content!!){
+                            Log.v("BoardViewModel", newPost.contents)
                             var alreadyExists = false
                             for (oldPost in _posts.value!!){
                                 if (newPost.postId == oldPost.postId){
