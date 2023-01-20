@@ -40,14 +40,6 @@ data class ImageRequest(
     @Json(name = "description") val description: String
 )
 
-data class PostRequest(
-    @Json(name = "title") val title: String,
-    @Json(name = "contents") val contents: String,
-    @Json(name = "isQuestion") val isQuestion: Boolean,
-    @Json(name = "isWriterAnonymous") val isWriterAnonymous : Boolean,
-    @Json(name = "images") val images: List<ImageRequest>
-)
-
 data class ImageResponse(
     @Json(name = "imageId") val imageId: Int,
     @Json(name = "preSignedUrl") val preSignedUrl: String,
@@ -124,6 +116,14 @@ data class PostsPage(
 )
 
 //Post 관련
+data class PostRequest(
+    @Json(name = "title") val title: String,
+    @Json(name = "contents") val contents: String,
+    @Json(name = "isQuestion") val isQuestion: Boolean,
+    @Json(name = "isWriterAnonymous") val isWriterAnonymous : Boolean,
+    @Json(name = "images") val images: List<ImageRequest>
+)
+
 data class DeletePostResponse(
     @Json(name = "boardId") val boardId: Long,
     @Json(name = "boardTitle") val boardTitle: String,
@@ -177,4 +177,8 @@ data class RepliesPage(
 //기타 enum class
 enum class BoardType{
     Common, MyPosts, MyReplies, Scraps, Hot, Best
+}
+
+enum class LoadingStatus{
+    Standby, Success, Corruption, Error
 }

@@ -29,7 +29,6 @@ enum class PostsLoadingStatus{
 
 class BoardViewModel(
     private val wafflyApiService: WafflyApiService,
-    private val authStorage: AuthStorage,
     private val moshi: Moshi
 ) : ViewModel() {
     private var _boardInfo = MutableLiveData<BoardDTO>()

@@ -23,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="45dp"
         app:layout_constraintBottom_toTopOf="@+id/new_comment_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -173,6 +174,7 @@
         android:layout_width="60dp"
         android:layout_height="45dp"
         android:text="익명"
+        android:background="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/new_comment_text"
         app:layout_constraintBottom_toBottomOf="@id/new_comment_text"/>
@@ -184,6 +186,7 @@
         android:layout_marginStart="60dp"
         android:layout_marginEnd="45dp"
         android:inputType="textMultiLine"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/anonymous"
         app:layout_constraintEnd_toEndOf="parent"

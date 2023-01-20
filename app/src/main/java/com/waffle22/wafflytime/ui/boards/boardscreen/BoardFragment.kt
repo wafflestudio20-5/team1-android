@@ -74,10 +74,14 @@ class BoardFragment() : Fragment() {
             }
         }
 
-        binding.newThread.setOnClickListener{
-            val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment()
-            this.findNavController().navigate(action)
+        if(boardType == BoardType.Common){
+            binding.newThread.setOnClickListener{
+                val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId)
+                this.findNavController().navigate(action)
+            }
         }
+        else    binding.newThread.visibility = View.GONE
+
 
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()

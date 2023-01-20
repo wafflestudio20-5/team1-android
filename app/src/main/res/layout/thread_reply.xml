@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/reply_text"
         app:layout_constraintStart_toStartOf="@id/reply_text"
-        tools:text="time"/>-->
+        tools:text="time"/>
 
     <ImageView
         android:id="@+id/likes_icon"
@@ -80,6 +80,6 @@
         android:textSize="@dimen/thread_small_text"
         app:layout_constraintStart_toEndOf="@+id/likes_icon"
         app:layout_constraintTop_toBottomOf="@+id/reply_text"
-        tools:text="100" />
+        tools:text="100" /> -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
