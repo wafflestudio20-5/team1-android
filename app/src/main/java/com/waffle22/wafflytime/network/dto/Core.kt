@@ -14,15 +14,6 @@ data class UserDTO(
     val username: String
 )
 
-data class PostDTO(
-    val id: Int,
-    val content: String,
-    val title: String,
-    val author: UserDTO,
-    val comments: List<CommentDTO>,
-    val createdAt: LocalDateTime,
-)
-
 data class ErrorDTO(
     val statusCode: Int?,
     val message: String?,

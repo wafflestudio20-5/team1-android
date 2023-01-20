@@ -4,9 +4,13 @@ import android.content.Context
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.waffle22.wafflytime.network.WafflyApiService
+import com.waffle22.wafflytime.ui.login.LoginViewModel
+import com.waffle22.wafflytime.ui.login.SignUpViewModel
+import com.waffle22.wafflytime.ui.mainpage.MainHomeViewModel
 import com.waffle22.wafflytime.util.AuthStorage
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -22,7 +26,7 @@ val appModule = module {
             .client(
                 OkHttpClient.Builder()
                     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                    .addInterceptor {
+                    /*.addInterceptor {
                         val newRequest = it.request().newBuilder()
                             .addHeader(
                                 "Authorization",
@@ -33,7 +37,7 @@ val appModule = module {
                             )
                             .build()
                         it.proceed(newRequest)
-                    }
+                    }*/
                     .build()
             )
             .build()
@@ -58,5 +62,8 @@ val appModule = module {
     viewModel { PostListViewModel(get(), get()) }
     viewModel { (postId: Int) -> PostDetailViewModel(postId, get(), get(), get()) }
 */
+    viewModel { LoginViewModel(get(), get()) }
+    viewModel { SignUpViewModel(get(), get()) }
+    viewModel { MainHomeViewModel(get(), get()) }
 }
 

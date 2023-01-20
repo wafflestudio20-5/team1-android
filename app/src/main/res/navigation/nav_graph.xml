@@ -2,7 +2,9 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment">
+
+    app:startDestination="@id/mainHomeFragment">
+
 
     <fragment
         android:id="@+id/loginFragment"
@@ -16,14 +18,6 @@
         android:id="@+id/signUpFragment"
         android:name="com.waffle22.wafflytime.ui.login.SignUpFragment"
         android:label="SignUpFragment" />
-    <fragment
-        android:id="@+id/notifyFragment"
-        android:name="com.waffle22.wafflytime.ui.notification.NotifyFragment"
-        android:label="NotifyFragment" />
-    <fragment
-        android:id="@+id/chatBoxFragment"
-        android:name="com.waffle22.wafflytime.ui.notification.ChatBoxFragment"
-        android:label="ChatBoxFragment" />
     <fragment
         android:id="@+id/baseNotificationFragment"
         android:name="com.waffle22.wafflytime.ui.notification.BaseNotificationFragment"
@@ -72,9 +66,18 @@
     <fragment
         android:id="@+id/mainHomeFragment"
         android:name="com.waffle22.wafflytime.ui.login.MainHomeFragment"
-        android:label="MainHomeFragment" >
-        <action
-            android:id="@+id/action_mainHomeFragment_to_boardListFragment"
-            app:destination="@id/boardListFragment" />
-    </fragment>
+        android:label="MainHomeFragment" />
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true"
+        />
+    <action
+        android:id="@+id/action_global_mainHomeFragment"
+        app:destination="@id/mainHomeFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true"
+        />
+
 </navigation>
