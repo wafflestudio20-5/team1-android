@@ -5,17 +5,17 @@ import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.waffle22.wafflytime.data.Board
 import com.waffle22.wafflytime.databinding.BoardTaggedBinding
+import com.waffle22.wafflytime.network.dto.BoardListResponse
+import com.waffle22.wafflytime.network.dto.BoardType
 
-class TaggedBoardsAdapter(private val clicked: () -> Unit)
-    :ListAdapter<TaggedBoards, TaggedBoardsAdapter.TaggedBoardsViewHolder>(DiffCallback){
+class TaggedBoardsAdapter(private val parentFragment: BoardListFragment)
+    :ListAdapter<BoardListResponse, TaggedBoardsAdapter.TaggedBoardsViewHolder>(DiffCallback){
 
     private var expanded = SparseArray<Boolean>()
 
@@ -29,17 +29,20 @@ class TaggedBoardsAdapter(private val clicked: () -> Unit)
 
     override fun onBindViewHolder(holder: TaggedBoardsViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(expanded,current,clicked)
+        holder.bind(expanded,current, parentFragment)
     }
 
     class TaggedBoardsViewHolder(private var binding: BoardTaggedBinding, private var context: Context)
         : RecyclerView.ViewHolder(binding.root){
-            fun bind(expanded: SparseArray<Boolean>, taggedBoards: TaggedBoards,
-                clicked: () -> Unit){
-                binding.description.text = taggedBoards.tag
+            fun bind(expanded: SparseArray<Boolean>, taggedBoards: BoardListResponse,
+                parentFragment: BoardListFragment){
+                binding.description.text = taggedBoards.category
 
-                val boardListAdapter = BoardListAdapter{clicked()}
-                boardListAdapter.submitList(taggedBoards.entries)
+                val boardListAdapter = BoardListAdapter{
+                    val action = BoardListFragmentDirections.actionBoardListFragmentToBoardFragment(it.boardId, BoardType.Common)
+                    parentFragment.findNavController().navigate(action)
+                }
+                boardListAdapter.submitList(taggedBoards.boards)
                 binding.recyclerview.adapter = boardListAdapter
                 binding.recyclerview.layoutManager = LinearLayoutManager(this.context)
                 if (expanded[adapterPosition] == null)  expanded.put(adapterPosition,false)
@@ -63,18 +66,18 @@ class TaggedBoardsAdapter(private val clicked: () -> Unit)
         }
 
     companion object {
-        private val DiffCallback = object : DiffUtil.ItemCallback<TaggedBoards>() {
+        private val DiffCallback = object : DiffUtil.ItemCallback<BoardListResponse>() {
             override fun areContentsTheSame(
-                oldItem: TaggedBoards,
-                newItem: TaggedBoards
+                oldItem: BoardListResponse,
+                newItem: BoardListResponse
             ): Boolean {
                 return oldItem == newItem
             }
 
             override fun areItemsTheSame(
-                oldItem: TaggedBoards,
-                newItem: TaggedBoards): Boolean {
-                return oldItem.tag == newItem.tag
+                oldItem: BoardListResponse,
+                newItem: BoardListResponse): Boolean {
+                return oldItem.category == newItem.category
             }
         }
     }

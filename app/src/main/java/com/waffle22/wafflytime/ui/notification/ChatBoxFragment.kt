@@ -5,15 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import com.google.android.material.tabs.TabLayout
-import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentChatboxBinding
-import com.waffle22.wafflytime.databinding.FragmentNotificationBinding
 import com.waffle22.wafflytime.network.dto.Chat
-import com.waffle22.wafflytime.network.dto.Notification
-import com.waffle22.wafflytime.util.ChatAdapter
-import com.waffle22.wafflytime.util.NotifyAdapter
 
 class ChatBoxFragment : Fragment() {
     private lateinit var binding : FragmentChatboxBinding

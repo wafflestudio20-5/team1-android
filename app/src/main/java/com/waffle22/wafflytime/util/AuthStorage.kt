@@ -1,7 +1,6 @@
 package com.waffle22.wafflytime.util
 
 import android.content.Context
-import android.util.Log
 import androidx.core.content.edit
 import com.waffle22.wafflytime.network.dto.UserDTO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 
 class AuthStorage(
-    context: Context
+    private val context: Context
 ) {
     private val sharedPref =
         context.getSharedPreferences(SharedPreferenceName, Context.MODE_PRIVATE)
@@ -20,29 +19,44 @@ class AuthStorage(
             } else {
                 AuthInfo(
                     accessToken = sharedPref.getString(AccessTokenKey, "")!!,
-                    refreshToken = sharedPref.getString(RefreshTokenKey, "")!!
+                    refreshToken = sharedPref.getString(RefreshTokenKey, "")!!,
+                    null
                 )
             }
         )
     val authInfo: StateFlow<AuthInfo?> = _authInfo
 
-    fun setAuthInfo(accessToken: String, refreshToken: String) {
+    fun setTokenInfo(inAccessToken: String, inRefreshToken: String) {
         sharedPref.edit {
-            putString(AccessTokenKey, accessToken)
-            putString(RefreshTokenKey, refreshToken)
+            putString(AccessTokenKey, inAccessToken)
+            putString(RefreshTokenKey, inRefreshToken)
         }
-        _authInfo.value =
-            if (accessToken.isEmpty()) {
-                null
-            } else {
-                AuthInfo(accessToken, refreshToken)
-            }
+        val authInfo = (authInfo.value?.userInfo)?:null
+        _authInfo.value = AuthInfo(inAccessToken,inRefreshToken,authInfo)
+    }
+
+    fun setUserDtoInfo(userDTO: UserDTO) {
+        sharedPref.edit {
+            putString(UserLoginIdKey, userDTO.loginId)
+            putString(UserSocialEmailKey, userDTO.socialEmail)
+            putString(UserUnivEmailKey, userDTO.univEmail)
+            putString(UserNickNameKey, userDTO.nickname)
+            putString(UserProfileUrlKey, userDTO.profileUrl)
+        }
+        val accessToken = (authInfo.value?.accessToken)?:""
+        val refreshToken = (authInfo.value?.refreshToken)?:""
+        _authInfo.value = AuthInfo(accessToken, refreshToken, userDTO)
     }
 
     fun clearAuthInfo() {
         sharedPref.edit {
             putString(AccessTokenKey, "")
             putString(RefreshTokenKey, "")
+            putString(UserLoginIdKey, "")
+            putString(UserSocialEmailKey, "")
+            putString(UserUnivEmailKey, "")
+            putString(UserNickNameKey, "")
+            putString(UserProfileUrlKey, "")
         }
         _authInfo.value = null
     }
@@ -50,13 +64,18 @@ class AuthStorage(
     data class AuthInfo(
         val accessToken: String,
         val refreshToken: String,
+        val userInfo: UserDTO?
     )
 
     companion object {
         const val AccessTokenKey = "access_token"
         const val RefreshTokenKey = "refresh_token"
-        const val UsernameKey = "username"
-        const val UserIdKey = "user_id"
+
+        const val UserLoginIdKey = "user_loginId"
+        const val UserSocialEmailKey = "user_socialEmail"
+        const val UserUnivEmailKey = "user_univEmail"
+        const val UserNickNameKey = "user_nickName"
+        const val UserProfileUrlKey = "user_profileUrl"
 
         const val SharedPreferenceName = "auth_pref"
     }
