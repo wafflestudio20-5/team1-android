@@ -2,17 +2,19 @@ package com.waffle22.wafflytime.network.dto
 
 import com.squareup.moshi.Json
 
-data class BoardAbstract(
-    @Json(name = "boardId") val boardId : Long,
-    @Json(name = "name") val name: String
-)
-
+//공통
 data class TimeDTO(
     @Json(name ="year") val year: Int,
     @Json(name ="month") val month: Int,
     @Json(name ="day") val day: Int,
     @Json(name ="hour") val hour: Int,
     @Json(name ="minute")val minute: Int
+)
+
+//BoardList 관련
+data class BoardAbstract(
+    @Json(name = "boardId") val boardId : Long,
+    @Json(name = "name") val name: String
 )
 
 data class BoardListResponse(
@@ -23,6 +25,7 @@ data class BoardListResponse(
     @Json(name = "boards") val boards : List<BoardAbstract>?
 )
 
+//Board 관련
 data class BoardDTO(    //BoardResponse
     @Json(name = "boardId") val boardId: Long,
     @Json(name = "boardType") val boardType: String,
@@ -91,21 +94,6 @@ data class DeleteBoardResponse(
     @Json(name = "title") val title: String
 )
 
-data class DeletePostResponse(
-    @Json(name = "boardId") val boardId: Long,
-    @Json(name = "boardTitle") val boardTitle: String,
-    @Json(name = "postId") val postId: Long,
-    @Json(name = "postTitle") val postTitle: String
-)
-
-data class EditPostResponse(
-    @Json(name = "postId") val postId: Long,
-    @Json(name = "writerId") val writerId: Long,
-    @Json(name = "isWriterAnonymous") val isWriterAnonymous : Boolean,
-    @Json(name = "title") val title: String,
-    @Json(name = "contents") val contents: Boolean
-)
-
 data class PageableSorted(
     @Json(name = "empty") val empty: Boolean,
     @Json(name = "sorted") val sorted: Boolean,
@@ -135,8 +123,35 @@ data class PostsPage(
     @Json(name = "empty") val empty: Boolean
 )
 
-data class ReplyResponse(
+//Post 관련
+data class DeletePostResponse(
+    @Json(name = "boardId") val boardId: Long,
+    @Json(name = "boardTitle") val boardTitle: String,
     @Json(name = "postId") val postId: Long,
+    @Json(name = "postTitle") val postTitle: String
+)
+
+data class EditPostResponse(
+    @Json(name = "postId") val postId: Long,
+    @Json(name = "writerId") val writerId: Long,
+    @Json(name = "isWriterAnonymous") val isWriterAnonymous : Boolean,
+    @Json(name = "title") val title: String,
+    @Json(name = "contents") val contents: Boolean
+)
+
+data class cancelScrapResponse(
+    @Json(name = "scrapCanceledPostId") val postId: Long
+)
+
+//Reply 관련
+data class ReplyRequest(
+    @Json(name = "contents") val contents: String,
+    @Json(name = "parent") val parent: Long?,
+    @Json(name = "isWriterAnonymous") val isWriterAnonymous: Boolean
+)
+
+data class ReplyResponse(
+    @Json(name = "replyId") val replyId: Long,
     @Json(name = "writerId") val writerId: Long,
     @Json(name = "nickname") val nickname: String,
     @Json(name = "isRoot") val isRoot: Boolean,
@@ -159,6 +174,7 @@ data class RepliesPage(
     @Json(name = "empty") val empty: Boolean
 )
 
+//기타 enum class
 enum class BoardType{
     Common, MyPosts, MyReplies, Scraps, Hot, Best
 }

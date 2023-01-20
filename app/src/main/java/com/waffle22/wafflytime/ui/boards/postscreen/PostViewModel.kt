@@ -1,5 +1,6 @@
 package com.waffle22.wafflytime.ui.boards.postscreen
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.network.dto.BoardDTO
 import com.waffle22.wafflytime.network.dto.PostResponse
+import com.waffle22.wafflytime.network.dto.ReplyRequest
 import com.waffle22.wafflytime.network.dto.ReplyResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -74,6 +76,23 @@ class PostViewModel(
                 }
             } catch (e: java.lang.Exception) {
                 _repliesState.value = PostStatus.Corruption
+            }
+        }
+    }
+
+    fun createReply(contents: String, parent:Long?, isAnonymous: Boolean){
+        if (contents == "") return
+        viewModelScope.launch {
+            try{
+                val replyRequest = ReplyRequest(contents,parent,isAnonymous)
+                val response = wafflyApiService.createReply(_curBoard.boardId, _curPost.value!!.postId, replyRequest)
+                when (response.code().toString()){
+                    "200" -> {
+                        getReplies(_curBoard.boardId, _curPost.value!!.postId)
+                    }
+                }
+            } catch (e: java.lang.Exception) {
+                Log.v("PostViewModel", e.toString())
             }
         }
     }
