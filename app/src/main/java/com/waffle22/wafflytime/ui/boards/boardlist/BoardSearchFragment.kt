@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.boards
+package com.waffle22.wafflytime.ui.boards.boardlist
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,11 +9,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentSearchBoardBinding
+import com.waffle22.wafflytime.network.dto.BoardType
 
 class BoardSearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBoardBinding
 
-    private val viewModel: BoardSearchViewModel by activityViewModels()
+    private val viewModel: BoardListViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,12 +28,13 @@ class BoardSearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.searchBoard("")
         if (viewModel.searchResults.value!!.isEmpty())
             binding.searchResult.visibility = View.GONE
         else    binding.noSearchResult.visibility = View.GONE
 
-        val boardSearchAdapter  = BoardSearchAdapter{
-            val action = BoardSearchFragmentDirections.actionBoardSearchFragmentToBoardFragment()
+        val boardSearchAdapter  = BoardListAdapter{
+            val action = BoardSearchFragmentDirections.actionBoardSearchFragmentToBoardFragment(it.boardId, BoardType.Common)
             this.findNavController().navigate(action)
         }
         viewModel.searchResults.observe(this.viewLifecycleOwner) { items ->

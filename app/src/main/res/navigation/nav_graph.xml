@@ -2,7 +2,11 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
+<<<<<<< HEAD
     app:startDestination="@id/loginFragment">
+=======
+    app:startDestination="@id/authCheckFragment">
+>>>>>>> 84f1f575a43063fb3394bb769aaf08e2515303ca
 
     <fragment
         android:id="@+id/loginFragment"
@@ -15,15 +19,11 @@
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.waffle22.wafflytime.ui.login.SignUpFragment"
-        android:label="SignUpFragment" />
-    <fragment
-        android:id="@+id/notifyFragment"
-        android:name="com.waffle22.wafflytime.ui.notification.NotifyFragment"
-        android:label="NotifyFragment" />
-    <fragment
-        android:id="@+id/chatBoxFragment"
-        android:name="com.waffle22.wafflytime.ui.notification.ChatBoxFragment"
-        android:label="ChatBoxFragment" />
+        android:label="SignUpFragment" >
+        <action
+            android:id="@+id/action_signUpFragment_to_signUpEmailFragment"
+            app:destination="@id/signUpEmailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/baseNotificationFragment"
         android:name="com.waffle22.wafflytime.ui.notification.BaseNotificationFragment"
@@ -41,14 +41,20 @@
             android:id="@+id/action_boardFragment_to_newThreadFragment"
             app:destination="@id/newThreadFragment"
             app:popUpTo="@+id/boardFragment"/>
+        <argument
+            android:name="boardId"
+            app:argType="long" />
+        <argument
+            android:name="boardType"
+            app:argType="com.waffle22.wafflytime.network.dto.BoardType" />
     </fragment>
     <fragment
         android:id="@+id/threadFragment"
-        android:name="com.waffle22.wafflytime.ui.boards.threadscreen.ThreadFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.postscreen.PostFragment"
         android:label="ThreadFragment" />
     <fragment
         android:id="@+id/newThreadFragment"
-        android:name="com.waffle22.wafflytime.ui.boards.NewThreadFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.NewPostFragment"
         android:label="NewThreadFragment"/>
     <fragment
         android:id="@+id/boardListFragment"
@@ -63,7 +69,7 @@
     </fragment>
     <fragment
         android:id="@+id/boardSearchFragment"
-        android:name="com.waffle22.wafflytime.ui.boards.BoardSearchFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.boardlist.BoardSearchFragment"
         android:label="BoardSearchFragment" >
         <action
             android:id="@+id/action_boardSearchFragment_to_boardFragment"
@@ -72,9 +78,44 @@
     <fragment
         android:id="@+id/mainHomeFragment"
         android:name="com.waffle22.wafflytime.ui.login.MainHomeFragment"
+<<<<<<< HEAD
         android:label="MainHomeFragment" >
         <action
             android:id="@+id/action_mainHomeFragment_to_boardListFragment"
             app:destination="@id/boardListFragment" />
     </fragment>
+=======
+        android:label="MainHomeFragment" />
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true"
+        />
+    <fragment
+        android:id="@+id/signUpEmailFragment"
+        android:name="com.waffle22.wafflytime.ui.login.SignUpEmailFragment"
+        android:label="SignUpEmailFragment" >
+        <action
+            android:id="@+id/action_signUpEmailFragment_to_signUpCodeFragment"
+            app:destination="@id/signUpCodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpCodeFragment"
+        android:name="com.waffle22.wafflytime.ui.login.SignUpCodeFragment"
+        android:label="SignUpCodeFragment" />
+    <fragment
+        android:id="@+id/authCheckFragment"
+        android:name="com.waffle22.wafflytime.ui.AuthCheckFragment"
+        android:label="AuthCheckFragment" >
+        <action
+            android:id="@+id/action_authCheckFragment_to_mainHomeFragment"
+            app:destination="@id/mainHomeFragment" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_authCheckFragment"
+        app:destination="@id/authCheckFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true"/>
+>>>>>>> 84f1f575a43063fb3394bb769aaf08e2515303ca
 </navigation>

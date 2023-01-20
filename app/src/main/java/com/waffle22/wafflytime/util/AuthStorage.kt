@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 
 class AuthStorage(
-    context: Context
+    private val context: Context
 ) {
     private val sharedPref =
         context.getSharedPreferences(SharedPreferenceName, Context.MODE_PRIVATE)
@@ -19,33 +19,63 @@ class AuthStorage(
             } else {
                 AuthInfo(
                     accessToken = sharedPref.getString(AccessTokenKey, "")!!,
-                    UserDTO(
-                        id = sharedPref.getInt(UserIdKey, -1),
-                        username = sharedPref.getString(UsernameKey, "")!!,
-                    )
+                    refreshToken = sharedPref.getString(RefreshTokenKey, "")!!,
+                    null
                 )
             }
         )
     val authInfo: StateFlow<AuthInfo?> = _authInfo
 
-    fun setAuthInfo(token: String, user: UserDTO) {
-        _authInfo.value = AuthInfo(token, user)
+    fun setTokenInfo(inAccessToken: String, inRefreshToken: String) {
         sharedPref.edit {
-            putString(AccessTokenKey, token)
-            putInt(UserIdKey, user.id)
-            putString(UsernameKey, user.username)
+            putString(AccessTokenKey, inAccessToken)
+            putString(RefreshTokenKey, inRefreshToken)
         }
+        val authInfo = (authInfo.value?.userInfo)?:null
+        _authInfo.value = AuthInfo(inAccessToken,inRefreshToken,authInfo)
+    }
+
+    fun setUserDtoInfo(userDTO: UserDTO) {
+        sharedPref.edit {
+            putString(UserLoginIdKey, userDTO.loginId)
+            putString(UserSocialEmailKey, userDTO.socialEmail)
+            putString(UserUnivEmailKey, userDTO.univEmail)
+            putString(UserNickNameKey, userDTO.nickname)
+            putString(UserProfileUrlKey, userDTO.profileUrl)
+        }
+        val accessToken = (authInfo.value?.accessToken)?:""
+        val refreshToken = (authInfo.value?.refreshToken)?:""
+        _authInfo.value = AuthInfo(accessToken, refreshToken, userDTO)
+    }
+
+    fun clearAuthInfo() {
+        sharedPref.edit {
+            putString(AccessTokenKey, "")
+            putString(RefreshTokenKey, "")
+            putString(UserLoginIdKey, "")
+            putString(UserSocialEmailKey, "")
+            putString(UserUnivEmailKey, "")
+            putString(UserNickNameKey, "")
+            putString(UserProfileUrlKey, "")
+        }
+        _authInfo.value = null
     }
 
     data class AuthInfo(
         val accessToken: String,
-        val user: UserDTO,
+        val refreshToken: String,
+        val userInfo: UserDTO?
     )
 
     companion object {
         const val AccessTokenKey = "access_token"
-        const val UsernameKey = "username"
-        const val UserIdKey = "user_id"
+        const val RefreshTokenKey = "refresh_token"
+
+        const val UserLoginIdKey = "user_loginId"
+        const val UserSocialEmailKey = "user_socialEmail"
+        const val UserUnivEmailKey = "user_univEmail"
+        const val UserNickNameKey = "user_nickName"
+        const val UserProfileUrlKey = "user_profileUrl"
 
         const val SharedPreferenceName = "auth_pref"
     }
