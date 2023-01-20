@@ -14,6 +14,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApi
+import com.kakao.sdk.user.UserApiClient
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentLoginBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -39,6 +44,7 @@ class LoginFragment :  Fragment() {
         binding.apply{
             btnLogin.setOnClickListener { login() }
             btnSignup.setOnClickListener { signUp() }
+            kakaoLoginButton.setOnClickListener { viewModel.kakaoSocialLogin(requireContext())}
         }
 
         lifecycleScope.launchWhenStarted {
@@ -93,4 +99,5 @@ class LoginFragment :  Fragment() {
     private fun signUp(){
         findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
     }
+
 }
