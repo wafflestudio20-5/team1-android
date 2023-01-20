@@ -34,7 +34,7 @@ class SignUpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply{
-            btnSignup.setOnClickListener { signUp() }
+            btnSignup22.setOnClickListener { signUp() }
         }
 
         lifecycleScope.launchWhenStarted {
@@ -43,6 +43,8 @@ class SignUpFragment : Fragment() {
             }
         }
     }
+
+
 
     private fun signUp(){
         viewModel.signUp(binding.idEditText.text.toString(), binding.passwordEditText.text.toString())

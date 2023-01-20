@@ -105,4 +105,14 @@ class LoginViewModel(
         }
 
     }
+    fun naverSocialLogin() {
+
+    }
+    fun googleSocialLogin() {
+
+    }
+    fun githubSocialLogin() {
+
+    }
+
 }
