@@ -23,6 +23,7 @@ class PostFragment() : Fragment() {
 
     private var boardId = 0L
     private var postId = 0L
+    private var replyParent: Long? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,6 +68,13 @@ class PostFragment() : Fragment() {
         //툴바
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
+        }
+
+        //새 댓글 작성
+        //TODO: 익명이 아닌 댓글 작성 안됨
+        //{"timestamp":"2023-01-20T09:55:13.843714127","status":500,"error-code":0,"default-message":"could not execute statement; SQL [n/a]; constraint [reply.post_id]"}
+        binding.newCommentButton.setOnClickListener {
+            viewModel.createReply(binding.newCommentText.text.toString(),replyParent,binding.anonymous.isChecked)
         }
     }
 

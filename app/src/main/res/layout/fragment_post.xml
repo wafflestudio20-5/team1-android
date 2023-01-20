@@ -168,22 +168,34 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toTopOf="@+id/new_comment_text"/>
 
+    <CheckBox
+        android:id="@+id/anonymous"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
+        android:text="익명"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/new_comment_text"
+        app:layout_constraintBottom_toBottomOf="@id/new_comment_text"/>
+
     <EditText
         android:id="@+id/new_comment_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="45dp"
+        android:inputType="textMultiLine"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/anonymous"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="Hello World!"/>
+        tools:text="Hello World!\nHello World"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/new_comment_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:background="@drawable/ic_baseline_edit_24"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/new_comment_text"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
