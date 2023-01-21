@@ -44,6 +44,9 @@
         <argument
             android:name="boardType"
             app:argType="com.waffle22.wafflytime.network.dto.BoardType" />
+        <action
+            android:id="@+id/action_boardFragment_to_searchPostFragment"
+            app:destination="@id/searchPostFragment"/>
     </fragment>
     <fragment
         android:id="@+id/postFragment"
@@ -126,4 +129,12 @@
         android:id="@+id/newBoardFragment"
         android:name="com.waffle22.wafflytime.ui.boards.boardlist.NewBoardFragment"
         android:label="NewBoardFragment" />
+    <fragment
+        android:id="@+id/searchPostFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.boardscreen.SearchPostFragment"
+        android:label="SearchPostFragment" >
+        <action
+            android:id="@+id/action_searchPostFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
 </navigation>
