@@ -14,15 +14,13 @@ import kotlin.reflect.KParameter
 
 class MainActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        Log.e("Debug", Utility.getKeyHash(this))
-    }
-
     private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.e("Debug", Utility.getKeyHash(this))
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -43,10 +41,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun hideBottomNav() {
+    private fun hideBottomNav() {
         binding.bottomNav.visibility = View.GONE
     }
-    fun showBottomNav() {
+    private fun showBottomNav() {
         binding.bottomNav.visibility = View.VISIBLE
     }
 }
