@@ -10,13 +10,16 @@
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginEnd="45dp"
+        android:inputType="text"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/back_button"
-        android:layout_width="wrap_content"
+        android:layout_width="45dp"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_baseline_arrow_back_24"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,7 +27,7 @@
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/search_button"
-        android:layout_width="wrap_content"
+        android:layout_width="45dp"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_baseline_search_24"
         app:layout_constraintTop_toTopOf="parent"
@@ -50,13 +53,13 @@
             android:id="@+id/explanation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="설명설명"/>
+            android:text="검색 결과가 없습니다."/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/new_board"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="새 게시판 만들기"/>
+            android:text="새 게시판 만들기"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

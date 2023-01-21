@@ -85,11 +85,13 @@ class BoardListViewModel(
     }
 
     fun searchBoard(keyword: String){
+        Log.v("BoardListViewModel", keyword)
         _searchResults.value = mutableListOf()
         if (keyword == "")  return
         for (board in _allBoards.value!!){
             if (board.name.contains(keyword))
                 _searchResults.value?.plusAssign(board)
         }
+        Log.v("BoardListViewModel", _searchResults.value!!.size.toString())
     }
 }
