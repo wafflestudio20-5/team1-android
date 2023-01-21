@@ -72,6 +72,13 @@ data class PostResponse( // PostResponse
     @Json(name = "nreplies") val nreplies: Int
 )
 
+data class CreateBoardRequest(
+    @Json(name = "boardType") val boardType: String,
+    @Json(name = "title") val title: String,
+    @Json(name = "description") val description: String,
+    @Json(name = "allowAnonymous") val allowAnonymous: Boolean
+)
+
 data class CreateBoardResponse(
     @Json(name = "userId") val userId : Long,
     @Json(name = "boardId") val boardId: Long,

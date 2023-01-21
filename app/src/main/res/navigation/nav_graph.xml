@@ -81,6 +81,10 @@
         <action
             android:id="@+id/action_boardSearchFragment_to_boardFragment"
             app:destination="@id/boardFragment"/>
+        <action
+            android:id="@+id/action_boardSearchFragment_to_newBoardFragment"
+            app:destination="@id/newBoardFragment"
+            app:popUpTo="@id/boardSearchFragment" />
     </fragment>
     <fragment
         android:id="@+id/mainHomeFragment"
@@ -117,4 +121,8 @@
         app:destination="@id/authCheckFragment"
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true"/>
+    <fragment
+        android:id="@+id/newBoardFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.boardlist.NewBoardFragment"
+        android:label="NewBoardFragment" />
 </navigation>

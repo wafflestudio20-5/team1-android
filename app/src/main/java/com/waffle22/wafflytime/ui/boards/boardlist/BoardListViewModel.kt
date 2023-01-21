@@ -9,16 +9,13 @@ import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.network.dto.BoardAbstract
 import com.waffle22.wafflytime.network.dto.BoardListResponse
-import com.waffle22.wafflytime.util.AuthStorage
+import com.waffle22.wafflytime.network.dto.CreateBoardRequest
+import com.waffle22.wafflytime.network.dto.LoadingStatus
 import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-
-enum class BoardLoadingStatus {
-    Standby, Success, Corruption, TokenExpired, Error
-}
 
 class BoardListViewModel(
     private val wafflyApiService: WafflyApiService,
@@ -36,9 +33,12 @@ class BoardListViewModel(
     private var _taggedBoards = MutableLiveData<MutableList<BoardListResponse>>()
     val taggedBoards: LiveData<MutableList<BoardListResponse>>
         get() = _taggedBoards
-    private val _boardLoadingState = MutableStateFlow<BoardLoadingStatus>(BoardLoadingStatus.Standby)
-    val boardLoadingState: StateFlow<BoardLoadingStatus>
+    private val _boardLoadingState = MutableStateFlow<LoadingStatus>(LoadingStatus.Standby)
+    val boardLoadingState: StateFlow<LoadingStatus>
         get() = _boardLoadingState
+    private val _createBoardState = MutableStateFlow(LoadingStatus.Standby)
+    val createBoardState: StateFlow<LoadingStatus>
+        get() = _createBoardState
 
     private var _searchResults = MutableLiveData<MutableList<BoardAbstract>>()
     val searchResults: LiveData<MutableList<BoardAbstract>>
@@ -52,7 +52,7 @@ class BoardListViewModel(
                 //Log.v("BoardListViewModel", response.toString())
                 when(response.code().toString()) {
                     "200" -> {
-                        _boardLoadingState.value = BoardLoadingStatus.Success
+                        _boardLoadingState.value = LoadingStatus.Success
                         _allBoards.value = mutableListOf ()
                         _taggedBoards.value = mutableListOf ()
                         _customBoards.value = mutableListOf()
@@ -70,15 +70,12 @@ class BoardListViewModel(
                         }
                     }
                     else -> {
-                        when(HttpException(response).parseError(moshi)?.errorCode){
-                            "103" -> _boardLoadingState.value = BoardLoadingStatus.TokenExpired
-                            else -> _boardLoadingState.value = BoardLoadingStatus.Error
-                        }
+                        _boardLoadingState.value = LoadingStatus.Error
                         Log.v("BoardListViewModel", response.errorBody()!!.string())
                     }
                 }
             } catch (e: java.lang.Exception){
-                _boardLoadingState.value = BoardLoadingStatus.Corruption
+                _boardLoadingState.value = LoadingStatus.Corruption
                 Log.v("BoardListViewModel", e.toString())
             }
         }
@@ -93,5 +90,25 @@ class BoardListViewModel(
                 _searchResults.value?.plusAssign(board)
         }
         Log.v("BoardListViewModel", _searchResults.value!!.size.toString())
+    }
+
+    fun createBoard(title: String, boardType: String, description: String, allowAnonymous: Boolean){
+        if (title == "")    return
+        viewModelScope.launch {
+            try{
+                val response = wafflyApiService.createBoard(CreateBoardRequest(boardType,title,description, allowAnonymous))
+                when(response.code().toString()){
+                    "200" -> {
+                        _createBoardState.value = LoadingStatus.Success
+                    }
+                    else -> {
+                        _createBoardState.value = LoadingStatus.Error
+                    }
+                }
+            } catch (e: java.lang.Exception){
+                _createBoardState.value = LoadingStatus.Corruption
+                Log.v("BoardListViewModel", e.toString())
+            }
+        }
     }
 }
