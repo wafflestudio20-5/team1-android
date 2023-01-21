@@ -107,4 +107,68 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_login" />
+    <Button
+        android:id="@+id/btn_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:text="회원가입하기"
+        android:layout_marginTop="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordField" />
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="소셜 계정으로 로그인"
+        app:layout_constraintTop_toBottomOf="@id/btn_signup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="70dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_signup"
+
+        >
+        <ImageButton
+            android:id="@+id/kakao_login_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:srcCompat="@drawable/kakaoicon"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center"
+            android:scaleType="centerInside"/>
+        <ImageButton
+            android:id="@+id/naver_login_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:srcCompat="@drawable/btng_"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center"
+            android:scaleType="centerInside"/>
+        <ImageButton
+            android:id="@+id/google_login_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:srcCompat="@drawable/g"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center"
+            android:scaleType="centerInside"/>
+        <ImageButton
+            android:id="@+id/github_login_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:srcCompat="@drawable/github"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center"
+            android:scaleType="centerInside"/>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

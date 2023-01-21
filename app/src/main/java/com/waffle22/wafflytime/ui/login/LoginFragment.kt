@@ -40,6 +40,10 @@ class LoginFragment :  Fragment() {
         binding.apply{
             btnLogin.setOnClickListener { login() }
             btnSignup.setOnClickListener { signUp() }
+            kakaoLoginButton.setOnClickListener{ kakaoLogin()}
+            naverLoginButton.setOnClickListener{ naverLogin()}
+            googleLoginButton.setOnClickListener{ googleLogin()}
+            githubLoginButton.setOnClickListener{ githubLogin()}
         }
 
         lifecycleScope.launchWhenStarted {
@@ -59,6 +63,26 @@ class LoginFragment :  Fragment() {
 
         viewModel.login(binding.idEditText.text.toString(), binding.passwordEditText.text.toString())
     }
+
+    private fun kakaoLogin() {
+        viewModel.kakaoSocialLogin(requireContext())
+    }
+
+    private fun naverLogin() {
+        viewModel.naverSocialLogin()
+    }
+
+    private fun googleLogin() {
+        viewModel.googleSocialLogin()
+    }
+
+    private fun githubLogin() {
+        viewModel.githubSocialLogin()
+    }
+
+    private fun loginLogic(status: LoginStatus){
+        when (status){
+            LoginStatus.StandBy -> {
 
     private fun loginLogic(status: StateStorage){
         when (status.status){

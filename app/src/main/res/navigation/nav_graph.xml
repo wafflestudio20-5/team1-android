@@ -4,6 +4,7 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/authCheckFragment">
 
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.waffle22.wafflytime.ui.login.LoginFragment"
@@ -106,4 +107,5 @@
         app:destination="@id/authCheckFragment"
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true"/>
+
 </navigation>

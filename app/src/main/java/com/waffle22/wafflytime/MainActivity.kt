@@ -1,14 +1,25 @@
 package com.waffle22.wafflytime
 
 import android.os.Bundle
+
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.kakao.sdk.common.KakaoSdk.keyHash
+import com.kakao.sdk.common.util.Utility
 import com.waffle22.wafflytime.databinding.ActivityMainBinding
+import kotlin.reflect.KParameter
 
 class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        Log.e("Debug", Utility.getKeyHash(this))
+    }
+
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

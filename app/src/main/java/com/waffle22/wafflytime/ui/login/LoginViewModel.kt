@@ -13,6 +13,14 @@ import com.waffle22.wafflytime.util.StateStorage
 import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import android.content.Context
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApiClient
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import retrofit2.Response
@@ -36,6 +44,8 @@ class LoginViewModel(
 
     fun login(id: String, password: String){
         viewModelScope.launch {
+
+
             try {
                 val response = wafflyApiService.basicLogin(LoginRequest(id, password))
                 if (response.isSuccessful) {
@@ -51,4 +61,19 @@ class LoginViewModel(
             }
         }
     }
+
+
+    fun kakaoSocialLogin(context : Context) {
+      
+    }
+    fun naverSocialLogin() {
+
+    }
+    fun googleSocialLogin() {
+
+    }
+    fun githubSocialLogin() {
+
+    }
+
 }
