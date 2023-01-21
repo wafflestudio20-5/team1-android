@@ -35,7 +35,7 @@ class SignUpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply{
-            btnSignup22.setOnClickListener { signUp() }
+            btnSignUpDone.setOnClickListener { signUp() }
         }
 
         lifecycleScope.launchWhenStarted {

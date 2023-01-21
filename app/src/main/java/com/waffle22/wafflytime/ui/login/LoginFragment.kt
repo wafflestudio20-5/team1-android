@@ -80,10 +80,6 @@ class LoginFragment :  Fragment() {
         viewModel.githubSocialLogin()
     }
 
-    private fun loginLogic(status: LoginStatus){
-        when (status){
-            LoginStatus.StandBy -> {
-
     private fun loginLogic(status: StateStorage){
         when (status.status){
              "0" -> {
