@@ -17,6 +17,8 @@ import com.waffle22.wafflytime.network.dto.BoardType
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+//TODO: 맨 아래 게시글이 잘리는 오류
+
 class BoardFragment() : Fragment() {
     private lateinit var binding: FragmentBoardBinding
 

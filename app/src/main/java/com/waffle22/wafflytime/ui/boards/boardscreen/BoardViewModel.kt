@@ -36,6 +36,9 @@ class BoardViewModel(
     private var _announcements = MutableLiveData<MutableList<PostResponse>>()
     val announcements: LiveData<MutableList<PostResponse>>
         get() = _announcements
+    private var _searchResults = MutableLiveData<MutableList<PostResponse>>()
+    val searchResults : LiveData<MutableList<PostResponse>>
+        get() = _searchResults
     private var _postsLoadingState = MutableStateFlow<PostsLoadingStatus>(PostsLoadingStatus.Standby)
     val postsLoadingState: StateFlow<PostsLoadingStatus>
         get() = _postsLoadingState
@@ -132,7 +135,7 @@ class BoardViewModel(
                         }
                     }
                     else -> {
-                        when(HttpException(response!!).parseError(moshi)!!.errorCode){
+                        when(HttpException(response).parseError(moshi)!!.errorCode){
                             "103" -> _postsLoadingState.value = PostsLoadingStatus.TokenExpired
                             else -> _postsLoadingState.value = PostsLoadingStatus.Error
                         }
@@ -143,5 +146,11 @@ class BoardViewModel(
                 Log.v("BoardViewModel", e.toString())
             }
         }
+    }
+
+    fun searchPost(keyword: String){
+        if (keyword == "")  return
+        _searchResults.value = mutableListOf()
+
     }
 }
