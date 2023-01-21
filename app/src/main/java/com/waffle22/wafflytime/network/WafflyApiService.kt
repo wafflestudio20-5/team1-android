@@ -21,7 +21,6 @@ interface WafflyApiService {
     @PATCH("/api/user/verified-mail")
     suspend fun emailPatch(@Body() email: EmailRequest): Response<TokenContainer>
 
-    // 실험
     @GET("/api/user/me")
     suspend fun getUserInfo(): Response<UserDTO>
     
@@ -76,4 +75,9 @@ interface WafflyApiService {
 
     @PUT("/api/board/{boardId}/post/{postId}")
     suspend fun editPost(boardId: Long, postId: Long, @Body() editPostRequest: EditPostRequest): Response<EditPostResponse>
+
+
+    // Notification 관련 Api
+    @GET("/api/user/notifications")
+    suspend fun getNotifications(@Query("page") page: Int, @Query("size") size: Int): Response<Notification>
 }

@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.util
+package com.waffle22.wafflytime.ui.notification
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,19 +7,19 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.databinding.NotificationItemBinding
-import com.waffle22.wafflytime.network.dto.Notification
+import com.waffle22.wafflytime.network.dto.NotificationData
 
-class NotifyAdapter: ListAdapter<Notification, NotifyAdapter.NotifyViewHolder>(DiffCallback){
+class NotifyAdapter: ListAdapter<NotificationData, NotifyAdapter.NotifyViewHolder>(DiffCallback){
 
     class NotifyViewHolder(
         private val binding: NotificationItemBinding
     ): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(notification: Notification) {
+        fun bind(notificationData: NotificationData) {
             binding.apply {
-                commentTitle.text = notification.title
-                commentContent.text = notification.content
-                commentTime.text = notification.date
+                commentTitle.text = notificationData.notificationType
+                commentContent.text = notificationData.notificationContent
+                commentTime.text = "hi"
             }
             binding.executePendingBindings()
         }
@@ -36,12 +36,12 @@ class NotifyAdapter: ListAdapter<Notification, NotifyAdapter.NotifyViewHolder>(D
         val getNotification = getItem(position)
         holder.bind(getNotification)
     }
-    companion object DiffCallback: DiffUtil.ItemCallback<Notification>() {
-        override fun areItemsTheSame(oldItem: Notification, newItem: Notification): Boolean {
-            return oldItem.title == newItem.title
+    companion object DiffCallback: DiffUtil.ItemCallback<NotificationData>() {
+        override fun areItemsTheSame(oldItem: NotificationData, newItem: NotificationData): Boolean {
+            return (oldItem.notificationContent == newItem.notificationContent) && (oldItem.notificationCreatedAt == newItem.notificationCreatedAt)
         }
 
-        override fun areContentsTheSame(oldItem: Notification, newItem: Notification): Boolean {
+        override fun areContentsTheSame(oldItem: NotificationData, newItem: NotificationData): Boolean {
             return oldItem == newItem
         }
 
