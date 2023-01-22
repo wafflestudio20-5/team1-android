@@ -68,7 +68,7 @@ val appModule = module {
     viewModel { AuthCheckViewModel(get(), get(), get()) }
     viewModel { BoardListViewModel(get(), get()) }
     viewModel { BoardViewModel(get(), get()) }
-    viewModel { PostViewModel(get()) }
+    viewModel { PostViewModel(get(), get()) }
     viewModel { NewPostViewModel(get(), get()) }
 }
 
