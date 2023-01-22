@@ -5,14 +5,19 @@ import android.util.Log
 import android.view.*
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentPostBinding
+import com.waffle22.wafflytime.network.dto.LoadingStatus
 import com.waffle22.wafflytime.network.dto.PostTaskType
+import com.waffle22.wafflytime.network.dto.ReplyResponse
 import com.waffle22.wafflytime.network.dto.TimeDTO
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.LocalDate
 
@@ -25,6 +30,7 @@ class PostFragment() : Fragment() {
     private var boardId = 0L
     private var postId = 0L
     private var replyParent: Long? = null
+    private var editingReply: ReplyResponse? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +59,8 @@ class PostFragment() : Fragment() {
         // 댓글 부분
         val postReplyAdapter = PostReplyAdapter(
             {setReplyState(it.replyId)},
-            {viewModel.canEditReply(it)}
+            {viewModel.canEditReply(it)},
+            {flag, reply -> modifyReplyLogic(flag, reply)}
         )
         viewModel.replies.observe(this.viewLifecycleOwner){ items ->
             items.let{
@@ -78,10 +85,19 @@ class PostFragment() : Fragment() {
         //새 댓글 작성
         //{"timestamp":"2023-01-20T09:55:13.843714127","status":500,"error-code":0,"default-message":"could not execute statement; SQL [n/a]; constraint [reply.post_id]"}
         binding.newCommentButton.setOnClickListener {
-            viewModel.createReply(binding.newCommentText.text.toString(),replyParent,binding.anonymous.isChecked)
-            viewModel.getReplies(boardId, postId)
-            binding.newCommentText.setText("")
-            setReplyState(null)
+            if (editingReply == null) {
+                viewModel.createReply(
+                    binding.newCommentText.text.toString(),
+                    replyParent,
+                    binding.anonymous.isChecked
+                )
+                viewModel.getReplies(boardId, postId)
+                binding.newCommentText.setText("")
+                setReplyState(null)
+            }
+            else {
+                editReply(binding.newCommentText.text.toString())
+            }
         }
         setReplyState(null)
     }
@@ -169,6 +185,51 @@ class PostFragment() : Fragment() {
         }
         else {
             binding.newCommentText.hint = "답글을 입력하세요"
+        }
+    }
+
+    fun modifyReplyLogic(isEdit: Boolean, reply: ReplyResponse){
+        if (isEdit) setEditReply(reply)
+        else    deleteReply(reply)
+    }
+
+    private fun setEditReply(reply: ReplyResponse){
+        binding.newCommentText.setText(reply.contents)
+        editingReply = reply
+    }
+
+    private fun editReply(contents: String){
+        viewModel.editReply(editingReply!!, contents)
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.modifyReplyState.collect {
+                    when(it){
+                        LoadingStatus.Standby -> null
+                        LoadingStatus.Success -> {
+                            viewModel.refresh(boardId, postId)
+                            editingReply = null
+                        }
+                        else -> null
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteReply(reply: ReplyResponse){
+        viewModel.deleteReply(reply)
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.modifyReplyState.collect{
+                    when(it){
+                        LoadingStatus.Standby -> null
+                        LoadingStatus.Success -> {
+                            viewModel.refresh(boardId, postId)
+                        }
+                        else -> null
+                    }
+                }
+            }
         }
     }
 
