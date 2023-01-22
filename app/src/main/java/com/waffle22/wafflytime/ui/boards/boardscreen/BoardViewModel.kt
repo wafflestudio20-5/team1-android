@@ -30,6 +30,7 @@ class BoardViewModel(
     private var _boardInfo = MutableLiveData<BoardDTO>()
     val boardInfo: LiveData<BoardDTO>
         get() = _boardInfo
+    private var _allposts = MutableLiveData<MutableList<PostResponse>>()
     private var _posts = MutableLiveData<MutableList<PostResponse>>()
     val posts: LiveData<MutableList<PostResponse>>
         get() = _posts
@@ -45,11 +46,6 @@ class BoardViewModel(
     private var _page = 0
     private val PAGE_SIZE = 20
     private var _boardId = -1L
-
-    init{
-        _posts.value = mutableListOf()
-        _announcements.value = mutableListOf()
-    }
 
     fun refreshBoard(boardId: Long, boardType: BoardType){
         _postsLoadingState.value = PostsLoadingStatus.Standby
@@ -72,7 +68,7 @@ class BoardViewModel(
             viewModelScope.launch {
                 try{
                     val response = wafflyApiService.getSingleBoard(boardId)
-                    when(response!!.code().toString()){
+                    when(response.code().toString()){
                         "200" -> {
                             Log.v("BoardViewModel", response.body()!!.title)
                             _boardInfo.value = response.body()
@@ -125,10 +121,15 @@ class BoardViewModel(
                                     }
                                 }
                                 if (! alreadyExists) {
-                                    _posts.value!! += newPost
-                                    if(newPost.isQuestion)  Log.v("BoardViewModel", newPost.contents)
-                                    if(newPost.isQuestion && _announcements.value!!.size < 2)
-                                        _announcements.value!! += newPost
+                                    //if(newPost.isQuestion)  Log.v("BoardViewModel", newPost.contents)
+                                    if(newPost.isQuestion) {
+                                        if(_announcements.value!!.size < 2) {
+                                            _announcements.value!! += newPost
+                                            _posts.value!!.add(0, newPost)
+                                        }
+                                        _posts.value!! += notQuestion(newPost)
+                                    }
+                                    else _posts.value!! += newPost
                                 }
                             }
                             _page += 1
@@ -152,5 +153,28 @@ class BoardViewModel(
         if (keyword == "")  return
         _searchResults.value = mutableListOf()
 
+    }
+
+    private fun notQuestion(response: PostResponse): PostResponse {
+        return PostResponse(
+            response.boardId,
+            response.boardTitle,
+            response.postId,
+            response.createdAt,
+            response.writerId,
+            response.nickname,
+            response.isWriterAnonymous,
+            false,
+            response.title,
+            response.contents,
+            response.images,
+            response.nlikes,
+            response.nscraps,
+            response.nreplies
+        )
+    }
+
+    fun reset(){
+        _page = 0
     }
 }
