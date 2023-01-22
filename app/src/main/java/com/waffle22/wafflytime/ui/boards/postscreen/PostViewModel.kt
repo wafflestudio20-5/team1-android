@@ -65,6 +65,7 @@ class PostViewModel(
     fun getReplies(boardId: Long, postId: Long){
         viewModelScope.launch {
             try{
+                _repliesState.value = PostStatus.StandBy
                 val response = wafflyApiService.getReplies(boardId, postId)
                 when (response.code().toString()){
                     "200" -> {
