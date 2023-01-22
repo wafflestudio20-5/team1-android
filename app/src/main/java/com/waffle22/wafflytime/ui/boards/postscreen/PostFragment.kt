@@ -110,7 +110,10 @@ class PostFragment() : Fragment() {
                         val action = PostFragmentDirections.actionPostFragmentToNewPostFragment(boardId, PostTaskType.EDIT)
                         findNavController().navigate(action)
                     }
-                    R.id.delete -> {}
+                    R.id.delete -> {
+                        viewModel.deletePost()
+                        findNavController().navigateUp()
+                    }
                 }
                 return true
             }

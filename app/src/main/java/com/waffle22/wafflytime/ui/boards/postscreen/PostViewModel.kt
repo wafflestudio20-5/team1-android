@@ -107,6 +107,21 @@ class PostViewModel(
         }
     }
 
+    fun deletePost(){
+        viewModelScope.launch {
+            try {
+                val response = wafflyApiService.deletePost(_curBoard.boardId, _curPost.value!!.postId)
+                when (response.code().toString()){
+                    "200" -> {
+                        Log.d("PostViewModel", "Delete Success")
+                    }
+                }
+            } catch (e: java.lang.Exception) {
+                Log.v("PostViewModel", e.toString())
+            }
+        }
+    }
+
     fun canEditPost(): Boolean{
         return true
     }
