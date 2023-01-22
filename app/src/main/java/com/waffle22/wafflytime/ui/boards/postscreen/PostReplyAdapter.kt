@@ -16,7 +16,8 @@ import java.time.LocalDate
 
 class PostReplyAdapter(
     private val replyClicked: (ReplyResponse) -> Unit,
-    private val editable: (ReplyResponse) -> Boolean
+    private val editable: (ReplyResponse) -> Boolean,
+    private val modifyReply: (Boolean, ReplyResponse) -> Unit
 ) : ListAdapter<ReplyResponse, PostReplyAdapter.PostReplyViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostReplyViewHolder {
@@ -29,12 +30,15 @@ class PostReplyAdapter(
 
     override fun onBindViewHolder(holder: PostReplyViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(current, replyClicked, editable)
+        holder.bind(current, replyClicked, editable, modifyReply)
     }
 
     class PostReplyViewHolder(private var binding: PostReplyBinding, private var context: Context)
         : RecyclerView.ViewHolder(binding.root) {
-        fun bind(reply: ReplyResponse, replyClicked: (ReplyResponse) -> Unit, editable: (ReplyResponse) -> Boolean) {
+        fun bind(reply: ReplyResponse,
+                 replyClicked: (ReplyResponse) -> Unit,
+                 editable: (ReplyResponse) -> Boolean,
+                 modifyReply: (Boolean, ReplyResponse) -> Unit) {
             binding.apply{
                 nickname.text = reply.nickname
                 //time.text = ""
@@ -57,8 +61,8 @@ class PostReplyAdapter(
                         when(item.itemId){
                             R.id.notification -> {}
                             R.id.dm -> {}
-                            R.id.edit -> {}
-                            R.id.delete -> {}
+                            R.id.edit -> {modifyReply(true, reply)}
+                            R.id.delete -> {modifyReply(false, reply)}
                         }
                         true
                     }

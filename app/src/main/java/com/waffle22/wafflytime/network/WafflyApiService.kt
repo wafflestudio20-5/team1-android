@@ -127,7 +127,7 @@ interface WafflyApiService {
         @Path("boardId") boardId: Long,
         @Path("postId") postId: Long,
         @Path("replyId") replyId: Long
-    ): Response<ReplyResponse>?
+    ): Response<ReplyResponse>
 
     @PUT("/api/board/{boardId}/post/{postId}/reply/{replyId}")
     suspend fun editReply(

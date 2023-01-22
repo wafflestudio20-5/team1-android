@@ -6,10 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.waffle22.wafflytime.network.WafflyApiService
-import com.waffle22.wafflytime.network.dto.BoardDTO
-import com.waffle22.wafflytime.network.dto.PostResponse
-import com.waffle22.wafflytime.network.dto.ReplyRequest
-import com.waffle22.wafflytime.network.dto.ReplyResponse
+import com.waffle22.wafflytime.network.dto.*
 import com.waffle22.wafflytime.util.AuthStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +26,10 @@ class PostViewModel(
     private val _repliesState = MutableStateFlow(PostStatus.StandBy)
     val repliesState: StateFlow<PostStatus>
         get() = _repliesState
+    private val _modifyReplyState = MutableStateFlow(LoadingStatus.Standby)
+    val modifyReplyState: StateFlow<LoadingStatus>
+        get() = _modifyReplyState
+
     private lateinit var _curBoard : BoardDTO
     val curBoard: BoardDTO
         get() = _curBoard
@@ -116,6 +117,36 @@ class PostViewModel(
                         Log.d("PostViewModel", "Delete Success")
                     }
                 }
+            } catch (e: java.lang.Exception) {
+                Log.v("PostViewModel", e.toString())
+            }
+        }
+    }
+
+    fun editReply(reply: ReplyResponse, contents: String){
+        _modifyReplyState.value = LoadingStatus.Standby
+        if (contents == "") return
+        viewModelScope.launch {
+            try {
+                val response = wafflyApiService.editReply(_curBoard.boardId, _curPost.value!!.postId, reply.replyId, contents)
+                when (response.code().toString()){
+                    "200" -> {
+                        Log.d("PostViewModel", "Edit Success")
+                    }
+                }
+            } catch (e: java.lang.Exception) {
+                Log.v("PostViewModel", e.toString())
+            }
+        }
+    }
+
+    fun deleteReply(reply: ReplyResponse){
+        _modifyReplyState.value = LoadingStatus.Standby
+        viewModelScope.launch {
+            try {
+                val response = wafflyApiService.deleteReply(_curBoard.boardId, _curPost.value!!.postId, reply.replyId)
+                if (response.body() == null)
+                    Log.d("PostViewModel", "Delete Success")
             } catch (e: java.lang.Exception) {
                 Log.v("PostViewModel", e.toString())
             }
