@@ -11,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentPostBinding
+import com.waffle22.wafflytime.network.dto.PostTaskType
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.LocalDate
@@ -105,7 +106,10 @@ class PostFragment() : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when(menuItem.itemId){
                     R.id.refresh -> viewModel.refresh(boardId, postId)
-                    R.id.edit -> {}
+                    R.id.edit -> {
+                        val action = PostFragmentDirections.actionPostFragmentToNewPostFragment(boardId, PostTaskType.EDIT)
+                        findNavController().navigate(action)
+                    }
                     R.id.delete -> {}
                 }
                 return true

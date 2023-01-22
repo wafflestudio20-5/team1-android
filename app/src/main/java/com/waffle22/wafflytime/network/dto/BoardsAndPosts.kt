@@ -47,12 +47,12 @@ data class ImageResponse(
 )
 
 data class EditPostRequest(
-    @Json(name = "title") val title: String,
+    @Json(name = "title") val title: String?,
     @Json(name = "contents") val contents: String,
     @Json(name = "isQuestion") val isQuestion: Boolean,
     @Json(name = "isWriterAnonymous") val isWriterAnonymous : Boolean,
-    @Json(name = "images") val images: List<ImageRequest>,
-    @Json(name = "deletedImages") val deletedImages: List<String>
+    @Json(name = "images") val images: List<ImageRequest>?,
+    @Json(name = "deletedImages") val deletedImages: List<String>?
 )
 
 data class PostResponse( // PostResponse
@@ -138,14 +138,6 @@ data class DeletePostResponse(
     @Json(name = "postTitle") val postTitle: String
 )
 
-data class EditPostResponse(
-    @Json(name = "postId") val postId: Long,
-    @Json(name = "writerId") val writerId: Long,
-    @Json(name = "isWriterAnonymous") val isWriterAnonymous : Boolean,
-    @Json(name = "title") val title: String,
-    @Json(name = "contents") val contents: Boolean
-)
-
 data class cancelScrapResponse(
     @Json(name = "scrapCanceledPostId") val postId: Long
 )
@@ -188,4 +180,8 @@ enum class BoardType{
 
 enum class LoadingStatus{
     Standby, Success, Corruption, Error
+}
+
+enum class PostTaskType{
+    CREATE, EDIT
 }
