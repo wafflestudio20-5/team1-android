@@ -7,14 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService
-import com.waffle22.wafflytime.network.dto.BoardDTO
-import com.waffle22.wafflytime.network.dto.LoadingStatus
-import com.waffle22.wafflytime.network.dto.PostRequest
-import com.waffle22.wafflytime.util.parseError
+import com.waffle22.wafflytime.network.dto.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 
 class NewPostViewModel(
     private val wafflyApiService: WafflyApiService,
@@ -73,6 +69,37 @@ class NewPostViewModel(
                 _createPostStatus.value = LoadingStatus.Corruption
             }
         }
+    }
+
+    fun editPost(post: PostResponse, newTitle: String?, newContents: String){
+        viewModelScope.launch {
+            try {
+                val request = EditPostRequest(
+                    newTitle,
+                    newContents,
+                    post.isQuestion,
+                    post.isWriterAnonymous,
+                    null,
+                    null
+                )
+                Log.d("EditPost", "Made a request")
+                val response = wafflyApiService.editPost(_boardInfo.value!!.boardId, post.postId, request)
+                when (response.code().toString()){
+                    "200" -> {
+                        Log.v("NewPostViewModel", "New Post Created")
+                        _createPostStatus.value = LoadingStatus.Success
+                    }
+                    else -> {
+                        Log.v("NewPostViewModel", response.errorBody()!!.string())
+                        _createPostStatus.value = LoadingStatus.Error
+                    }
+                }
+            } catch(e: java.lang.Exception) {
+                Log.v("NewPostViewModel", e.toString())
+                _createPostStatus.value = LoadingStatus.Corruption
+            }
+        }
+
     }
 
     fun resetStates(){

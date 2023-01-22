@@ -90,7 +90,7 @@ interface WafflyApiService {
     suspend fun editPost(
         @Path("boardId") boardId: Long,
         @Path("postId") postId: Long,
-        @Body() editPostRequest: EditPostRequest): Response<EditPostResponse>
+        @Body() editPostRequest: EditPostRequest): Response<PostResponse>
 
     @POST("/api/board/{boardId}/post/{postId}/like")
     suspend fun likePost(

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentBoardBinding
 import com.waffle22.wafflytime.network.dto.BoardType
+import com.waffle22.wafflytime.network.dto.PostTaskType
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -70,7 +71,7 @@ class BoardFragment() : Fragment() {
 
         if(boardType == BoardType.Common){
             binding.newThread.setOnClickListener{
-                val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId)
+                val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId, PostTaskType.CREATE)
                 this.findNavController().navigate(action)
             }
         }
@@ -123,7 +124,7 @@ class BoardFragment() : Fragment() {
                     }
                     R.id.refresh -> viewModel.refreshBoard(boardId, boardType)
                     R.id.write -> {
-                        val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId)
+                        val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId, PostTaskType.CREATE)
                         findNavController().navigate(action)
                     }
                 }

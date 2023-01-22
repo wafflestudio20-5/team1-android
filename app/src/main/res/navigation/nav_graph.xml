@@ -57,6 +57,9 @@
         <argument
             android:name="postId"
             app:argType="long"/>
+        <action
+            android:id="@+id/action_postFragment_to_newPostFragment"
+            app:destination="@id/newPostFragment" />
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
@@ -65,6 +68,9 @@
         <argument
             android:name="boardId"
             app:argType="long"/>
+        <argument
+            android:name="taskType"
+            app:argType="com.waffle22.wafflytime.network.dto.PostTaskType"/>
     </fragment>
     <fragment
         android:id="@+id/boardListFragment"
