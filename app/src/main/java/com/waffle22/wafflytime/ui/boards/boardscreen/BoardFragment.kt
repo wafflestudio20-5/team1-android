@@ -17,7 +17,7 @@ import com.waffle22.wafflytime.network.dto.BoardType
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-//TODO: 맨 아래 게시글이 잘리는 오류
+//TODO: 맨 위아래 게시글이 잘리는 오류
 
 class BoardFragment() : Fragment() {
     private lateinit var binding: FragmentBoardBinding
@@ -90,10 +90,7 @@ class BoardFragment() : Fragment() {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            if((binding.announcements.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() == 0)
-                viewModel.refreshBoard(boardId, boardType)
-            else if((binding.threads.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() == viewModel.posts.value!!.size)
-                viewModel.getPosts(boardId, boardType)
+            viewModel.refreshBoard(boardId, boardType)
             binding.swipeRefreshLayout.isRefreshing = false
         }
 

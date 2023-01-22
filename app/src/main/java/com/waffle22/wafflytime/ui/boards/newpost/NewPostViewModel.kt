@@ -53,7 +53,7 @@ class NewPostViewModel(
         }
     }
 
-    fun createNewPost(title: String, contents: String, isQuestion: Boolean, isAnonymous: Boolean){
+    fun createNewPost(title: String?, contents: String, isQuestion: Boolean, isAnonymous: Boolean){
         viewModelScope.launch {
             try {
                 val request = PostRequest(title, contents, isQuestion, isAnonymous, listOf())
@@ -73,5 +73,10 @@ class NewPostViewModel(
                 _createPostStatus.value = LoadingStatus.Corruption
             }
         }
+    }
+
+    fun resetStates(){
+        _createPostStatus.value = LoadingStatus.Standby
+        _boardLoadingStatus.value = LoadingStatus.Standby
     }
 }

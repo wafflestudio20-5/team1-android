@@ -5,11 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.waffle22.wafflytime.databinding.FragmentNewThreadBinding
+import com.waffle22.wafflytime.network.dto.BoardType
 import com.waffle22.wafflytime.network.dto.LoadingStatus
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -54,8 +56,10 @@ class NewPostFragment : Fragment() {
         when (status){
             LoadingStatus.Standby -> null
             LoadingStatus.Success -> {
+                binding.title.visibility = if(viewModel.boardInfo.value!!.boardType == "DEFAULT") View.VISIBLE else View.GONE
                 binding.submitButton.setOnClickListener{
-                    viewModel.createNewPost(binding.title.text.toString(), binding.contents.text.toString(), binding.isQuestion.isChecked, binding.isAnonymous.isChecked)
+                    viewModel.createNewPost(if(viewModel.boardInfo.value!!.boardType == "DEFAULT") binding.title.text.toString() else null,
+                        binding.contents.text.toString(), binding.isQuestion.isChecked, binding.isAnonymous.isChecked)
                 }
             }
             else -> {
@@ -68,11 +72,18 @@ class NewPostFragment : Fragment() {
         when(status){
             LoadingStatus.Standby -> null
             LoadingStatus.Success -> {
+                resetNewPostContents()
                 findNavController().navigateUp()
             }
             else -> {
                 Log.v("NewPostFragment", "Submit Post Error")
             }
         }
+    }
+
+    fun resetNewPostContents(){
+        binding.title.setText("")
+        binding.contents.setText("")
+        viewModel.resetStates()
     }
 }
