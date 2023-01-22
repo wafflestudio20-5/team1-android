@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.ThreadReplyBinding
 import com.waffle22.wafflytime.network.dto.ReplyResponse
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import java.time.LocalDate
 
-class PostReplyAdapter()
+class PostReplyAdapter(private val clicked: (ReplyResponse) -> Unit)
     : ListAdapter<ReplyResponse, PostReplyAdapter.ThreadReplyViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThreadReplyViewHolder {
@@ -25,18 +26,21 @@ class PostReplyAdapter()
 
     override fun onBindViewHolder(holder: ThreadReplyViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(current)
+        holder.bind(current, clicked)
     }
 
     class ThreadReplyViewHolder(private var binding: ThreadReplyBinding, private var context: Context)
         : RecyclerView.ViewHolder(binding.root) {
-        fun bind(reply: ReplyResponse) {
+        fun bind(reply: ReplyResponse, clicked: (ReplyResponse) -> Unit) {
             binding.apply{
                 nickname.text = reply.nickname
                 //time.text = ""
                 replyText.text = reply.contents
                 //likesText.text = reply.
                 if (reply.isRoot)   notRoot.visibility = View.GONE
+                replyButton.setOnClickListener {
+                    clicked(reply)
+                }
             }
         }
         private fun timeToText(time: TimeDTO): String{

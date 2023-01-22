@@ -49,7 +49,9 @@ class PostFragment() : Fragment() {
         }
 
         // 댓글 부분
-        val postReplyAdapter = PostReplyAdapter()
+        val postReplyAdapter = PostReplyAdapter{
+            setReplyState(it.replyId)
+        }
         viewModel.replies.observe(this.viewLifecycleOwner){ items ->
             items.let{
                 postReplyAdapter.submitList(it)
@@ -74,7 +76,11 @@ class PostFragment() : Fragment() {
         //{"timestamp":"2023-01-20T09:55:13.843714127","status":500,"error-code":0,"default-message":"could not execute statement; SQL [n/a]; constraint [reply.post_id]"}
         binding.newCommentButton.setOnClickListener {
             viewModel.createReply(binding.newCommentText.text.toString(),replyParent,binding.anonymous.isChecked)
+            viewModel.getReplies(boardId, postId)
+            binding.newCommentText.setText("")
+            setReplyState(null)
         }
+        setReplyState(null)
     }
 
     private fun showPostLogic(status: PostStatus){
@@ -114,6 +120,18 @@ class PostFragment() : Fragment() {
                     else -> "알 수 없는 오류"
                 }
             }
+        }
+    }
+
+    private fun setReplyState(parentId: Long?){
+        Log.d("PostFragment", "setReplyState: "+parentId.toString())
+        binding.newCommentText.setText("")
+        replyParent = if(replyParent == parentId) null else parentId
+        if (replyParent == null){
+            binding.newCommentText.hint = "댓글을 입력하세요"
+        }
+        else {
+            binding.newCommentText.hint = "답글을 입력하세요"
         }
     }
 
