@@ -2,19 +2,21 @@ package com.waffle22.wafflytime.ui.boards.boardscreen
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentBoardBinding
 import com.waffle22.wafflytime.network.dto.BoardType
 import com.waffle22.wafflytime.network.dto.TimeDTO
@@ -41,6 +43,7 @@ class BoardFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupMenu()
 
         val postPreviewAdapter = PostPreviewAdapter{
             val action = BoardFragmentDirections.actionBoardFragmentToPostFragment(it.boardId, it.postId)
@@ -98,6 +101,35 @@ class BoardFragment() : Fragment() {
     override fun onStop(){
         super.onStop()
         viewModel.reset()
+    }
+
+    private fun setupMenu(){
+        binding.toolbar.addMenuProvider(object : MenuProvider{
+            override fun onPrepareMenu(menu: Menu) {
+                super.onPrepareMenu(menu)
+            }
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                //Log.d("BoardFragment", "onCreateMenu")
+                menuInflater.inflate(R.menu.board_actions, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                //Log.d("BoardFragment", "OnMenuItemSelected")
+                when (menuItem.itemId) {
+                    R.id.action_search -> {
+                        val action = BoardFragmentDirections.actionBoardFragmentToSearchPostFragment()
+                        findNavController().navigate(action)
+                    }
+                    R.id.refresh -> viewModel.refreshBoard(boardId, boardType)
+                    R.id.write -> {
+                        val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId)
+                        findNavController().navigate(action)
+                    }
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun showPostsLogic(status: PostsLoadingStatus){

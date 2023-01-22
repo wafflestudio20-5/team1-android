@@ -4,22 +4,26 @@
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_baseline_search_24"
-        android:title="Search"
+        android:title="검색"
+        android:clickable="false"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/refresh"
-        android:title="Refresh"
+        android:title="새로고침"
+        android:clickable="false"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/write"
-        android:title="Write New"
+        android:title="글 쓰기"
+        android:clickable="false"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/favorites"
-        android:title="Add to favorites"
+        android:title="즐겨찾기에 추가"
+        android:clickable="false"
         app:showAsAction="never"/>
 
 </menu>

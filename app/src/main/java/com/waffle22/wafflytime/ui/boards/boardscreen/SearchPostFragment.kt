@@ -45,7 +45,10 @@ class SearchPostFragment : Fragment() {
 
         binding.searchButton.setOnClickListener {
             viewModel.searchPost(binding.text.text.toString())
+            showSearchResultLogic()
         }
+
+        binding.backButton.setOnClickListener {findNavController().navigateUp()}
     }
 
     private fun showSearchResultLogic(){
