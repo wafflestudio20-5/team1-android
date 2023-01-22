@@ -5,6 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -12,12 +14,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.databinding.FragmentBoardBinding
 import com.waffle22.wafflytime.network.dto.BoardType
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-
-//TODO: 맨 위아래 게시글이 잘리는 오류
 
 class BoardFragment() : Fragment() {
     private lateinit var binding: FragmentBoardBinding
@@ -50,20 +51,8 @@ class BoardFragment() : Fragment() {
                 postPreviewAdapter.submitList(it)
             }
         }
-        binding.threads.adapter = postPreviewAdapter
-        binding.threads.layoutManager = LinearLayoutManager(this.context)
-
-        val boardAnnouncementAdapter = BoardAnnouncementAdapter{
-            val action = BoardFragmentDirections.actionBoardFragmentToPostFragment(it.boardId, it.postId)
-            this.findNavController().navigate(action)
-        }
-        viewModel.announcements.observe(this.viewLifecycleOwner){ items->
-            items.let{
-                boardAnnouncementAdapter.submitList(it)
-            }
-        }
-        binding.announcements.adapter = boardAnnouncementAdapter
-        binding.announcements.layoutManager = LinearLayoutManager(this.context)
+        binding.posts.adapter = postPreviewAdapter
+        binding.posts.layoutManager = LinearLayoutManager(this.context)
 
         boardId = navigationArgs.boardId
         boardType = navigationArgs.boardType
@@ -94,6 +83,21 @@ class BoardFragment() : Fragment() {
             binding.swipeRefreshLayout.isRefreshing = false
         }
 
+        binding.posts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                // 스크롤이 끝에 도달했는지 확인
+                if (binding.posts.canScrollVertically(1)) {
+                    Log.d("BoardFragemt", "end of scroll")
+                    viewModel.getPosts(boardId, boardType)
+                }
+            }
+        })
+    }
+
+    override fun onStop(){
+        super.onStop()
+        viewModel.reset()
     }
 
     private fun showPostsLogic(status: PostsLoadingStatus){
