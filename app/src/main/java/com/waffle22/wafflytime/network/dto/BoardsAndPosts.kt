@@ -124,7 +124,7 @@ data class PostsPage(
 
 //Post 관련
 data class PostRequest(
-    @Json(name = "title") val title: String,
+    @Json(name = "title") val title: String?,
     @Json(name = "contents") val contents: String,
     @Json(name = "isQuestion") val isQuestion: Boolean,
     @Json(name = "isWriterAnonymous") val isWriterAnonymous : Boolean,
