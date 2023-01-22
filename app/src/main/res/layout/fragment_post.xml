@@ -11,7 +11,6 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/post_actions"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="Forum title"
         app:layout_constraintTop_toTopOf="parent"

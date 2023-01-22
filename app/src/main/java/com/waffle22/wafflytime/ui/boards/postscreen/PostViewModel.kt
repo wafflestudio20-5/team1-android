@@ -10,6 +10,7 @@ import com.waffle22.wafflytime.network.dto.BoardDTO
 import com.waffle22.wafflytime.network.dto.PostResponse
 import com.waffle22.wafflytime.network.dto.ReplyRequest
 import com.waffle22.wafflytime.network.dto.ReplyResponse
+import com.waffle22.wafflytime.util.AuthStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -19,7 +20,8 @@ enum class PostStatus{
 }
 
 class PostViewModel(
-    private val wafflyApiService: WafflyApiService
+    private val wafflyApiService: WafflyApiService,
+    private val authStorage: AuthStorage
 ) : ViewModel() {
     private val _postState = MutableStateFlow<PostStatus>(PostStatus.StandBy)
     val postState: StateFlow<PostStatus>
@@ -36,6 +38,13 @@ class PostViewModel(
     private var _replies = MutableLiveData<List<ReplyResponse>>()
     val replies: LiveData<List<ReplyResponse>>
         get() = _replies
+
+    fun refresh(boardId: Long, postId: Long){
+        _postState.value = PostStatus.StandBy
+        _repliesState.value = PostStatus.StandBy
+        getPost(boardId, postId)
+        getReplies(boardId, postId)
+    }
 
     fun getPost(boardId: Long, postId: Long){
         viewModelScope.launch {
@@ -96,5 +105,13 @@ class PostViewModel(
                 Log.v("PostViewModel", e.toString())
             }
         }
+    }
+
+    fun canEditPost(): Boolean{
+        return true
+    }
+
+    fun canEditReply(reply: ReplyResponse): Boolean{
+        return true
     }
 }

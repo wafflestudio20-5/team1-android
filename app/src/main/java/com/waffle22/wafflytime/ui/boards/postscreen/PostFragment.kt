@@ -2,14 +2,14 @@ package com.waffle22.wafflytime.ui.boards.postscreen
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentPostBinding
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -36,6 +36,7 @@ class PostFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpMenu()
 
         //게시글 부분
         boardId = navigationArgs.boardId
@@ -49,9 +50,10 @@ class PostFragment() : Fragment() {
         }
 
         // 댓글 부분
-        val postReplyAdapter = PostReplyAdapter{
-            setReplyState(it.replyId)
-        }
+        val postReplyAdapter = PostReplyAdapter(
+            {setReplyState(it.replyId)},
+            {viewModel.canEditReply(it)}
+        )
         viewModel.replies.observe(this.viewLifecycleOwner){ items ->
             items.let{
                 postReplyAdapter.submitList(it)
@@ -81,6 +83,34 @@ class PostFragment() : Fragment() {
             setReplyState(null)
         }
         setReplyState(null)
+    }
+
+    private fun setUpMenu(){
+        binding.toolbar.addMenuProvider(object : MenuProvider{
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.post_actions, menu)
+            }
+
+            override fun onPrepareMenu(menu: Menu) {
+                if(viewModel.canEditPost()){
+                    menu.findItem(R.id.dm).isVisible = false
+                }
+                else {
+                    menu.findItem(R.id.edit).isVisible = false
+                    menu.findItem(R.id.delete).isVisible = false
+                }
+                super.onPrepareMenu(menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when(menuItem.itemId){
+                    R.id.refresh -> viewModel.refresh(boardId, postId)
+                    R.id.edit -> {}
+                    R.id.delete -> {}
+                }
+                return true
+            }
+        })
     }
 
     private fun showPostLogic(status: PostStatus){

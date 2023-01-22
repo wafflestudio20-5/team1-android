@@ -4,45 +4,65 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.R
-import com.waffle22.wafflytime.databinding.ThreadReplyBinding
+import com.waffle22.wafflytime.databinding.PostReplyBinding
 import com.waffle22.wafflytime.network.dto.ReplyResponse
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import java.time.LocalDate
 
-class PostReplyAdapter(private val clicked: (ReplyResponse) -> Unit)
-    : ListAdapter<ReplyResponse, PostReplyAdapter.ThreadReplyViewHolder>(DiffCallback){
+class PostReplyAdapter(
+    private val replyClicked: (ReplyResponse) -> Unit,
+    private val editable: (ReplyResponse) -> Boolean
+) : ListAdapter<ReplyResponse, PostReplyAdapter.PostReplyViewHolder>(DiffCallback){
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThreadReplyViewHolder {
-        return ThreadReplyViewHolder(
-            ThreadReplyBinding.inflate(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostReplyViewHolder {
+        return PostReplyViewHolder(
+            PostReplyBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             ), parent.context
         )
     }
 
-    override fun onBindViewHolder(holder: ThreadReplyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PostReplyViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(current, clicked)
+        holder.bind(current, replyClicked, editable)
     }
 
-    class ThreadReplyViewHolder(private var binding: ThreadReplyBinding, private var context: Context)
+    class PostReplyViewHolder(private var binding: PostReplyBinding, private var context: Context)
         : RecyclerView.ViewHolder(binding.root) {
-        fun bind(reply: ReplyResponse, clicked: (ReplyResponse) -> Unit) {
+        fun bind(reply: ReplyResponse, replyClicked: (ReplyResponse) -> Unit, editable: (ReplyResponse) -> Boolean) {
             binding.apply{
                 nickname.text = reply.nickname
                 //time.text = ""
                 replyText.text = reply.contents
                 //likesText.text = reply.
-                if (reply.isRoot){
-                    notRoot.visibility = View.GONE
-                    replyButton.visibility = View.GONE
-                }
-                replyButton.setOnClickListener {
-                    clicked(reply)
+                if (reply.isRoot) notRoot.visibility = View.GONE
+                else replyButton.visibility = View.GONE
+                replyButton.setOnClickListener { replyClicked(reply) }
+                moreButton.setOnClickListener {
+                    val popupMenu = PopupMenu(context, moreButton)
+                    popupMenu.menuInflater.inflate(R.menu.reply_actions, popupMenu.menu)
+                    if(editable(reply)){
+                        popupMenu.menu.findItem(R.id.dm).isEnabled = false
+                    }
+                    else{
+                        popupMenu.menu.findItem(R.id.edit).isEnabled = false
+                        popupMenu.menu.findItem(R.id.delete).isEnabled = false
+                    }
+                    popupMenu.setOnMenuItemClickListener { item ->
+                        when(item.itemId){
+                            R.id.notification -> {}
+                            R.id.dm -> {}
+                            R.id.edit -> {}
+                            R.id.delete -> {}
+                        }
+                        true
+                    }
+                    popupMenu.show()
                 }
             }
         }
