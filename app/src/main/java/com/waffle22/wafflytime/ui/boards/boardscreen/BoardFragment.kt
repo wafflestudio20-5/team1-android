@@ -3,27 +3,25 @@ package com.waffle22.wafflytime.ui.boards.boardscreen
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.LinearLayout
-import androidx.core.view.MenuHost
+import android.widget.Toast
 import androidx.core.view.MenuProvider
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentBoardBinding
 import com.waffle22.wafflytime.network.dto.BoardType
+import com.waffle22.wafflytime.network.dto.LoadingStatus
 import com.waffle22.wafflytime.network.dto.PostTaskType
-import com.waffle22.wafflytime.network.dto.TimeDTO
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class BoardFragment() : Fragment() {
+class BoardFragment : Fragment() {
     private lateinit var binding: FragmentBoardBinding
 
     private val viewModel: BoardViewModel by sharedViewModel()
@@ -63,9 +61,11 @@ class BoardFragment() : Fragment() {
         viewModel.getBoardInfo(boardId, boardType)
         viewModel.getPosts(boardId, boardType)
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.postsLoadingState.collect{
-                showPostsLogic(it)
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.postsLoadingState.collect{
+                    showPostsLogic(it)
+                }
             }
         }
 
@@ -92,7 +92,7 @@ class BoardFragment() : Fragment() {
                 super.onScrolled(recyclerView, dx, dy)
                 // 스크롤이 끝에 도달했는지 확인
                 if (binding.posts.canScrollVertically(1)) {
-                    Log.d("BoardFragemt", "end of scroll")
+                    Log.d("BoardFragment", "end of scroll")
                     viewModel.getPosts(boardId, boardType)
                 }
             }
@@ -106,10 +106,6 @@ class BoardFragment() : Fragment() {
 
     private fun setupMenu(){
         binding.toolbar.addMenuProvider(object : MenuProvider{
-            override fun onPrepareMenu(menu: Menu) {
-                super.onPrepareMenu(menu)
-            }
-
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 //Log.d("BoardFragment", "onCreateMenu")
                 menuInflater.inflate(R.menu.board_actions, menu)
@@ -133,19 +129,20 @@ class BoardFragment() : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    private fun showPostsLogic(status: PostsLoadingStatus){
+    private fun showPostsLogic(status: LoadingStatus){
         when (status) {
-            PostsLoadingStatus.Success ->{
+            LoadingStatus.Standby -> Toast.makeText(context, "로딩중", Toast.LENGTH_SHORT).show()
+            LoadingStatus.Success ->{
                 Log.v("BoardFragment", "Posts Loading Success")
                 binding.toolbar.title = viewModel.boardInfo.value!!.title
+                binding.description.text = viewModel.boardInfo.value!!.description
                 //binding.toolbar.title = viewModel.boardInfo.value!!.title + "\n" + viewModel.boardInfo.value!!.description
             }
-            PostsLoadingStatus.TokenExpired -> {
-                viewModel.getPosts(boardId,boardType)
-            }
-            else -> {
+            LoadingStatus.Error -> {
+                Toast.makeText(context, viewModel.errorMessage, Toast.LENGTH_SHORT).show()
                 Log.v("BoardFragment", "Error occurred")
             }
+            LoadingStatus.Corruption -> Toast.makeText(context, "알 수 없는 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
         }
     }
 }

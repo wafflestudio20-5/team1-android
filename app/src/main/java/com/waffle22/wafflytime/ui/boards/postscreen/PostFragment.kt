@@ -3,6 +3,7 @@ package com.waffle22.wafflytime.ui.boards.postscreen
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -54,16 +55,18 @@ class PostFragment() : Fragment() {
         postId = navigationArgs.postId
         viewModel.getPost(boardId, postId)
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.postState.collect {
-                showPostLogic(it)
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.postState.collect {
+                    showPostLogic(it)
+                }
             }
         }
 
         // 댓글 부분
         val postReplyAdapter = PostReplyAdapter(
             {setReplyState(it.replyId)},
-            {viewModel.canEditReply(it)},
+            {viewModel.canEditReply()},
             {flag, reply -> modifyReplyLogic(flag, reply)}
         )
         viewModel.replies.observe(this.viewLifecycleOwner){ items ->
@@ -75,9 +78,11 @@ class PostFragment() : Fragment() {
         binding.comments.layoutManager = LinearLayoutManager(this.context)
 
         viewModel.getReplies(boardId, postId)
-        lifecycleScope.launchWhenStarted {
-            viewModel.repliesState.collect{
-                showRepliesLogic(it)
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.repliesState.collect{
+                    showRepliesLogic(it)
+                }
             }
         }
 
@@ -142,8 +147,9 @@ class PostFragment() : Fragment() {
 
     private fun showPostLogic(status: PostStatus){
         when (status){
-            PostStatus.StandBy -> null
+            PostStatus.StandBy -> Toast.makeText(context, "게시물 로딩중", Toast.LENGTH_SHORT).show()
             PostStatus.Success -> {
+                Toast.makeText(context, "게시물 로딩 완료!", Toast.LENGTH_SHORT).show()
                 binding.apply {
                     binding.toolbar.title = viewModel.curBoard.title
                     nickname.text = viewModel.curPost.value!!.nickname ?: "익명"
@@ -166,8 +172,9 @@ class PostFragment() : Fragment() {
 
     private fun showRepliesLogic(status: PostStatus){
         when (status){
-            PostStatus.StandBy -> null
+            PostStatus.StandBy -> Toast.makeText(context, "댓글 로딩중", Toast.LENGTH_SHORT).show()
             PostStatus.Success -> {
+                Toast.makeText(context, "댓글 로딩 완료", Toast.LENGTH_SHORT).show()
                 Log.v("PostFragment", "댓글 받아오기 성공!")
             }
             else -> {
@@ -192,7 +199,7 @@ class PostFragment() : Fragment() {
         }
     }
 
-    fun modifyReplyLogic(isEdit: Boolean, reply: ReplyResponse){
+    private fun modifyReplyLogic(isEdit: Boolean, reply: ReplyResponse){
         if (isEdit) setEditReply(reply)
         else    deleteReply(reply)
     }
@@ -208,8 +215,9 @@ class PostFragment() : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.modifyReplyState.collect {
                     when(it){
-                        LoadingStatus.Standby -> null
+                        LoadingStatus.Standby -> Toast.makeText(context, "댓글 수정중", Toast.LENGTH_SHORT).show()
                         LoadingStatus.Success -> {
+                            Toast.makeText(context, "댓글 수정 완료", Toast.LENGTH_SHORT).show()
                             viewModel.refresh(boardId, postId)
                             editingReply = null
                         }
@@ -226,8 +234,9 @@ class PostFragment() : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.modifyReplyState.collect{
                     when(it){
-                        LoadingStatus.Standby -> null
+                        LoadingStatus.Standby -> Toast.makeText(context, "댓글 삭제중", Toast.LENGTH_SHORT).show()
                         LoadingStatus.Success -> {
+                            Toast.makeText(context, "댓글 삭제 완료", Toast.LENGTH_SHORT).show()
                             viewModel.refresh(boardId, postId)
                         }
                         else -> null
@@ -237,7 +246,7 @@ class PostFragment() : Fragment() {
         }
     }
 
-    fun timeToText(time: TimeDTO): String{
+    private fun timeToText(time: TimeDTO): String{
         var timeText = time.month.toString() + '/' + time.day.toString() + ' ' + time.hour.toString() + ':' + time.minute.toString()
         if (LocalDate.now().year != time.year)
             timeText = time.year.toString() + '/' + timeText

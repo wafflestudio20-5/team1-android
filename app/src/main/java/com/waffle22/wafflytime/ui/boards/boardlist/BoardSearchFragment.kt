@@ -20,7 +20,7 @@ class BoardSearchFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentSearchBoardBinding.inflate(inflater,container,false)
         return binding.root
     }

@@ -22,8 +22,8 @@ class BoardListViewModel(
     private val moshi: Moshi
 ) : ViewModel() {
     private var _allBoards = MutableLiveData<MutableList<BoardAbstract>>()
-    val allBoards: LiveData<MutableList<BoardAbstract>>
-        get() = _allBoards
+    //val allBoards: LiveData<MutableList<BoardAbstract>>
+        //get() = _allBoards
     private var _basicBoards = MutableLiveData<List<BoardAbstract>>()
     val basicBoards: LiveData<List<BoardAbstract>>
         get() = _basicBoards
@@ -33,12 +33,14 @@ class BoardListViewModel(
     private var _taggedBoards = MutableLiveData<MutableList<BoardListResponse>>()
     val taggedBoards: LiveData<MutableList<BoardListResponse>>
         get() = _taggedBoards
-    private val _boardLoadingState = MutableStateFlow<LoadingStatus>(LoadingStatus.Standby)
+
+    private val _boardLoadingState = MutableStateFlow(LoadingStatus.Standby)
     val boardLoadingState: StateFlow<LoadingStatus>
         get() = _boardLoadingState
     private val _createBoardState = MutableStateFlow(LoadingStatus.Standby)
     val createBoardState: StateFlow<LoadingStatus>
         get() = _createBoardState
+    var errorMessage = ""
 
     private var _searchResults = MutableLiveData<MutableList<BoardAbstract>>()
     val searchResults: LiveData<MutableList<BoardAbstract>>
@@ -71,6 +73,7 @@ class BoardListViewModel(
                     }
                     else -> {
                         _boardLoadingState.value = LoadingStatus.Error
+                        errorMessage = HttpException(response).parseError(moshi)!!.message
                         Log.v("BoardListViewModel", response.errorBody()!!.string())
                     }
                 }
@@ -103,6 +106,7 @@ class BoardListViewModel(
                     }
                     else -> {
                         _createBoardState.value = LoadingStatus.Error
+                        errorMessage = HttpException(response).parseError(moshi)!!.message
                     }
                 }
             } catch (e: java.lang.Exception){

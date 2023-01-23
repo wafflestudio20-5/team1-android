@@ -1,7 +1,7 @@
 package com.waffle22.wafflytime.ui.boards.boardlist
 
 import android.content.Context
-import android.util.SparseArray
+import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +17,7 @@ import com.waffle22.wafflytime.network.dto.BoardType
 class TaggedBoardsAdapter(private val parentFragment: BoardListFragment)
     :ListAdapter<BoardListResponse, TaggedBoardsAdapter.TaggedBoardsViewHolder>(DiffCallback){
 
-    private var expanded = SparseArray<Boolean>()
+    private var expanded = SparseBooleanArray()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaggedBoardsViewHolder {
         return TaggedBoardsViewHolder(
@@ -34,7 +34,7 @@ class TaggedBoardsAdapter(private val parentFragment: BoardListFragment)
 
     class TaggedBoardsViewHolder(private var binding: BoardTaggedBinding, private var context: Context)
         : RecyclerView.ViewHolder(binding.root){
-            fun bind(expanded: SparseArray<Boolean>, taggedBoards: BoardListResponse,
+            fun bind(expanded: SparseBooleanArray, taggedBoards: BoardListResponse,
                 parentFragment: BoardListFragment){
                 binding.description.text = taggedBoards.category
 
@@ -45,7 +45,7 @@ class TaggedBoardsAdapter(private val parentFragment: BoardListFragment)
                 boardListAdapter.submitList(taggedBoards.boards)
                 binding.recyclerview.adapter = boardListAdapter
                 binding.recyclerview.layoutManager = LinearLayoutManager(this.context)
-                if (expanded[adapterPosition] == null)  expanded.put(adapterPosition,false)
+                expanded.put(adapterPosition,false)
                 when (expanded[adapterPosition]){
                     true -> binding.recyclerview.visibility = View.VISIBLE
                     else -> binding.recyclerview.visibility = View.GONE
@@ -53,11 +53,11 @@ class TaggedBoardsAdapter(private val parentFragment: BoardListFragment)
                 binding.arrowButton.setOnClickListener{
                     when(expanded[adapterPosition]){
                         true -> {
-                            expanded[adapterPosition] = false
+                            expanded.put(adapterPosition,false)
                             binding.recyclerview.visibility = View.GONE
                         }
                         else -> {
-                            expanded[adapterPosition] = true
+                            expanded.put(adapterPosition, true)
                             binding.recyclerview.visibility = View.VISIBLE
                         }
                     }

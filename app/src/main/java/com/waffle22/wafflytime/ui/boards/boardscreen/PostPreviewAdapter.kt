@@ -1,6 +1,5 @@
 package com.waffle22.wafflytime.ui.boards.boardscreen
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,29 +20,29 @@ class PostPreviewAdapter(private val clicked: (PostResponse) -> Unit)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == 1) ForumAnnouncementViewHolder(
+        return if (viewType == 1) BoardAnnouncementViewHolder(
             BoardAnnouncementBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
-            ), parent.context
+            )
         )
         else PostAbstractViewHolder(
                 BoardThreadBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
-                ), parent.context
+                )
         )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val current = getItem(position)
-        if (current.isQuestion) (holder as ForumAnnouncementViewHolder).bind(current, clicked)
+        if (current.isQuestion) (holder as BoardAnnouncementViewHolder).bind(current, clicked)
         else (holder as PostAbstractViewHolder).bind(current, clicked)
     }
 
-    class PostAbstractViewHolder(private var binding: BoardThreadBinding, private var context: Context)
+    class PostAbstractViewHolder(private var binding: BoardThreadBinding)
         : RecyclerView.ViewHolder(binding.root) {
         fun bind(postAbstract: PostResponse, clicked: (PostResponse) -> Unit) {
             binding.apply{
-                nickname.text = postAbstract.nickname
+                nickname.text = postAbstract.nickname ?: "익명"
                 time.text = timeToText(postAbstract.createdAt)
                 previewText.text = postAbstract.contents
                 likesText.text = postAbstract.nlikes.toString()
@@ -61,7 +60,7 @@ class PostPreviewAdapter(private val clicked: (PostResponse) -> Unit)
         }
     }
 
-    class ForumAnnouncementViewHolder(private var binding: BoardAnnouncementBinding, private var context: Context)
+    class BoardAnnouncementViewHolder(private var binding: BoardAnnouncementBinding)
         : RecyclerView.ViewHolder(binding.root){
         fun bind(postAbstract: PostResponse, clicked: (PostResponse) -> Unit){
             binding.apply{

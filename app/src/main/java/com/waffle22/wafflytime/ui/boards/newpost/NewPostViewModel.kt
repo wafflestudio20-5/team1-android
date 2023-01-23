@@ -8,9 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.network.dto.*
+import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class NewPostViewModel(
     private val wafflyApiService: WafflyApiService,
@@ -20,18 +22,19 @@ class NewPostViewModel(
     val boardInfo: LiveData<BoardDTO>
         get() = _boardInfo
 
-    private var _boardLoadingStatus = MutableStateFlow<LoadingStatus>(LoadingStatus.Standby)
+    private var _boardLoadingStatus = MutableStateFlow(LoadingStatus.Standby)
     val boardLoadingStatus: StateFlow<LoadingStatus>
         get() = _boardLoadingStatus
-    private var _createPostStatus = MutableStateFlow<LoadingStatus>(LoadingStatus.Standby)
+    private var _createPostStatus = MutableStateFlow(LoadingStatus.Standby)
     val createPostStatus: StateFlow<LoadingStatus>
         get() = _createPostStatus
+    var errorMessage = ""
 
     fun getBoardInfo(boardId: Long){
         viewModelScope.launch {
             try{
                 val response = wafflyApiService.getSingleBoard(boardId)
-                when(response!!.code().toString()){
+                when(response.code().toString()){
                     "200" -> {
                         Log.v("BoardViewModel", response.body()!!.title)
                         _boardInfo.value = response.body()
@@ -40,6 +43,7 @@ class NewPostViewModel(
                     else -> {
                         Log.v("BoardViewModel", response.errorBody()!!.string())
                         _boardLoadingStatus.value = LoadingStatus.Error
+                        errorMessage = HttpException(response).parseError(moshi)!!.message
                     }
                 }
             } catch (e: java.lang.Exception){
@@ -61,6 +65,7 @@ class NewPostViewModel(
                     }
                     else -> {
                         Log.v("NewPostViewModel", response.errorBody()!!.string())
+                        errorMessage = HttpException(response).parseError(moshi)!!.message
                         _createPostStatus.value = LoadingStatus.Error
                     }
                 }
@@ -91,6 +96,7 @@ class NewPostViewModel(
                     }
                     else -> {
                         Log.v("NewPostViewModel", response.errorBody()!!.string())
+                        errorMessage = HttpException(response).parseError(moshi)!!.message
                         _createPostStatus.value = LoadingStatus.Error
                     }
                 }
