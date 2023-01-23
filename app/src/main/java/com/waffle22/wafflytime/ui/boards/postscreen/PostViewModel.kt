@@ -1,6 +1,7 @@
 package com.waffle22.wafflytime.ui.boards.postscreen
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -157,5 +158,33 @@ class PostViewModel(
 
     fun canEditReply(): Boolean{
         return true
+    }
+
+    fun likePost(){
+        viewModelScope.launch {
+            try {
+                val response = wafflyApiService.likePost(_curBoard.boardId, _curPost.value!!.postId)
+                when(response.code().toString()){
+                    "200" -> Log.d("PostViewModel", "Like post success")
+                    else -> Log.d("PostViewModel", response.errorBody()!!.string())
+                }
+            } catch (e: java.lang.Exception) {
+                Log.v("PostViewModel", e.toString())
+            }
+        }
+    }
+
+   fun scrapPost(){
+        viewModelScope.launch {
+            try {
+                val response = wafflyApiService.scrapPost(_curBoard.boardId, _curPost.value!!.postId)
+                when(response.code().toString()){
+                    "200" -> Log.d("PostViewModel", "Scrap success")
+                    else -> Log.d("PostViewModel", response.errorBody()!!.string())
+                }
+            } catch (e: java.lang.Exception) {
+                Log.v("PostViewModel", e.toString())
+            }
+        }
     }
 }

@@ -48,6 +48,7 @@ class PostFragment() : Fragment() {
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh(boardId, postId)
+            binding.swipeRefreshLayout.isRefreshing = false
         }
 
         //게시글 부분
@@ -92,7 +93,6 @@ class PostFragment() : Fragment() {
         }
 
         //새 댓글 작성
-        //{"timestamp":"2023-01-20T09:55:13.843714127","status":500,"error-code":0,"default-message":"could not execute statement; SQL [n/a]; constraint [reply.post_id]"}
         binding.newCommentButton.setOnClickListener {
             if (editingReply == null) {
                 viewModel.createReply(
@@ -159,6 +159,9 @@ class PostFragment() : Fragment() {
                     commentsText.text = viewModel.curPost.value!!.nreplies.toString()
                     scrapsText.text = viewModel.curPost.value!!.nreplies.toString()
                 }
+                //좋아요, 스크랩 바인딩
+                binding.likePost.setOnClickListener { viewModel.likePost() }
+                binding.scrapPost.setOnClickListener { viewModel.scrapPost() }
             }
             else -> {
                 binding.errorText.text = when(status){
