@@ -40,7 +40,7 @@ class PostReplyAdapter(
                  editable: (ReplyResponse) -> Boolean,
                  modifyReply: (Boolean, ReplyResponse) -> Unit) {
             binding.apply{
-                nickname.text = reply.nickname
+                nickname.text = if(reply.nickname == "익명" && reply.isPostWriter)"익명(글쓴이)" else reply.nickname
                 //time.text = ""
                 replyText.text = reply.contents
                 //likesText.text = reply.
