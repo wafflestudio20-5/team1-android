@@ -85,4 +85,6 @@ dependencies {
     //Swipe Refresh Layout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
+    //Menu handling
+    implementation "androidx.activity:activity-ktx:1.7.0-alpha03"
 }

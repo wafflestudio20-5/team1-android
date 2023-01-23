@@ -37,7 +37,10 @@ class PostReplyAdapter(private val clicked: (ReplyResponse) -> Unit)
                 //time.text = ""
                 replyText.text = reply.contents
                 //likesText.text = reply.
-                if (reply.isRoot)   notRoot.visibility = View.GONE
+                if (reply.isRoot){
+                    notRoot.visibility = View.GONE
+                    replyButton.visibility = View.GONE
+                }
                 replyButton.setOnClickListener {
                     clicked(reply)
                 }

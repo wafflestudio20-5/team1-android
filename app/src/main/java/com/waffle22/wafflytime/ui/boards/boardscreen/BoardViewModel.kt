@@ -1,6 +1,7 @@
 package com.waffle22.wafflytime.ui.boards.boardscreen
 
 import android.util.Log
+import androidx.compose.runtime.key
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -151,9 +152,14 @@ class BoardViewModel(
     }
 
     fun searchPost(keyword: String){
-        if (keyword == "")  return
         _searchResults.value = mutableListOf()
-
+        if (keyword == "")  return
+        for (post in _posts.value!!){
+            if (post.contents.contains(keyword))    _searchResults.value!! += post
+            else if(post.title!=null){
+                if(post.title.contains(keyword))    _searchResults.value!! += post
+            }
+        }
     }
 
     private fun notQuestion(response: PostResponse): PostResponse {
