@@ -4,6 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.waffle22.wafflytime.ui.preferences.ProfileCardPreference
+        android:key="profile_card"
         android:layout="@layout/profile_card"/>
 
     <PreferenceCategory

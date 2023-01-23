@@ -10,6 +10,7 @@ import com.waffle22.wafflytime.ui.login.SignUpEmailViewModel
 import com.waffle22.wafflytime.ui.login.SignUpViewModel
 import com.waffle22.wafflytime.ui.mainpage.MainHomeViewModel
 import com.waffle22.wafflytime.ui.preferences.SetNicknameViewModel
+import com.waffle22.wafflytime.ui.preferences.SetProfilePicViewModel
 import com.waffle22.wafflytime.util.AuthStorage
 import com.waffle22.wafflytime.util.TokenInterceptor
 import okhttp3.OkHttpClient
@@ -27,7 +28,7 @@ val appModule = module {
 
         Retrofit.Builder()
             .baseUrl("http://api.wafflytime.com")
-            .addConverterFactory(MoshiConverterFactory.create(get()))
+            .addConverterFactory(MoshiConverterFactory.create(get()).asLenient())
             .client(
                 OkHttpClient.Builder()
                     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
@@ -64,5 +65,6 @@ val appModule = module {
     viewModel { MainHomeViewModel(get(), get(), get()) }
     viewModel { AuthCheckViewModel(get(), get(), get()) }
     viewModel { SetNicknameViewModel(get(), get(), get()) }
+    viewModel { SetProfilePicViewModel(get(), get(), get()) }
 }
 
