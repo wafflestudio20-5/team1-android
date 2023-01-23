@@ -45,6 +45,10 @@ class PostFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpMenu()
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.refresh(boardId, postId)
+        }
+
         //게시글 부분
         boardId = navigationArgs.boardId
         postId = navigationArgs.postId
