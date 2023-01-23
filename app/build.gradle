@@ -75,7 +75,6 @@ dependencies {
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'androidx.preference:preference-ktx:1.2.0'
 
-
     //Social login
     implementation "com.kakao.sdk:v2-user:2.12.0"
 
