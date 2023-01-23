@@ -36,7 +36,7 @@ interface WafflyApiService {
 
     @POST("/api/board")
     suspend fun createBoard(
-        @Body() boardDTO: BoardDTO
+        @Body() createBoardRequest: CreateBoardRequest
     ): Response<CreateBoardResponse>
 
     @DELETE("/api/board/{boardId}")

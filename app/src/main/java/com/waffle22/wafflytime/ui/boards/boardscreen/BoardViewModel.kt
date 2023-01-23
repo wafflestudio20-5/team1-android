@@ -21,11 +21,8 @@ enum class PostsLoadingStatus{
     Standby, Success, Corruption, Error, TokenExpired
 }
 
-<<<<<<< HEAD
+
 //TODO: 앱 구동 후 첫 번째로 게시판을 로딩하면 질문글(혹은 게시물 전체)이 보이지 않는 오류가 있음
-=======
-//TODO: 앱 구동 후 첫 번째로 게시판을 로딩하면 질문글이 보이지 않는 오류가 있음
->>>>>>> bba5166 (툴바에 게시판 제목 적용)
 
 class BoardViewModel(
     private val wafflyApiService: WafflyApiService,
@@ -53,10 +50,7 @@ class BoardViewModel(
     }
 
     fun refreshBoard(boardId: Long, boardType: BoardType){
-<<<<<<< HEAD
         _postsLoadingState.value = PostsLoadingStatus.Standby
-=======
->>>>>>> bba5166 (툴바에 게시판 제목 적용)
         _page = 0
         getPosts(boardId, boardType)
     }

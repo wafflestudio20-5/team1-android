@@ -52,6 +52,11 @@ class BoardSearchFragment : Fragment() {
         binding.backButton.setOnClickListener {
             findNavController().navigateUp()
         }
+
+        binding.newBoard.setOnClickListener {
+            val action = BoardSearchFragmentDirections.actionBoardSearchFragmentToNewBoardFragment()
+            this.findNavController().navigate(action)
+        }
     }
 
     private fun showSearchResultLogic(){

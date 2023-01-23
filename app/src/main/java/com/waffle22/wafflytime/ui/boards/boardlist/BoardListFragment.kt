@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentBoardListBinding
 import com.waffle22.wafflytime.network.dto.BoardType
+import com.waffle22.wafflytime.network.dto.LoadingStatus
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class BoardListFragment : Fragment() {
@@ -98,9 +99,9 @@ class BoardListFragment : Fragment() {
         }
     }
 
-    private fun showBoardsLogic(status: BoardLoadingStatus){
+    private fun showBoardsLogic(status: LoadingStatus){
         when (status){
-            BoardLoadingStatus.Success -> {
+            LoadingStatus.Success -> {
                 Log.v("BoardListFragment", "Board Loading Success")
             }
             else -> {
