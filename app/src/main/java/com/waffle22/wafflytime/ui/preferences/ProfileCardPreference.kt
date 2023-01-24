@@ -14,6 +14,13 @@ class ProfileCardPreference(context: Context, attrs: AttributeSet?): Preference(
     private lateinit var binding: ProfileCardBinding
     private val sharedPref =
         context.getSharedPreferences(AuthStorage.SharedPreferenceName, Context.MODE_PRIVATE)
+    var profileUrl: String? = null
+        set(value) {
+            field = value
+            if(this::binding.isInitialized) {
+                displayProfilePic()
+            }
+        }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
@@ -22,15 +29,17 @@ class ProfileCardPreference(context: Context, attrs: AttributeSet?): Preference(
         if(id!!.isEmpty()) id = sharedPref.getString(AuthStorage.UserSocialEmailKey, "")
         binding.useridText.text = id
         binding.usernameText.text = sharedPref.getString(AuthStorage.UserNickNameKey, "NULL")
+
+        displayProfilePic()
     }
 
-    fun updateProfilePic(url: String?) {
-        if(url == null) {
+    private fun displayProfilePic() {
+        if(profileUrl == null) {
             binding.profilePic.setImageResource(R.drawable.ic_person)
         }
         else {
             Glide.with(context)
-                .load(url)
+                .load(profileUrl)
                 .placeholder(R.drawable.ic_person)
                 .error(R.drawable.ic_person)
                 .fallback(R.drawable.ic_person)

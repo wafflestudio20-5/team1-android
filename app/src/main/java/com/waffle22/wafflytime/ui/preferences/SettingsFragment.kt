@@ -12,11 +12,13 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.waffle22.wafflytime.BuildConfig
 import com.waffle22.wafflytime.R
+import kotlinx.coroutines.GlobalScope.coroutineContext
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -101,7 +103,7 @@ class SettingsFragment: PreferenceFragmentCompat() {
                             }
 
                     viewModel.setProfilePic(filename, byteArray)
-                    viewModel.viewModelScope.launch {
+                    lifecycleScope.launch {
                         viewModel.state.collect {
                             if (it.status != "0") {
                                 if (it.errorCode == null && it.errorMessage == null) {
@@ -134,7 +136,7 @@ class SettingsFragment: PreferenceFragmentCompat() {
 
     fun deleteProfilePicture() {
         viewModel.deleteProfilePic()
-        viewModel.viewModelScope.launch {
+        lifecycleScope.launch {
             viewModel.state.collect {
                 if (it.status != "0") {
                     if (it.errorCode == null && it.errorMessage == null) {
@@ -161,11 +163,11 @@ class SettingsFragment: PreferenceFragmentCompat() {
 
     fun displayProfilePicture() {
         viewModel.getProfileUrl()
-        viewModel.viewModelScope.launch {
+        lifecycleScope.launch {
             viewModel.profileUrl.collect() {
                 if(it.status != "0") {
                     if(it.errorCode == null && it.errorMessage == null) {
-                        profileCard.updateProfilePic(it.value)
+                        profileCard.profileUrl = it.value
                     }
                     else {
                         Toast.makeText(
