@@ -1,7 +1,6 @@
 package com.waffle22.wafflytime.ui.boards.boardlist
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -30,11 +29,8 @@ class BoardListAdapter(private val onClicked: (BoardAbstract) -> Unit)
             fun bind(board: BoardAbstract, onClicked: (BoardAbstract) -> Unit) {
                 binding.apply{
                     title.text = board.name
-                    //description.text = board.description
                     layout.setOnClickListener{ onClicked(board) }
                 }
-                if(binding.description.text == "")
-                    binding.description.visibility = View.GONE
             }
         }
 

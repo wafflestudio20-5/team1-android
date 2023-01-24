@@ -5,31 +5,37 @@
     <item
         android:id="@+id/notification"
         android:icon="@drawable/ic_baseline_notifications_24"
-        android:title="Turn on Notifications"
+        android:title="알림 켜기"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/refresh"
-        android:title="Refresh"
+        android:title="새로고침"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/edit"
+        android:title="게시물 수정"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/delete"
-        android:title="Delete thread"
+        android:title="게시물 삭제"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/dm"
-        android:title="Direct Message"
+        android:title="쪽지 보내기"
         app:showAsAction="never"/>
 
+    <!--
     <item
         android:id="@+id/report"
         android:title="Report"
-        app:showAsAction="never"/>
+        app:showAsAction="never"/>-->
 
     <item
         android:id="@+id/share"
-        android:title="Share URL"
+        android:title="URL 공유"
         app:showAsAction="never"/>
 </menu>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_baseline_close_24"
+        app:title="새 게시판 만들기"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="완료"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/toolbar"/>
+
+    <EditText
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="이름"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+
+    <EditText
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="설명"
+        app:layout_constraintTop_toBottomOf="@id/title"/>
+
+    <RadioGroup
+        android:id="@+id/board_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/description">
+
+        <RadioButton
+            android:id="@+id/custom_base"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="기본형 - 여러 글을 빠르게 읽을 수 있는 기본 형식"/>
+
+        <RadioButton
+            android:id="@+id/custom_photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="사진형 - 글 목록에 사진이 노출되는 형식"/>
+
+    </RadioGroup>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/allow_anonymous"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="익명 허용"
+        app:layout_constraintTop_toBottomOf="@id/board_type"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

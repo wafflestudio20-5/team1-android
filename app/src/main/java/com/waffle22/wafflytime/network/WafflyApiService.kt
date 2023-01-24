@@ -27,7 +27,7 @@ interface WafflyApiService {
     // Board 관련
     @GET("/api/board/{boardId}")
     suspend fun getSingleBoard(
-        boardId: Long
+        @Path("boardId") boardId: Long
     ): Response<BoardDTO>
 
     @GET("/api/boards")
@@ -35,18 +35,18 @@ interface WafflyApiService {
 
     @POST("/api/board")
     suspend fun createBoard(
-        @Body() boardDTO: BoardDTO
+        @Body() createBoardRequest: CreateBoardRequest
     ): Response<CreateBoardResponse>
 
     @DELETE("/api/board/{boardId}")
     suspend fun deleteBoard(
-        boardId: Long
+        @Path("boardId") boardId: Long
     ): Response<DeleteBoardResponse>
 
     // Post 관련
     @GET("/api/board/{boardId}/post/{postId}")
     suspend fun getSinglePost(
-        boardId: Long, postId: Long
+        @Path("boardId") boardId: Long, @Path("postId") postId: Long
     ): Response<PostResponse>
 
     @GET("/api/board/{boardId}/posts")
@@ -54,28 +54,87 @@ interface WafflyApiService {
         @Path("boardId") boardId: Long, @Query("page") page: Int, @Query("size") size: Int
     ): Response<PostsPage>
 
-    @GET("/api/user/mypost?")
+    @GET("/api/user/mypost")
     suspend fun getMyPosts(
-        @Body() page: Int, @Body() size: Int
+        @Query("page") page: Int, @Query("size") size: Int
     ): Response<PostsPage>
 
-    @GET("/api/user/myscrap?")
+    @GET("/api/user/myscrap")
     suspend fun getMyScraps(
-        @Body() page: Int, @Body() size: Int
+        @Query("page") page: Int, @Query("size") size: Int
+    ): Response<PostsPage>
+
+    @GET("/api/hotpost")
+    suspend fun getHotPosts(
+        @Query("page") page: Int, @Query("size") size: Int
+    ): Response<PostsPage>
+
+    @GET("/api/bestpost")
+    suspend fun getBestPosts(
+        @Query("page") page: Int, @Query("size") size: Int
     ): Response<PostsPage>
 
     @POST("/api/board/{boardId}/post")
     suspend fun createPost(
-        boardId: Long,
+        @Path("boardId") boardId: Long,
         @Body() postRequest: PostRequest
     ): Response<PostRequest>
 
     @DELETE("/api/board/{boardId}/post/{postId}")
-    suspend fun deletePost(boardId: Long, postId: Long): Response<DeletePostResponse>
+    suspend fun deletePost(
+        @Path("boardId") boardId: Long,
+        @Path("postId") postId: Long): Response<DeletePostResponse>
 
     @PUT("/api/board/{boardId}/post/{postId}")
-    suspend fun editPost(boardId: Long, postId: Long, @Body() editPostRequest: EditPostRequest): Response<EditPostResponse>
+    suspend fun editPost(
+        @Path("boardId") boardId: Long,
+        @Path("postId") postId: Long,
+        @Body() editPostRequest: EditPostRequest): Response<PostResponse>
 
+    @POST("/api/board/{boardId}/post/{postId}/like")
+    suspend fun likePost(
+        @Path("boardId") boardId: Long,
+        @Path("postId") postId: Long
+    ): Response<PostResponse>
+
+    @POST("/api/board/{boardId}/post/{postId}/scrap")
+    suspend fun scrapPost(
+        @Path("boardId") boardId: Long,
+        @Path("postId") postId: Long
+    ): Response<PostResponse>
+
+    @DELETE("/api/user/myscrap")
+    suspend fun scrapCancel(
+        @Query("post") postId: Long
+    ): Response<cancelScrapResponse>
+
+    //Reply 관련
+    @GET("/api/board/{boardId}/post/{postId}/replies")
+    suspend fun getReplies(
+        @Path("boardId") boardId: Long, @Path("postId") postId: Long
+    ): Response<RepliesPage>
+
+    @POST("/api/board/{boardId}/post/{postId}/reply")
+    suspend fun createReply(
+        @Path("boardId") boardId: Long,
+        @Path("postId") postId: Long,
+        @Body() replyRequest: ReplyRequest
+    ): Response<ReplyResponse>
+
+    @DELETE("/api/board/{boardId}/post/{postId}/reply/{replyId}")
+    suspend fun deleteReply(
+        @Path("boardId") boardId: Long,
+        @Path("postId") postId: Long,
+        @Path("replyId") replyId: Long
+    ): Response<ReplyResponse>
+
+    @PUT("/api/board/{boardId}/post/{postId}/reply/{replyId}")
+    suspend fun editReply(
+        @Path("boardId") boardId: Long,
+        @Path("postId") postId: Long,
+        @Path("replyId") replyId: Long,
+        @Body() contents: EditReplyRequest
+    ): Response<ReplyResponse>
 
     // Notification 관련 Api
     @GET("/api/user/notifications")

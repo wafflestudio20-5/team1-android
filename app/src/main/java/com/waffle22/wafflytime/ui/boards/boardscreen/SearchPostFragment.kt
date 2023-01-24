@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.boards.boardlist
+package com.waffle22.wafflytime.ui.boards.boardscreen
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,21 +7,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.waffle22.wafflytime.databinding.FragmentSearchBoardBinding
-import com.waffle22.wafflytime.network.dto.BoardType
+import com.waffle22.wafflytime.databinding.FragmentSearchPostBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class BoardSearchFragment : Fragment() {
-    private lateinit var binding: FragmentSearchBoardBinding
+class SearchPostFragment : Fragment() {
+    private lateinit var binding: FragmentSearchPostBinding
 
-    private val viewModel: BoardListViewModel by sharedViewModel()
+    private val viewModel: BoardViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentSearchBoardBinding.inflate(inflater,container,false)
+    ): View? {
+        binding = FragmentSearchPostBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -29,34 +28,27 @@ class BoardSearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.text.setText("")
-        viewModel.searchBoard("")
+        viewModel.searchPost("")
         showSearchResultLogic()
 
-        val boardSearchAdapter  = BoardListAdapter{
-            val action = BoardSearchFragmentDirections.actionBoardSearchFragmentToBoardFragment(it.boardId, BoardType.Common)
+        val searchResultAdapter = PostPreviewAdapter{
+            val action = SearchPostFragmentDirections.actionSearchPostFragmentToPostFragment(it.boardId, it.postId)
             this.findNavController().navigate(action)
         }
-        viewModel.searchResults.observe(this.viewLifecycleOwner) { items ->
+        viewModel.searchResults.observe(this.viewLifecycleOwner){ items ->
             items.let{
-                boardSearchAdapter.submitList(it)
+                searchResultAdapter.submitList(it)
             }
         }
-        binding.searchResult.adapter = boardSearchAdapter
+        binding.searchResult.adapter = searchResultAdapter
         binding.searchResult.layoutManager = LinearLayoutManager(this.context)
 
         binding.searchButton.setOnClickListener {
-            viewModel.searchBoard(binding.text.text.toString())
+            viewModel.searchPost(binding.text.text.toString())
             showSearchResultLogic()
         }
 
-        binding.backButton.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        binding.newBoard.setOnClickListener {
-            val action = BoardSearchFragmentDirections.actionBoardSearchFragmentToNewBoardFragment()
-            this.findNavController().navigate(action)
-        }
+        binding.backButton.setOnClickListener {findNavController().navigateUp()}
     }
 
     private fun showSearchResultLogic(){
