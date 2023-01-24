@@ -71,7 +71,7 @@
             android:key="withdraw_membership"
             android:title="회원 탈퇴"/>
         <Preference
-            android:key="Logout"
+            android:key="logout"
             android:title="로그아웃"/>
     </PreferenceCategory>
 </PreferenceScreen>

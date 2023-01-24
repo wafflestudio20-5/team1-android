@@ -36,6 +36,9 @@ interface WafflyApiService {
     @PUT("/api/user/me/profile")
     suspend fun setProfilePic(@Body() request: SetProfilePicRequest): Response<UserDTO>
 
+    @DELETE("/api/auth/logout")
+    suspend fun logout(): Response<ResponseBody>
+
     @PUT
     suspend fun uploadProfilePic(@Url preSignedUrl: String, @Body() request: RequestBody): Response<Unit>
 

@@ -7,18 +7,19 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.BuildConfig
+import com.waffle22.wafflytime.MainActivity
 import com.waffle22.wafflytime.R
-import kotlinx.coroutines.GlobalScope.coroutineContext
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -28,25 +29,58 @@ class SettingsFragment: PreferenceFragmentCompat() {
 
     private lateinit var prefs: SharedPreferences
     private lateinit var getResult: ActivityResultLauncher<Intent>
-    private val viewModel: SetProfilePicViewModel by viewModel()
+    private val profileViewModel: SetProfilePicViewModel by viewModel()
+    private val logoutViewModel: LogoutViewModel by viewModel()
     private lateinit var profileCard: ProfileCardPreference
+    private lateinit var alertDialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
             changeProfilePictureReceiver(res)
         }
+        alertDialog = MaterialAlertDialogBuilder(this.requireContext())
+            .setView(ProgressBar(this.requireContext()))
+            .setMessage("Loading...")
+            .create()
+        alertDialog.setCanceledOnTouchOutside(false)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.fragment_settings, rootKey)
         findPreference<Preference>("app_version")?.summary = BuildConfig.VERSION_NAME
+        findPreference<Preference>("logout")?.setOnPreferenceClickListener {
+            logout()
+            true
+        }
         findPreference<Preference>("change_profile_image")?.setOnPreferenceClickListener {
             createSetProfileDialog()
             true
         }
         profileCard = findPreference<ProfileCardPreference>("profile_card")!!
         displayProfilePicture()
+    }
+
+    fun logout() {
+        logoutViewModel.logout()
+        alertDialog.show()
+        lifecycleScope.launch {
+            logoutViewModel.logoutState.collect {
+                if(it.status != "0") {
+                    alertDialog.dismiss()
+                    if(it.status == "200") {
+                        val intent = Intent(context, MainActivity::class.java)
+                        intent.putExtra("doLogout", true)
+                        requireActivity().setResult(RESULT_OK, intent)
+                        requireActivity().finish()
+                    }
+                    else {
+                        Toast.makeText(context, it.errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                    coroutineContext.job.cancel()
+                }
+            }
+        }
     }
 
     fun createSetProfileDialog() {
@@ -102,10 +136,12 @@ class SettingsFragment: PreferenceFragmentCompat() {
                                 byteStream.toByteArray()
                             }
 
-                    viewModel.setProfilePic(filename, byteArray)
+                    profileViewModel.setProfilePic(filename, byteArray)
+                    alertDialog.show()
                     lifecycleScope.launch {
-                        viewModel.state.collect {
+                        profileViewModel.state.collect {
                             if (it.status != "0") {
+                                alertDialog.dismiss()
                                 if (it.errorCode == null && it.errorMessage == null) {
 //                                    alertDialog.dismiss()
                                     Toast.makeText(
@@ -135,10 +171,12 @@ class SettingsFragment: PreferenceFragmentCompat() {
     }
 
     fun deleteProfilePicture() {
-        viewModel.deleteProfilePic()
+        profileViewModel.deleteProfilePic()
+        alertDialog.show()
         lifecycleScope.launch {
-            viewModel.state.collect {
+            profileViewModel.state.collect {
                 if (it.status != "0") {
+                    alertDialog.dismiss()
                     if (it.errorCode == null && it.errorMessage == null) {
 //                                    alertDialog.dismiss()
                         Toast.makeText(
@@ -162,9 +200,9 @@ class SettingsFragment: PreferenceFragmentCompat() {
     }
 
     fun displayProfilePicture() {
-        viewModel.getProfileUrl()
+        profileViewModel.getProfileUrl()
         lifecycleScope.launch {
-            viewModel.profileUrl.collect() {
+            profileViewModel.profileUrl.collect() {
                 if(it.status != "0") {
                     if(it.errorCode == null && it.errorMessage == null) {
                         profileCard.profileUrl = it.value

@@ -8,7 +8,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.databinding.FragmentSetNicknameBinding
@@ -44,7 +44,7 @@ class SetNicknameFragment: Fragment() {
                     .setMessage("Loading...")
                     .show()
                 alertDialog.setCanceledOnTouchOutside(false)
-                viewModel.viewModelScope.launch {
+                lifecycleScope.launch {
                     viewModel.state.collect {
                         if(it.status != "0") {
                             if(it.errorCode == null && it.errorMessage == null) {

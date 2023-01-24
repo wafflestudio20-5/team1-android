@@ -9,6 +9,7 @@ import com.waffle22.wafflytime.ui.login.LoginViewModel
 import com.waffle22.wafflytime.ui.login.SignUpEmailViewModel
 import com.waffle22.wafflytime.ui.login.SignUpViewModel
 import com.waffle22.wafflytime.ui.mainpage.MainHomeViewModel
+import com.waffle22.wafflytime.ui.preferences.LogoutViewModel
 import com.waffle22.wafflytime.ui.preferences.SetNicknameViewModel
 import com.waffle22.wafflytime.ui.preferences.SetProfilePicViewModel
 import com.waffle22.wafflytime.util.AuthStorage
@@ -66,5 +67,6 @@ val appModule = module {
     viewModel { AuthCheckViewModel(get(), get(), get()) }
     viewModel { SetNicknameViewModel(get(), get(), get()) }
     viewModel { SetProfilePicViewModel(get(), get(), get()) }
+    viewModel { LogoutViewModel(get(), get(), get()) }
 }
 
