@@ -1,6 +1,8 @@
 package com.waffle22.wafflytime.network
 
 import com.waffle22.wafflytime.network.dto.*
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -23,7 +25,25 @@ interface WafflyApiService {
 
     @GET("/api/user/me")
     suspend fun getUserInfo(): Response<UserDTO>
-    
+
+    @GET("/api/user/check/nickname/{nickname}")
+    suspend fun checkNickname(@Path("nickname") nickname: String): Response<ResponseBody>
+
+    @PUT("/api/user/me")
+    suspend fun changeNickname(@Body() request: ChangeNicknameRequest): Response<UserDTO>
+
+    @PUT("/api/user/me/profile")
+    suspend fun setProfilePic(@Body() request: SetProfilePicRequest): Response<UserDTO>
+
+    @DELETE("/api/auth/logout")
+    suspend fun logout(): Response<ResponseBody>
+
+    @PUT
+    suspend fun uploadProfilePic(@Url preSignedUrl: String, @Body() request: RequestBody): Response<Unit>
+
+    @DELETE("/api/user/me/profile")
+    suspend fun deleteProfilePic(): Response<UserDTO>
+
     // Board 관련
     @GET("/api/board/{boardId}")
     suspend fun getSingleBoard(

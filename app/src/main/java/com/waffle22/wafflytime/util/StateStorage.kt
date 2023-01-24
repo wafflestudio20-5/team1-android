@@ -5,3 +5,10 @@ data class StateStorage (
     val errorCode: String?,
     val errorMessage: String?
 )
+
+data class StateValueStorage (
+    val status: String,
+    val value: String?,
+    val errorCode: String?,
+    val errorMessage: String?
+)

@@ -44,7 +44,6 @@ class LoginViewModel(
                     val errorResponse = HttpException(response).parseError(moshi)!!
                     _loginState.value = StateStorage(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message)
                 }
-
             } catch (e:java.lang.Exception) {
                 _loginState.value = StateStorage("-1",null,"System Corruption")
             }

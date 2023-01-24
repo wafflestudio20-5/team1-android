@@ -3,7 +3,8 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
+    <com.waffle22.wafflytime.ui.preferences.ProfileCardPreference
+        android:key="profile_card"
         android:layout="@layout/profile_card"/>
 
     <PreferenceCategory
@@ -70,7 +71,7 @@
             android:key="withdraw_membership"
             android:title="회원 탈퇴"/>
         <Preference
-            android:key="Logout"
+            android:key="logout"
             android:title="로그아웃"/>
     </PreferenceCategory>
 </PreferenceScreen>
