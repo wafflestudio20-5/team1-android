@@ -134,6 +134,6 @@ interface WafflyApiService {
         @Path("boardId") boardId: Long,
         @Path("postId") postId: Long,
         @Path("replyId") replyId: Long,
-        @Body() contents: String
+        @Body() contents: EditReplyRequest
     ): Response<ReplyResponse>
 }

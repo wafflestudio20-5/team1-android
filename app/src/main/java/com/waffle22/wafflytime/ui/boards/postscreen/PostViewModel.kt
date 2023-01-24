@@ -127,7 +127,7 @@ class PostViewModel(
         if (contents == "") return
         viewModelScope.launch {
             try {
-                val response = wafflyApiService.editReply(_curBoard.boardId, _curPost.value!!.postId, reply.replyId, contents)
+                val response = wafflyApiService.editReply(_curBoard.boardId, _curPost.value!!.postId, reply.replyId, EditReplyRequest(contents))
                 when (response.code().toString()){
                     "200" -> {
                         Log.d("PostViewModel", "Edit Success")

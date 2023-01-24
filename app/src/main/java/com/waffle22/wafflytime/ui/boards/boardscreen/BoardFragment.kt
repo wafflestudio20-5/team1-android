@@ -91,7 +91,7 @@ class BoardFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 // 스크롤이 끝에 도달했는지 확인
-                if (binding.posts.canScrollVertically(1)) {
+                if (!binding.posts.canScrollVertically(1)) {
                     Log.d("BoardFragment", "end of scroll")
                     viewModel.getPosts(boardId, boardType)
                 }

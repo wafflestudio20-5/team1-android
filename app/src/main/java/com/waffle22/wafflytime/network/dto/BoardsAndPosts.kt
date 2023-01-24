@@ -149,6 +149,10 @@ data class ReplyRequest(
     @Json(name = "isWriterAnonymous") val isWriterAnonymous: Boolean
 )
 
+data class EditReplyRequest(
+    @Json(name = "contents") val contents: String
+)
+
 data class ReplyResponse(
     @Json(name = "replyId") val replyId: Long,
     @Json(name = "writerId") val writerId: Long,
