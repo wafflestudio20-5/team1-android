@@ -12,6 +12,7 @@ import com.waffle22.wafflytime.ui.login.LoginViewModel
 import com.waffle22.wafflytime.ui.login.SignUpEmailViewModel
 import com.waffle22.wafflytime.ui.login.SignUpViewModel
 import com.waffle22.wafflytime.ui.mainpage.MainHomeViewModel
+import com.waffle22.wafflytime.ui.notification.NotifyViewModel
 import com.waffle22.wafflytime.util.AuthStorage
 import com.waffle22.wafflytime.util.TokenInterceptor
 import okhttp3.OkHttpClient
@@ -60,13 +61,23 @@ val appModule = module {
     viewModel { PostListViewModel(get(), get()) }
     viewModel { (postId: Int) -> PostDetailViewModel(postId, get(), get(), get()) }
 */
+    // Auth
     viewModel { LoginViewModel(get(), get(), get()) }
     viewModel { SignUpViewModel(get(), get(), get()) }
     viewModel { SignUpEmailViewModel(get(), get(), get()) }
-    viewModel { MainHomeViewModel(get(), get(), get()) }
     viewModel { AuthCheckViewModel(get(), get(), get()) }
+
+    // Main Home
+    viewModel { MainHomeViewModel(get(), get(), get()) }
+
+    // Boards
     viewModel { BoardListViewModel(get(), get(), get()) }
     viewModel { BoardViewModel(get(), get(), get()) }
     viewModel { PostViewModel(get()) }
+
+    // Notification
+    viewModel { NotifyViewModel(get(), get()) }
+
+
 }
 
