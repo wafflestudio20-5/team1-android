@@ -10,6 +10,7 @@ import com.waffle22.wafflytime.util.StateStorage
 import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import android.content.Context
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
@@ -32,6 +33,8 @@ class LoginViewModel(
 
     fun login(id: String, password: String){
         viewModelScope.launch {
+
+
             try {
                 val response = wafflyApiService.basicLogin(LoginRequest(id, password))
                 if (response.isSuccessful) {
@@ -46,4 +49,19 @@ class LoginViewModel(
             }
         }
     }
+
+
+    fun kakaoSocialLogin(context : Context) {
+      
+    }
+    fun naverSocialLogin() {
+
+    }
+    fun googleSocialLogin() {
+
+    }
+    fun githubSocialLogin() {
+
+    }
+
 }

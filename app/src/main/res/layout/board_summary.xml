@@ -14,32 +14,15 @@
         android:src="@drawable/ic_baseline_push_pin_24"
         android:padding="5dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/explanations"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/explanations"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:orientation="vertical"
-        android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Title"/>
-
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="description"/>
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        app:layout_constraintBottom_toBottomOf="@id/pin"
+        app:layout_constraintStart_toEndOf="@id/pin"
+        tools:text="Title"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

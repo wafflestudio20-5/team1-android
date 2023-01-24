@@ -1,17 +1,26 @@
 package com.waffle22.wafflytime
 
 import android.os.Bundle
+
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.kakao.sdk.common.KakaoSdk.keyHash
+import com.kakao.sdk.common.util.Utility
 import com.waffle22.wafflytime.databinding.ActivityMainBinding
+import kotlin.reflect.KParameter
 
 class MainActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.e("Debug", Utility.getKeyHash(this))
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -32,10 +41,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun hideBottomNav() {
+    private fun hideBottomNav() {
         binding.bottomNav.visibility = View.GONE
     }
-    fun showBottomNav() {
+    private fun showBottomNav() {
         binding.bottomNav.visibility = View.VISIBLE
     }
 }

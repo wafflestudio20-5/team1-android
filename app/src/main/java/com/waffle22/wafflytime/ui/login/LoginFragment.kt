@@ -40,6 +40,10 @@ class LoginFragment :  Fragment() {
         binding.apply{
             btnLogin.setOnClickListener { login() }
             btnSignup.setOnClickListener { signUp() }
+            kakaoLoginButton.setOnClickListener{ kakaoLogin()}
+            naverLoginButton.setOnClickListener{ naverLogin()}
+            googleLoginButton.setOnClickListener{ googleLogin()}
+            githubLoginButton.setOnClickListener{ githubLogin()}
         }
 
         lifecycleScope.launchWhenStarted {
@@ -51,13 +55,29 @@ class LoginFragment :  Fragment() {
     }
 
     private fun login(){
-        viewModel.login(binding.idEditText.text.toString(), binding.passwordEditText.text.toString())
-
         alertDialog =MaterialAlertDialogBuilder(this.requireContext())
             .setView(ProgressBar(this.requireContext()))
             .setMessage("Loading...")
             .show()
         alertDialog.setCanceledOnTouchOutside(false)
+
+        viewModel.login(binding.idEditText.text.toString(), binding.passwordEditText.text.toString())
+    }
+
+    private fun kakaoLogin() {
+        viewModel.kakaoSocialLogin(requireContext())
+    }
+
+    private fun naverLogin() {
+        viewModel.naverSocialLogin()
+    }
+
+    private fun googleLogin() {
+        viewModel.googleSocialLogin()
+    }
+
+    private fun githubLogin() {
+        viewModel.githubSocialLogin()
     }
 
     private fun loginLogic(status: StateStorage){

@@ -35,7 +35,7 @@ class SignUpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply{
-            btnSignup.setOnClickListener { signUp() }
+            btnSignUpDone.setOnClickListener { signUp() }
         }
 
         lifecycleScope.launchWhenStarted {
@@ -45,14 +45,16 @@ class SignUpFragment : Fragment() {
         }
     }
 
-    private fun signUp(){
-        viewModel.signUp(binding.idEditText.text.toString(), binding.passwordEditText.text.toString(), binding.nickNameEditText.text.toString())
 
+
+    private fun signUp(){
         alertDialog = MaterialAlertDialogBuilder(this.requireContext())
             .setView(ProgressBar(this.requireContext()))
             .setMessage("Loading...")
             .show()
         alertDialog.setCanceledOnTouchOutside(false)
+
+        viewModel.signUp(binding.idEditText.text.toString(), binding.passwordEditText.text.toString(), binding.nickNameEditText.text.toString())
     }
 
     private fun signUpLogic(state: StateStorage){

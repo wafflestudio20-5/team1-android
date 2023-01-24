@@ -44,13 +44,13 @@ class SignUpEmailFragment: Fragment() {
     }
 
     private fun emailVerify(){
-        viewModel.signUpEmail(binding.emailEditText.text.toString())
-
         alertDialog = MaterialAlertDialogBuilder(this.requireContext())
             .setView(ProgressBar(this.requireContext()))
             .setMessage("Loading...")
             .show()
         alertDialog.setCanceledOnTouchOutside(false)
+
+        viewModel.signUpEmail(binding.emailEditText.text.toString())
     }
 
     private fun signUpEmailLogic(state: StateStorage){
