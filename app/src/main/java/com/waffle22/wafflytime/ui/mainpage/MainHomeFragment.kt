@@ -1,6 +1,7 @@
 package com.waffle22.wafflytime.ui.login
 
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -27,6 +31,7 @@ class MainHomeFragment :  Fragment() {
     private lateinit var binding: FragmentMainHomeBinding
     private val viewModel: MainHomeViewModel by sharedViewModel()
     private lateinit var alertDialog: AlertDialog
+    private lateinit var getResult: ActivityResultLauncher<Intent>
 
 
     override fun onCreateView(
@@ -35,6 +40,9 @@ class MainHomeFragment :  Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMainHomeBinding.inflate(inflater, container, false)
+        getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            settingsActivityReceiver(result)
+        }
         return binding.root
     }
 
@@ -55,10 +63,19 @@ class MainHomeFragment :  Fragment() {
 
         binding.buttonMyPage.setOnClickListener {
             val intent = Intent(requireContext(), SettingsActivity::class.java)
-            startActivity(intent)
+            getResult.launch(intent)
         }
-
     }
 
+    fun settingsActivityReceiver(result: ActivityResult) {
+        if(result.resultCode == RESULT_OK) {
+            result.data?.let {
+                val doLogout = it.getBooleanExtra("doLogout", false)
+                if(doLogout) {
+                    findNavController().navigate(MainHomeFragmentDirections.actionGlobalLoginFragment())
+                }
+            }
+        }
+    }
 }
 

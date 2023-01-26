@@ -48,6 +48,23 @@ class AuthStorage(
         _authInfo.value = AuthInfo(accessToken, refreshToken, userDTO)
     }
 
+    fun modifyUserDtoInfo(key: String, value: String) {
+        sharedPref.edit {
+            putString(key, value)
+        }
+        _authInfo.value = AuthInfo(
+            accessToken = sharedPref.getString(AccessTokenKey, "")!!,
+            refreshToken = sharedPref.getString(RefreshTokenKey, "")!!,
+            userInfo = UserDTO(
+                sharedPref.getString(UserLoginIdKey, "")!!,
+                sharedPref.getString(UserSocialEmailKey, "")!!,
+                sharedPref.getString(UserUnivEmailKey, "")!!,
+                sharedPref.getString(UserNickNameKey, "")!!,
+                sharedPref.getString(UserProfileUrlKey, "")!!
+            )
+        )
+    }
+
     fun clearAuthInfo() {
         sharedPref.edit {
             putString(AccessTokenKey, "")

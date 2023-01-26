@@ -55,12 +55,6 @@
             android:layout_height="wrap_content"
             android:text="검색 결과가 없습니다."/>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/new_board"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="새 게시판 만들기"/>
-
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.recyclerview.widget.RecyclerView
