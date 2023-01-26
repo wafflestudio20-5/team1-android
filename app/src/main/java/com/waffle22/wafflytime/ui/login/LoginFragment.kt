@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentLoginBinding
+import com.waffle22.wafflytime.util.StateStorage
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class LoginFragment :  Fragment() {
@@ -54,14 +55,13 @@ class LoginFragment :  Fragment() {
     }
 
     private fun login(){
-        // TODO: 이거 눌렸을때 다른버튼 안눌리게 하기, 그러니까 로그인버튼과 회원가입버튼이 동시에 눌리면? 이런거 방지
-        viewModel.login(binding.idEditText.text.toString(), binding.passwordEditText.text.toString())
-
         alertDialog =MaterialAlertDialogBuilder(this.requireContext())
             .setView(ProgressBar(this.requireContext()))
             .setMessage("Loading...")
             .show()
         alertDialog.setCanceledOnTouchOutside(false)
+
+        viewModel.login(binding.idEditText.text.toString(), binding.passwordEditText.text.toString())
     }
 
     private fun kakaoLogin() {
@@ -83,26 +83,20 @@ class LoginFragment :  Fragment() {
     private fun loginLogic(status: LoginStatus){
         when (status){
             LoginStatus.StandBy -> {
+
+    private fun loginLogic(status: StateStorage){
+        when (status.status){
+             "0" -> {
                 null
             }
             else -> {
                 alertDialog.dismiss()
-                when(status) {
-                    LoginStatus.LoginOk -> {
-                        findNavController().navigate(LoginFragmentDirections.actionGlobalMainHomeFragment())
-                    }
-                    LoginStatus.LoginFailed -> {
-                        Toast.makeText(
-                            context,
-                            "로그인 실패(id, password 다시 확인)",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    LoginStatus.Error_500 -> {
-                        Toast.makeText(context, "500 Error", Toast.LENGTH_SHORT).show()
+                when(status.status) {
+                    "200" -> {
+                        findNavController().navigate(LoginFragmentDirections.actionGlobalAuthCheckFragment())
                     }
                     else -> {
-                        Toast.makeText(context, "Unknown Error", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, status.errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
                 viewModel.resetAuthState()

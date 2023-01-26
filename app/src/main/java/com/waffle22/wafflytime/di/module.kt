@@ -4,10 +4,16 @@ import android.content.Context
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.waffle22.wafflytime.network.WafflyApiService
+import com.waffle22.wafflytime.ui.AuthCheckViewModel
+import com.waffle22.wafflytime.ui.boards.boardlist.BoardListViewModel
+import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
+import com.waffle22.wafflytime.ui.boards.postscreen.PostViewModel
 import com.waffle22.wafflytime.ui.login.LoginViewModel
+import com.waffle22.wafflytime.ui.login.SignUpEmailViewModel
 import com.waffle22.wafflytime.ui.login.SignUpViewModel
 import com.waffle22.wafflytime.ui.mainpage.MainHomeViewModel
 import com.waffle22.wafflytime.util.AuthStorage
+import com.waffle22.wafflytime.util.TokenInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -20,24 +26,16 @@ val appModule = module {
         val context: Context = get()
         val sharedPreference =
             context.getSharedPreferences(AuthStorage.SharedPreferenceName, Context.MODE_PRIVATE)
+
         Retrofit.Builder()
             .baseUrl("http://api.wafflytime.com")
             .addConverterFactory(MoshiConverterFactory.create(get()))
             .client(
                 OkHttpClient.Builder()
                     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                    /*.addInterceptor {
-                        val newRequest = it.request().newBuilder()
-                            .addHeader(
-                                "Authorization",
-                                "Bearer " + sharedPreference.getString(
-                                    AuthStorage.AccessTokenKey,
-                                    ""
-                                )
-                            )
-                            .build()
-                        it.proceed(newRequest)
-                    }*/
+                    .addInterceptor (
+                        TokenInterceptor(sharedPreference, get(), get())
+                    )
                     .build()
             )
             .build()
@@ -62,8 +60,13 @@ val appModule = module {
     viewModel { PostListViewModel(get(), get()) }
     viewModel { (postId: Int) -> PostDetailViewModel(postId, get(), get(), get()) }
 */
-    viewModel { LoginViewModel(get(), get()) }
-    viewModel { SignUpViewModel(get(), get()) }
-    viewModel { MainHomeViewModel(get(), get()) }
+    viewModel { LoginViewModel(get(), get(), get()) }
+    viewModel { SignUpViewModel(get(), get(), get()) }
+    viewModel { SignUpEmailViewModel(get(), get(), get()) }
+    viewModel { MainHomeViewModel(get(), get(), get()) }
+    viewModel { AuthCheckViewModel(get(), get(), get()) }
+    viewModel { BoardListViewModel(get(), get(), get()) }
+    viewModel { BoardViewModel(get(), get(), get()) }
+    viewModel { PostViewModel(get()) }
 }
 

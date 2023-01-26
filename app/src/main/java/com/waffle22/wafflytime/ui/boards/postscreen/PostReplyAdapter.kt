@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.boards.threadscreen
+package com.waffle22.wafflytime.ui.boards.postscreen
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,11 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.waffle22.wafflytime.data.Reply
 import com.waffle22.wafflytime.databinding.ThreadReplyBinding
-
-class ThreadReplyAdapter()
-    : ListAdapter<Reply, ThreadReplyAdapter.ThreadReplyViewHolder>(DiffCallback){
+/*
+class PostReplyAdapter()
+    : ListAdapter<Reply, PostReplyAdapter.ThreadReplyViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThreadReplyViewHolder {
         return ThreadReplyViewHolder(
@@ -51,4 +50,4 @@ class ThreadReplyAdapter()
             }
         }
     }
-}
+}*/

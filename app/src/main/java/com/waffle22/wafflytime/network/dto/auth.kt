@@ -14,10 +14,19 @@ data class LoginRequest(
 
 data class SignUpRequest(
     @Json(name = "id") val userId: String,
-    @Json(name = "password") val userPassword: String
+    @Json(name = "password") val userPassword: String,
+    @Json(name = "nickname") val userNickName: String
+)
+
+data class EmailRequest(
+    @Json(name = "email") val email: String
 )
 
 data class TokenContainer(
     @Json(name = "accessToken") val accessToken: String,
     @Json(name = "refreshToken") val refreshToken: String
+)
+
+data class EmailCode(
+    @Json(name = "code") val emailCode: String
 )
