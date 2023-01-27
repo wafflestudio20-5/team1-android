@@ -48,6 +48,8 @@ class LoginFragment :  Fragment() {
                 val KAKAO_AUTH_URL = "https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code"
                 var intent = Intent(Intent.ACTION_VIEW, Uri.parse(KAKAO_AUTH_URL))
                 startActivity(intent)
+                Toast.makeText(context,"intent끝남", Toast.LENGTH_SHORT).show()
+
 
             }
             naverLoginButton.setOnClickListener{ naverLogin()}
