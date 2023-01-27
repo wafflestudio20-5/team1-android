@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.boards.newpost
+package com.waffle22.wafflytime.ui.boards.post.newpost
 
 import android.util.Log
 import androidx.lifecycle.LiveData

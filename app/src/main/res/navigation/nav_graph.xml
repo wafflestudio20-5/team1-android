@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/postFragment"
-        android:name="com.waffle22.wafflytime.ui.boards.postscreen.PostFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.post.PostFragment"
         android:label="PostFragment">
         <argument
             android:name="boardId"
@@ -74,7 +74,7 @@
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
-        android:name="com.waffle22.wafflytime.ui.boards.newpost.NewPostFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.post.newpost.NewPostFragment"
         android:label="NewPostFragment">
         <argument
             android:name="boardId"
