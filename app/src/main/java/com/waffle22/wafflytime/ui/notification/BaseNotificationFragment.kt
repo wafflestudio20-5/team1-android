@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.waffle22.wafflytime.databinding.FragmentBaseNotificationBinding
+import com.waffle22.wafflytime.ui.notification.chat.ChatBoxFragment
+import com.waffle22.wafflytime.ui.notification.notify.NotifyFragment
 
 class BaseNotificationFragment : Fragment() {
     private lateinit var viewPager: ViewPager2

@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.notification
+package com.waffle22.wafflytime.ui.notification.notify
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

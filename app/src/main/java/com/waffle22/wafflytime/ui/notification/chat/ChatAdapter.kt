@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.notification
+package com.waffle22.wafflytime.ui.notification.chat
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
