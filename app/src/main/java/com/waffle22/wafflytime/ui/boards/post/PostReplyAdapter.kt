@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.boards.postscreen
+package com.waffle22.wafflytime.ui.boards.post
 
 import android.content.Context
 import android.view.LayoutInflater

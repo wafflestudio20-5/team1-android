@@ -7,8 +7,8 @@ import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.ui.AuthCheckViewModel
 import com.waffle22.wafflytime.ui.boards.boardlist.BoardListViewModel
 import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
-import com.waffle22.wafflytime.ui.boards.newpost.NewPostViewModel
-import com.waffle22.wafflytime.ui.boards.postscreen.PostViewModel
+import com.waffle22.wafflytime.ui.boards.post.newpost.NewPostViewModel
+import com.waffle22.wafflytime.ui.boards.post.PostViewModel
 import com.waffle22.wafflytime.ui.login.LoginViewModel
 import com.waffle22.wafflytime.ui.login.SignUpEmailViewModel
 import com.waffle22.wafflytime.ui.login.SignUpViewModel

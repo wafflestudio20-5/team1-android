@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.boards.postscreen
+package com.waffle22.wafflytime.ui.boards.post
 
 import android.os.Bundle
 import android.util.Log
@@ -63,6 +63,16 @@ class PostFragment() : Fragment() {
                 }
             }
         }
+
+        // 게시물 이미지
+        val postImageAdapter = PostImageAdapter()
+        viewModel.images.observe(this.viewLifecycleOwner) { items ->
+            items.let{
+                postImageAdapter.submitList(it)
+            }
+        }
+        binding.images.adapter = postImageAdapter
+        binding.images.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
 
         // 댓글 부분
         val postReplyAdapter = PostReplyAdapter(

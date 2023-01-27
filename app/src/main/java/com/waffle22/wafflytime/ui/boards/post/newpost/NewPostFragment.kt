@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.boards.newpost
+package com.waffle22.wafflytime.ui.boards.post.newpost
 
 import android.os.Bundle
 import android.util.Log
@@ -12,15 +12,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.waffle22.wafflytime.databinding.FragmentNewThreadBinding
+import com.waffle22.wafflytime.databinding.FragmentNewPostBinding
 import com.waffle22.wafflytime.network.dto.LoadingStatus
 import com.waffle22.wafflytime.network.dto.PostTaskType
-import com.waffle22.wafflytime.ui.boards.postscreen.PostViewModel
+import com.waffle22.wafflytime.ui.boards.post.PostViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class NewPostFragment : Fragment() {
-    private lateinit var binding: FragmentNewThreadBinding
+    private lateinit var binding: FragmentNewPostBinding
     private val viewModel: NewPostViewModel by sharedViewModel()
     private val postViewModel: PostViewModel by sharedViewModel()
     private val navigationArgs: NewPostFragmentArgs by navArgs()
@@ -30,7 +30,7 @@ class NewPostFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentNewThreadBinding.inflate(inflater,container,false)
+        binding = FragmentNewPostBinding.inflate(inflater,container,false)
         return binding.root
     }
 
