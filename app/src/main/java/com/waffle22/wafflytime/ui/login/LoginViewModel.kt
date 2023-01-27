@@ -12,13 +12,19 @@ import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.waffle22.wafflytime.network.dto.SignUpRequest
+import com.waffle22.wafflytime.network.dto.TokenContainer
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import retrofit2.Response
 
 // TODO: Add StateFlow Enum
 // Todo: Add Response Code Enum
@@ -65,14 +71,16 @@ class LoginViewModel(
     }
 
 
+
     fun kakaoSocialLogin(context: Context) {
-        val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+        /*val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
                 Log.e(TAG, "카카오계정으로 로그인 실패", error)
             } else if (token != null) {
                 Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
             }
         }
+
 
 // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
@@ -95,6 +103,20 @@ class LoginViewModel(
         } else {
             UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
         }
+        // 로그인 정보 확인
+        UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+            if (error != null) {
+                Log.e(TAG, "토큰 정보 보기 실패")
+            }
+            else if (tokenInfo != null) {
+                Log.i(TAG, "토큰 정보 보기 성공")
+                val intent = Intent(this, SecondActivity::class.java)
+                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                finish()
+            }
+        }
+
+         */
 
     }
 
