@@ -24,42 +24,55 @@ class LoginViewModel(
 ) : ViewModel() {
 
     // TODO: Change String type to Enum Class!!!
-    private val _loginState = MutableStateFlow<StateStorage>(StateStorage("0",null,null))
+    private val _loginState = MutableStateFlow<StateStorage>(StateStorage("0", null, null))
     val loginState: StateFlow<StateStorage> = _loginState
 
-    fun resetAuthState(){
-        _loginState.value = StateStorage("0",null,null)
+    fun resetAuthState() {
+        _loginState.value = StateStorage("0", null, null)
     }
 
-    fun login(id: String, password: String){
+    fun login(id: String, password: String) {
         viewModelScope.launch {
 
 
             try {
                 val response = wafflyApiService.basicLogin(LoginRequest(id, password))
                 if (response.isSuccessful) {
-                    authStorage.setTokenInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
-                    _loginState.value = StateStorage("200",null,null)
+                    authStorage.setTokenInfo(
+                        response.body()!!.accessToken,
+                        response.body()!!.refreshToken
+                    )
+                    _loginState.value = StateStorage("200", null, null)
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
-                    _loginState.value = StateStorage(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message)
+                    _loginState.value = StateStorage(
+                        errorResponse.statusCode,
+                        errorResponse.errorCode,
+                        errorResponse.message
+                    )
                 }
-            } catch (e:java.lang.Exception) {
-                _loginState.value = StateStorage("-1",null,"System Corruption")
+            } catch (e: java.lang.Exception) {
+                _loginState.value = StateStorage("-1", null, "System Corruption")
             }
         }
     }
 
 
-    fun kakaoSocialLogin(context : Context) {
-      
+    fun kakaoSocialLogin(context: Context) {
+        val client_id = "14e86042a3842d295c4ef5af422fac3d"
+        val redirect_uri = "http://localhost:3000"
+        
+
     }
+
     fun naverSocialLogin() {
 
     }
+
     fun googleSocialLogin() {
 
     }
+
     fun githubSocialLogin() {
 
     }
