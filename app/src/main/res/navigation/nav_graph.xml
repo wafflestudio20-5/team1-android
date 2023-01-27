@@ -61,6 +61,9 @@
         <action
             android:id="@+id/action_postFragment_to_newPostFragment"
             app:destination="@id/newPostFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_newChatFragment"
+            app:destination="@id/newChatFragment" />
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
@@ -143,4 +146,8 @@
             android:id="@+id/action_searchPostFragment_to_postFragment"
             app:destination="@id/postFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/newChatFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.newchat.NewChatFragment"
+        android:label="NewChatFragment" />
 </navigation>

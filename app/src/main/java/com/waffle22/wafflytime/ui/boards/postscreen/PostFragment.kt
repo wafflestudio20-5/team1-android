@@ -119,7 +119,7 @@ class PostFragment() : Fragment() {
 
             override fun onPrepareMenu(menu: Menu) {
                 if(viewModel.canEditPost()){
-                    menu.findItem(R.id.dm).isVisible = false
+                    //menu.findItem(R.id.dm).isVisible = false
                 }
                 else {
                     menu.findItem(R.id.edit).isVisible = false
@@ -133,6 +133,10 @@ class PostFragment() : Fragment() {
                     R.id.refresh -> viewModel.refresh(boardId, postId)
                     R.id.edit -> {
                         val action = PostFragmentDirections.actionPostFragmentToNewPostFragment(boardId, PostTaskType.EDIT)
+                        findNavController().navigate(action)
+                    }
+                    R.id.dm -> {
+                        val action = PostFragmentDirections.actionPostFragmentToNewChatFragment()
                         findNavController().navigate(action)
                     }
                     R.id.delete -> {
