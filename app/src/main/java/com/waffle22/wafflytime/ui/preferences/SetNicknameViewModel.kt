@@ -8,7 +8,7 @@ import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.network.dto.ChangeNicknameRequest
 import com.waffle22.wafflytime.network.dto.UserDTO
 import com.waffle22.wafflytime.util.AuthStorage
-import com.waffle22.wafflytime.util.StateStorage
+import com.waffle22.wafflytime.util.SlackState
 import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,8 +23,8 @@ class SetNicknameViewModel(
     private val moshi: Moshi
 ): ViewModel() {
 
-    private val _state = MutableStateFlow<StateStorage>(StateStorage("0", null, null))
-    val state: StateFlow<StateStorage> = _state
+    private val _state = MutableStateFlow(SlackState("0", null, null, null))
+    val state: StateFlow<SlackState<Nothing>> = _state
 
     suspend fun checkUsername(newUsername: String): Boolean {
         val response: Response<ResponseBody> = wafflyApiService.checkNickname(newUsername)
@@ -32,13 +32,13 @@ class SetNicknameViewModel(
             false
         } else {
             val errorResponse = HttpException(response).parseError(moshi)!!
-            _state.value = StateStorage(errorResponse.statusCode, errorResponse.statusCode, errorResponse.message)
+            _state.value = SlackState(errorResponse.statusCode, errorResponse.statusCode, errorResponse.message, null)
             true
         }
     }
 
     fun changeUsername(newUsername: String) {
-        _state.value = StateStorage("0", null, null)
+        _state.value = SlackState("0", null, null, null)
         viewModelScope.launch {
             try {
                 val duplicate = checkUsername(newUsername)
@@ -48,20 +48,21 @@ class SetNicknameViewModel(
                     )
                     if (response.isSuccessful) {
                         authStorage.modifyUserDtoInfo(AuthStorage.UserNickNameKey, newUsername)
-                        _state.value = StateStorage(response.code().toString(), null, null)
+                        _state.value = SlackState(response.code().toString(), null, null, null)
                     } else {
                         val errorResponse = HttpException(response).parseError(moshi)!!
-                        _state.value = StateStorage(
+                        _state.value = SlackState(
                             errorResponse.statusCode,
                             errorResponse.statusCode,
-                            errorResponse.message
+                            errorResponse.message,
+                            null
                         )
                     }
                 }
             }
             catch (e: Exception) {
                 Log.e("EXCEPTION", e.message.toString())
-                _state.value = StateStorage("-1", null, "System Corruption")
+                _state.value = SlackState("-1", null, "System Corruption", null)
             }
         }
     }
