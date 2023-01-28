@@ -16,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentLoginBinding
-import com.waffle22.wafflytime.util.StateStorage
+import com.waffle22.wafflytime.util.SlackState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class LoginFragment :  Fragment() {
@@ -80,7 +80,7 @@ class LoginFragment :  Fragment() {
         viewModel.githubSocialLogin()
     }
 
-    private fun loginLogic(status: StateStorage){
+    private fun loginLogic(status: SlackState<Nothing>){
         when (status.status){
              "0" -> {
                 null
