@@ -153,11 +153,11 @@ class PostViewModel(
     }
 
     fun canEditPost(): Boolean{
-        return true
+        return false
     }
 
     fun canEditReply(): Boolean{
-        return true
+        return false
     }
 
     fun likePost(){

@@ -68,7 +68,8 @@ class PostFragment() : Fragment() {
         val postReplyAdapter = PostReplyAdapter(
             {setReplyState(it.replyId)},
             {viewModel.canEditReply()},
-            {flag, reply -> modifyReplyLogic(flag, reply)}
+            {flag, reply -> modifyReplyLogic(flag, reply)},
+            {reply -> moveToNewChat(reply.replyId)}
         )
         viewModel.replies.observe(this.viewLifecycleOwner){ items ->
             items.let{
@@ -119,7 +120,7 @@ class PostFragment() : Fragment() {
 
             override fun onPrepareMenu(menu: Menu) {
                 if(viewModel.canEditPost()){
-                    //menu.findItem(R.id.dm).isVisible = false
+                    menu.findItem(R.id.dm).isVisible = false
                 }
                 else {
                     menu.findItem(R.id.edit).isVisible = false
@@ -251,6 +252,11 @@ class PostFragment() : Fragment() {
                 }
             }
         }
+    }
+
+    private fun moveToNewChat(replyId: Long) {
+        val action = PostFragmentDirections.actionPostFragmentToNewChatFragment(boardId, postId, replyId)
+        findNavController().navigate(action)
     }
 
     private fun timeToText(time: TimeDTO): String{

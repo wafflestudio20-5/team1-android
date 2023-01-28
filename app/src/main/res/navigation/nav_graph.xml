@@ -157,5 +157,10 @@
         <argument
             android:name="postId"
             app:argType="long"/>
+        <argument
+            android:name="replyId"
+            app:argType="long"
+            android:defaultValue="-1L"
+            />
     </fragment>
 </navigation>

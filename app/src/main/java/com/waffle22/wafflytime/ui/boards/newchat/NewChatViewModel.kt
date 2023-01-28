@@ -25,13 +25,14 @@ class NewChatViewModel(
         _newChatState.value = StateStorage("0",null,null)
     }
 
-    fun sendNewChat(boardId: Long, postId: Long, isAnonymous: Boolean, content: String){
+    fun sendNewChat(boardId: Long, postId: Long, replyId: Long, isAnonymous: Boolean, content: String){
         viewModelScope.launch {
             if (content.isEmpty()) {
                 _newChatState.value = StateStorage("-2",null,null)
             } else{
                 try{
-                    val response = wafflyApiService.sendNewChat(boardId, postId, null, NewChatRequest(isAnonymous, content))
+                    val checkReplyId = if (replyId==-1L) null else replyId
+                    val response = wafflyApiService.sendNewChat(boardId, postId, checkReplyId, NewChatRequest(isAnonymous, content))
                     if (response.isSuccessful) {
                         _newChatState.value = StateStorage("200",null,null)
                     } else {

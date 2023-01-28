@@ -72,6 +72,7 @@ class NewChatFragment: Fragment() {
             // TODO: 익명 확인 추가
             .setMessage("정말 쪽지를 보내시겠어요?")
             .setPositiveButton("예") { dialog, which ->
+                // 메세지 보냄
                 sendMessage()
             }
             .setNegativeButton("아니요") { _, _ -> null }
@@ -86,7 +87,9 @@ class NewChatFragment: Fragment() {
             .show()
         alertDialog.setCanceledOnTouchOutside(false)
 
-        viewModel.sendNewChat(navigationArgs.boardId, navigationArgs.postId, false, binding.editTextFirstChat.text.toString())
+        val isAnonymous = binding.isAnonymous.isChecked
+        val content = binding.editTextFirstChat.text.toString()
+        viewModel.sendNewChat(navigationArgs.boardId, navigationArgs.postId, navigationArgs.replyId,isAnonymous, content)
     }
 
     private fun newChatLogic(state: StateStorage){
