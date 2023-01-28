@@ -159,4 +159,13 @@ interface WafflyApiService {
     // Notification 관련 Api
     @GET("/api/user/notifications")
     suspend fun getNotifications(@Query("page") page: Int, @Query("size") size: Int): Response<Notification>
+
+    // Chat 관련 Api
+    @POST("/api/board/{boardId}/post/{postId}/chat")
+    suspend fun sendNewChat(
+        @Path("boardId") boardId: Long,
+        @Path("postId") postId: Long,
+        @Query("replyId") replyId: Long?,
+        @Body() firstChatRequest: NewChatRequest
+    ): Response<NewChatResponse>
 }

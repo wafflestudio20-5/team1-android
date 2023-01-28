@@ -136,7 +136,7 @@ class PostFragment() : Fragment() {
                         findNavController().navigate(action)
                     }
                     R.id.dm -> {
-                        val action = PostFragmentDirections.actionPostFragmentToNewChatFragment()
+                        val action = PostFragmentDirections.actionPostFragmentToNewChatFragment(boardId, postId)
                         findNavController().navigate(action)
                     }
                     R.id.delete -> {
