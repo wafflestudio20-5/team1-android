@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.databinding.FragmentChangePasswordBinding
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -61,6 +62,7 @@ class ChangePasswordFragment: Fragment() {
                     else {
                         Toast.makeText(requireContext(), it.errorMessage, Toast.LENGTH_SHORT).show()
                     }
+                    coroutineContext.job.cancel()
                 }
             }
         }
