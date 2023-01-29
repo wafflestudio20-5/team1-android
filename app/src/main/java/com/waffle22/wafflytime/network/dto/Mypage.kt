@@ -9,3 +9,8 @@ data class ChangeNicknameRequest (
 data class SetProfilePicRequest (
     val fileName: String
 )
+
+data class ChangePasswordRequest (
+    @Json(name = "oldPassword") val oldPassword: String,
+    @Json(name = "newPassword") val newPassword: String
+)

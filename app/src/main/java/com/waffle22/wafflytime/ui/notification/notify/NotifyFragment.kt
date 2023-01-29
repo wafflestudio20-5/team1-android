@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.databinding.FragmentNotificationBinding
+import com.waffle22.wafflytime.network.dto.NotificationData
+import com.waffle22.wafflytime.util.SlackState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class NotifyFragment : Fragment() {
@@ -64,7 +66,7 @@ class NotifyFragment : Fragment() {
         }
     }
 
-    private fun notifyLogic(state: NotifyState, adapter: NotifyAdapter) {
+    private fun notifyLogic(state: SlackState<List<NotificationData>>, adapter: NotifyAdapter) {
         when (state.status){
             "0" -> {
                 null
@@ -73,7 +75,7 @@ class NotifyFragment : Fragment() {
                 //alertDialog.dismiss()
                 when(state.status) {
                     "200" -> {
-                        adapter.submitList(state.notificationDataSet)
+                        adapter.submitList(state.dataHolder)
                     }
                     else -> {
                         Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()

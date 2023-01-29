@@ -10,14 +10,13 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentLoginBinding
-import com.waffle22.wafflytime.util.StateStorage
 import kotlinx.coroutines.launch
+import com.waffle22.wafflytime.util.SlackState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class LoginFragment :  Fragment() {
@@ -81,7 +80,7 @@ class LoginFragment :  Fragment() {
         viewModel.githubSocialLogin()
     }
 
-    private fun loginLogic(status: StateStorage){
+    private fun loginLogic(status: SlackState<Nothing>){
         when (status.status){
              "0" -> {
                 null

@@ -12,15 +12,15 @@
 
         <Preference
             android:key="authorize_school"
-            android:title="학교 인증" />
+            android:title="학교 인증"
+            android:fragment="com.waffle22.wafflytime.ui.preferences.MypageEmailFragment"/>
         <Preference
             android:key="change_password"
             android:title="비밀번호 변경"
             android:fragment="com.waffle22.wafflytime.ui.preferences.ChangePasswordFragment"/>
         <Preference
             android:key="change_email"
-            android:title="이메일 변경"
-            android:fragment="com.waffle22.wafflytime.ui.preferences.ChangeEmailFragment"/>
+            android:title="이메일 변경"/>
     </PreferenceCategory>
 
     <PreferenceCategory

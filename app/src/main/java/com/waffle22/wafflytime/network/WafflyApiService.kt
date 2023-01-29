@@ -32,6 +32,9 @@ interface WafflyApiService {
     @PUT("/api/user/me")
     suspend fun changeNickname(@Body() request: ChangeNicknameRequest): Response<UserDTO>
 
+    @PUT("/api/user/me")
+    suspend fun changePassword(@Body() request: ChangePasswordRequest): Response<UserDTO>
+
     @PUT("/api/user/me/profile")
     suspend fun setProfilePic(@Body() request: SetProfilePicRequest): Response<UserDTO>
 

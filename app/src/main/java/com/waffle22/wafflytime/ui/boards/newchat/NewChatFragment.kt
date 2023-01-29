@@ -9,14 +9,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavArgs
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentNewchatBinding
-import com.waffle22.wafflytime.ui.login.SignUpFragmentDirections
-import com.waffle22.wafflytime.util.StateStorage
+import com.waffle22.wafflytime.util.SlackState
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -92,7 +90,7 @@ class NewChatFragment: Fragment() {
         viewModel.sendNewChat(navigationArgs.boardId, navigationArgs.postId, navigationArgs.replyId,isAnonymous, content)
     }
 
-    private fun newChatLogic(state: StateStorage){
+    private fun newChatLogic(state: SlackState<Nothing>){
         when(state.status) {
             // 대기 상태
             "0" -> null

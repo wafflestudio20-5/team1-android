@@ -10,7 +10,7 @@ import com.waffle22.wafflytime.network.dto.EmailRequest
 import com.waffle22.wafflytime.network.dto.SignUpRequest
 import com.waffle22.wafflytime.network.dto.TokenContainer
 import com.waffle22.wafflytime.util.AuthStorage
-import com.waffle22.wafflytime.util.StateStorage
+import com.waffle22.wafflytime.util.SlackState
 import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,16 +24,16 @@ class SignUpEmailViewModel(
     private val moshi: Moshi
 ): ViewModel() {
 
-    private val _signUpEmailState = MutableStateFlow<StateStorage>(StateStorage("0",null,null))
-    val signUpEmailState: StateFlow<StateStorage> = _signUpEmailState
+    private val _signUpEmailState = MutableStateFlow(SlackState("0",null,null,null))
+    val signUpEmailState: StateFlow<SlackState<Nothing>> = _signUpEmailState
 
-    private val _signUpCodeState = MutableStateFlow<StateStorage>(StateStorage("0",null,null))
-    val signUpCodeState: StateFlow<StateStorage> = _signUpCodeState
+    private val _signUpCodeState = MutableStateFlow(SlackState("0",null,null,null))
+    val signUpCodeState: StateFlow<SlackState<Nothing>> = _signUpCodeState
     var code: String? = null
     var email: String? = null
 
     fun resetSignUpEmailState(){
-        _signUpEmailState.value = StateStorage("0",null,null)
+        _signUpEmailState.value = SlackState("0",null,null,null)
     }
 
     fun signUpEmail(userEmail: String){
@@ -43,19 +43,19 @@ class SignUpEmailViewModel(
                 val response: Response<EmailCode> = wafflyApiService.emailAuth(EmailRequest(userEmail))
                 if (response.isSuccessful){
                     code = response.body()!!.emailCode
-                    _signUpEmailState.value = StateStorage("200",null,null)
+                    _signUpEmailState.value = SlackState("200",null,null,null)
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
-                    _signUpEmailState.value = StateStorage(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message)
+                    _signUpEmailState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, null)
                 }
             } catch (e:java.lang.Exception) {
-                _signUpEmailState.value = StateStorage("-1",null,"System Corruption")
+                _signUpEmailState.value = SlackState("-1",null,"System Corruption", null)
             }
         }
     }
 
     fun resetSignUpCodeState(){
-        _signUpCodeState.value = StateStorage("0",null,null)
+        _signUpCodeState.value = SlackState("0",null,null,null)
     }
 
     fun signUpCode(userCode: String){
@@ -66,16 +66,16 @@ class SignUpEmailViewModel(
                     val response = wafflyApiService.emailPatch(EmailRequest(email!!))
                     if (response.isSuccessful){
                         authStorage.setTokenInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
-                        _signUpCodeState.value = StateStorage("200",null,null)
+                        _signUpCodeState.value = SlackState("200",null,null, null)
                     } else {
                         val errorResponse = HttpException(response).parseError(moshi)!!
-                        _signUpCodeState.value = StateStorage(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message)
+                        _signUpCodeState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, null)
                     }
                 } else {
-                    _signUpCodeState.value = StateStorage("-2",null,"코드가 일치하지 않습니다.")
+                    _signUpCodeState.value = SlackState("-2",null,"코드가 일치하지 않습니다.", null)
                 }
             } catch (e:java.lang.Exception) {
-                _signUpCodeState.value = StateStorage("-1",null,"System Corruption")
+                _signUpCodeState.value = SlackState("-1",null,"System Corruption", null)
             }
         }
     }
