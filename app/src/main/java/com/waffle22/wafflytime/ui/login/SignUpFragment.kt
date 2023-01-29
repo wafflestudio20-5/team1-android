@@ -32,7 +32,7 @@ class SignUpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply{
-            btnSignup.setOnClickListener { signUp() }
+            btnSignUpDone.setOnClickListener { signUp() }
         }
 
         lifecycleScope.launchWhenStarted {
@@ -52,7 +52,7 @@ class SignUpFragment : Fragment() {
         viewModel.signUp(binding.idEditText.text.toString(), binding.passwordEditText.text.toString(), binding.nickNameEditText.text.toString())
     }
 
-    private fun signUpLogic(state: SlackState<Any?>){
+    private fun signUpLogic(state: SlackState<Nothing>){
         when (state.status){
             "0" -> {
                 null

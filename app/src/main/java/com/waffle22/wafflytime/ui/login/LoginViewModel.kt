@@ -35,11 +35,11 @@ class LoginViewModel(
 ) : ViewModel() {
 
     // TODO: Change String type to Enum Class!!!
-    private val _loginState = MutableStateFlow(SlackState("0",null,null))
+    private val _loginState = MutableStateFlow(SlackState("0",null,null,null))
     val loginState: StateFlow<SlackState<Nothing>> = _loginState
 
     fun resetAuthState(){
-        _loginState.value = SlackState("0",null,null)
+        _loginState.value = SlackState("0",null,null,null)
     }
 
     fun login(id: String, password: String){
@@ -50,13 +50,13 @@ class LoginViewModel(
                 val response = wafflyApiService.basicLogin(LoginRequest(id, password))
                 if (response.isSuccessful) {
                     authStorage.setTokenInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
-                    _loginState.value = SlackState("200",null,null)
+                    _loginState.value = SlackState("200",null,null,null)
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
-                    _loginState.value = SlackState(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message)
+                    _loginState.value = SlackState(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message,null)
                 }
             } catch (e:java.lang.Exception) {
-                _loginState.value = SlackState("-1",null,"System Corruption")
+                _loginState.value = SlackState("-1",null,"System Corruption",null)
             }
         }
     }
