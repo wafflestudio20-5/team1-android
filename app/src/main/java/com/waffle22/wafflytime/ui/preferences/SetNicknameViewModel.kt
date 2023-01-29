@@ -23,7 +23,7 @@ class SetNicknameViewModel(
     private val moshi: Moshi
 ): ViewModel() {
 
-    private val _state = MutableStateFlow(SlackState("0", null, null, null))
+    private val _state = MutableStateFlow(SlackState<Any>("0", null, null, null))
     val state: StateFlow<SlackState<Nothing>> = _state
 
     suspend fun checkUsername(newUsername: String): Boolean {
@@ -32,13 +32,13 @@ class SetNicknameViewModel(
             false
         } else {
             val errorResponse = HttpException(response).parseError(moshi)!!
-            _state.value = SlackState(errorResponse.statusCode, errorResponse.statusCode, errorResponse.message, null)
+            _state.value = SlackState<Any>(errorResponse.statusCode, errorResponse.statusCode, errorResponse.message, null)
             true
         }
     }
 
     fun changeUsername(newUsername: String) {
-        _state.value = SlackState("0", null, null, null)
+        _state.value = SlackState<Any>("0", null, null, null)
         viewModelScope.launch {
             try {
                 val duplicate = checkUsername(newUsername)
@@ -48,10 +48,10 @@ class SetNicknameViewModel(
                     )
                     if (response.isSuccessful) {
                         authStorage.modifyUserDtoInfo(AuthStorage.UserNickNameKey, newUsername)
-                        _state.value = SlackState(response.code().toString(), null, null, null)
+                        _state.value = SlackState<Any>(response.code().toString(), null, null, null)
                     } else {
                         val errorResponse = HttpException(response).parseError(moshi)!!
-                        _state.value = SlackState(
+                        _state.value = SlackState<Any>(
                             errorResponse.statusCode,
                             errorResponse.statusCode,
                             errorResponse.message,
@@ -62,7 +62,7 @@ class SetNicknameViewModel(
             }
             catch (e: Exception) {
                 Log.e("EXCEPTION", e.message.toString())
-                _state.value = SlackState("-1", null, "System Corruption", null)
+                _state.value = SlackState<Any>("-1", null, "System Corruption", null)
             }
         }
     }

@@ -23,14 +23,14 @@ class SetProfilePicViewModel(
     private val moshi: Moshi
 ): ViewModel() {
 
-    private val _state = MutableStateFlow(SlackState("0", null, null, null))
+    private val _state = MutableStateFlow(SlackState<Any>("0", null, null, null))
     val state: StateFlow<SlackState<Nothing>> = _state
 
     private val _profileUrl = MutableStateFlow<SlackState<String>>(SlackState("0", null, null, null))
     val profileUrl: StateFlow<SlackState<String>> = _profileUrl
 
     fun setProfilePic(fileName: String, byteArray: ByteArray) {
-        _state.value = SlackState("0", null, null, null)
+        _state.value = SlackState<Any>("0", null, null, null)
         viewModelScope.launch {
             try {
                 val response: Response<UserDTO> = wafflyApiService.setProfilePic(
@@ -39,32 +39,32 @@ class SetProfilePicViewModel(
                 if(response.isSuccessful) {
                     val response2: Response<Unit> = wafflyApiService.uploadProfilePic(response.body()!!.profileUrl!!, byteArray.toRequestBody("application/octet-stream".toMediaTypeOrNull()))
                     if(response2.isSuccessful) {
-                        _state.value = SlackState(response.code().toString(), null, null, null)
+                        _state.value = SlackState<Any>(response.code().toString(), null, null, null)
                     }
                     else {
-                        _state.value = SlackState(response.code().toString(), null, "Cannot upload picture", null)
+                        _state.value = SlackState<Any>(response.code().toString(), null, "Cannot upload picture", null)
                     }
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
-                    _state.value = SlackState(errorResponse.statusCode, errorResponse.statusCode, errorResponse.message, null)
+                    _state.value = SlackState<Any>(errorResponse.statusCode, errorResponse.statusCode, errorResponse.message, null)
                 }
             }
             catch (e: Exception) {
-                _state.value = SlackState("-1", null, "System Corruption", null)
+                _state.value = SlackState<Any>("-1", null, "System Corruption", null)
             }
         }
     }
 
     fun deleteProfilePic() {
-        _state.value = SlackState("0", null, null, null)
+        _state.value = SlackState<Any>("0", null, null, null)
         viewModelScope.launch {
             try {
                 val response: Response<UserDTO> = wafflyApiService.deleteProfilePic()
                 if (response.isSuccessful) {
-                    _state.value = SlackState(response.code().toString(), null, null, null)
+                    _state.value = SlackState<Any>(response.code().toString(), null, null, null)
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
-                    _state.value = SlackState(
+                    _state.value = SlackState<Any>(
                         errorResponse.statusCode,
                         errorResponse.statusCode,
                         errorResponse.message,
@@ -73,7 +73,7 @@ class SetProfilePicViewModel(
                 }
             }
             catch (e: Exception) {
-                _state.value = SlackState("-1", null, "System Corruption", null)
+                _state.value = SlackState<Any>("-1", null, "System Corruption", null)
             }
         }
     }

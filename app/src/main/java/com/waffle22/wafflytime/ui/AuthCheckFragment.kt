@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.waffle22.wafflytime.databinding.FragmentAuthcheckBinding
-import com.waffle22.wafflytime.ui.login.LoginFragmentDirections
 import com.waffle22.wafflytime.util.SlackState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -40,7 +39,7 @@ class AuthCheckFragment: Fragment() {
 
     }
 
-    private fun authLogic(state: SlackState<Nothing>){
+    private fun authLogic(state: SlackState<Any?>){
         when (state.status){
             "0" -> {
                 null

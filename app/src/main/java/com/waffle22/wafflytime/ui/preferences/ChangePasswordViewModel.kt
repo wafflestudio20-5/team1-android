@@ -21,14 +21,14 @@ class ChangePasswordViewModel(
     private val moshi: Moshi
 ): ViewModel() {
 
-    private val _state = MutableStateFlow(SlackState("0", null, null, null))
+    private val _state = MutableStateFlow(SlackState<Any>("0", null, null, null))
     val state: StateFlow<SlackState<Nothing>> = _state
 
     fun changePassword(newPassword: String, oldPassword: String, confirmPassword: String) {
-        _state.value = SlackState("0", null, null, null)
+        _state.value = SlackState<Any>("0", null, null, null)
 
         if(newPassword != confirmPassword) {
-            _state.value = SlackState("-2", null, "새 비밀번호의 오타를 확인해 주세요.", null)
+            _state.value = SlackState<Any>("-2", null, "새 비밀번호의 오타를 확인해 주세요.", null)
         }
         else {
             viewModelScope.launch {
@@ -36,10 +36,10 @@ class ChangePasswordViewModel(
                     wafflyApiService.changePassword(ChangePasswordRequest(oldPassword, newPassword))
                 try {
                     if (response.isSuccessful) {
-                        _state.value = SlackState(response.code().toString(), null, null, null)
+                        _state.value = SlackState<Any>(response.code().toString(), null, null, null)
                     } else {
                         val errorResponse = HttpException(response).parseError(moshi)!!
-                        _state.value = SlackState(
+                        _state.value = SlackState<Any>(
                             errorResponse.statusCode,
                             errorResponse.errorCode,
                             errorResponse.message,
@@ -47,7 +47,7 @@ class ChangePasswordViewModel(
                         )
                     }
                 } catch (e: Exception) {
-                    _state.value = SlackState("-1", null, "System Corruption", null)
+                    _state.value = SlackState<Any>("-1", null, "System Corruption", null)
                 }
             }
         }
