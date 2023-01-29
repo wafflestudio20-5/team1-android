@@ -17,6 +17,6 @@ class MainApplication : Application() {
         }
 
         // Kakao SDK 초기화
-        KakaoSdk.init(this, "{NATIVE_APP_KEY}")
+        KakaoSdk.init(this, "cd623f2f02f10dfba7fc861bd8250859")
     }
 }

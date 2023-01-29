@@ -1,6 +1,8 @@
 package com.waffle22.wafflytime.ui.login
 
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -40,7 +42,14 @@ class LoginFragment :  Fragment() {
         binding.apply{
             btnLogin.setOnClickListener { login() }
             btnSignup.setOnClickListener { signUp() }
-            kakaoLoginButton.setOnClickListener{ kakaoLogin()}
+            kakaoLoginButton.setOnClickListener{
+                val CLIENT_ID = "14e86042a3842d295c4ef5af422fac3d"
+                val REDIRECT_URI =  "http://localhost:3000/api/auth/social/login/kakao"
+                val KAKAO_AUTH_URL = "https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code"
+                var intent = Intent(Intent.ACTION_VIEW, Uri.parse(KAKAO_AUTH_URL))
+                startActivity(intent)
+
+            }
             naverLoginButton.setOnClickListener{ naverLogin()}
             googleLoginButton.setOnClickListener{ googleLogin()}
             githubLoginButton.setOnClickListener{ githubLogin()}
