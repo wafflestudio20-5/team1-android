@@ -205,7 +205,7 @@ class SettingsFragment: PreferenceFragmentCompat() {
             profileViewModel.profileUrl.collect() {
                 if(it.status != "0") {
                     if(it.errorCode == null && it.errorMessage == null) {
-                        profileCard.profileUrl = it.value
+                        profileCard.profileUrl = it.dataHolder
                     }
                     else {
                         Toast.makeText(

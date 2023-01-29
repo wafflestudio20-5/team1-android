@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_changePasswordFragment"
             app:destination="@id/changePasswordFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_mypageEmailFragment2"
+            app:destination="@id/mypageEmailFragment" />
     </fragment>
     <fragment
         android:id="@+id/setNicknameFragment"
@@ -23,4 +26,18 @@
         android:id="@+id/changePasswordFragment"
         android:name="com.waffle22.wafflytime.ui.preferences.ChangePasswordFragment"
         android:label="ChangePasswordFragment" />
+    <fragment
+        android:id="@+id/mypageEmailFragment"
+        android:name="com.waffle22.wafflytime.ui.preferences.MypageEmailFragment"
+        android:label="MypageEmailFragment" >
+        <action
+            android:id="@+id/action_mypageEmailFragment_to_mypageEmailCodeFragment"
+            app:destination="@id/mypageEmailCodeFragment"
+            app:popUpTo="@id/mypageEmailFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/mypageEmailCodeFragment"
+        android:name="com.waffle22.wafflytime.ui.preferences.MypageEmailCodeFragment"
+        android:label="MypageEmailCodeFragment" />
 </navigation>
