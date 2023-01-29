@@ -1,9 +1,11 @@
 package com.waffle22.wafflytime.ui.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService
+import com.waffle22.wafflytime.network.dto.LoginRequest
 import com.waffle22.wafflytime.network.dto.SignUpRequest
 import com.waffle22.wafflytime.network.dto.TokenContainer
 import com.waffle22.wafflytime.util.AuthStorage
@@ -25,8 +27,8 @@ class SignUpViewModel(
 ): ViewModel() {
 
     // TODO: Change String type to Enum Class!!!
-    private val _signUpState = MutableStateFlow<SlackState<Any?>>(SlackState("0",null,null))
-    val signUpState: StateFlow<SlackState<Any?>> = _signUpState
+    private val _signUpState = MutableStateFlow(SlackState("0",null,null))
+    val signUpState: StateFlow<SlackState<Nothing>> = _signUpState
 
     fun resetSignUpState(){
         _signUpState.value = SlackState("0",null,null)

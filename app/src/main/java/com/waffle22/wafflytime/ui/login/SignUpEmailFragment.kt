@@ -52,7 +52,7 @@ class SignUpEmailFragment: Fragment() {
         viewModel.signUpEmail(binding.emailEditText.text.toString())
     }
 
-    private fun signUpEmailLogic(state: SlackState<Any?>){
+    private fun signUpEmailLogic(state: SlackState<Nothing>){
         when (state.status){
             "0" -> {
                 null

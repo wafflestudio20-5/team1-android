@@ -91,7 +91,7 @@ class LoginFragment :  Fragment() {
 
     private fun loginLogic(status: SlackState<Nothing>){
         when (status.status){
-             "0" -> {
+            "0" -> {
                 null
             }
             else -> {
