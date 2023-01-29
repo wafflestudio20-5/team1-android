@@ -1,12 +1,10 @@
 package com.waffle22.wafflytime.ui.notification.chat
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService
-import kotlinx.coroutines.launch
 
-class ChatViewModel(
+class ChatBoxViewModel(
     private val wafflyApiService: WafflyApiService,
     private val moshi: Moshi
 ): ViewModel() {
