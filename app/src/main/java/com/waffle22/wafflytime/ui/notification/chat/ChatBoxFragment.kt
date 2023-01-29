@@ -4,15 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.databinding.FragmentChatboxBinding
 import com.waffle22.wafflytime.network.dto.Chat
+import com.waffle22.wafflytime.network.dto.ChatSimpleInfo
+import com.waffle22.wafflytime.util.SlackState
+import com.waffle22.wafflytime.util.Toaster
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ChatBoxFragment : Fragment() {
     private val viewModel: ChatBoxViewModel by sharedViewModel()
     private lateinit var binding : FragmentChatboxBinding
     private lateinit var adapter: ChatAdapter
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,14 +34,47 @@ class ChatBoxFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.
+        viewModel.getChatList()
 
+        recyclerView = binding.chatBoxRecyclerView
         adapter = ChatAdapter()
-        var hello: List<Chat> = listOf(Chat("diluc","sword","0101"), Chat("pai","cute","12"))
-        adapter.submitList(hello)
+        adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int){
+                if (positionStart == 0){
+                    recyclerView.scrollToPosition(0)
+                }
+            }
+        })
 
         binding.apply {
-            chatBoxRecyclerView.adapter = adapter
+            recyclerView.adapter = adapter
+            swipeRefreshLayout.setOnRefreshListener { viewModel.getChatList() }
+        }
+
+        lifecycleScope.launch {
+            viewModel.chatBoxState.collect{
+                chatBoxLogic(it)
+            }
+        }
+
+    }
+
+    private fun chatBoxLogic(state: SlackState<List<ChatSimpleInfo>>) {
+        when(state.status) {
+            "0" -> null
+            else -> {
+                when(state.status){
+                    "200" -> {
+                        adapter.submitList(state.dataHolder)
+                    }
+                    else -> {
+                        Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                viewModel.resetState()
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
+
         }
 
     }

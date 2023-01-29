@@ -7,18 +7,20 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.databinding.ChatboxItemBinding
 import com.waffle22.wafflytime.network.dto.Chat
+import com.waffle22.wafflytime.network.dto.ChatSimpleInfo
+import com.waffle22.wafflytime.network.dto.NotificationData
 
-class ChatAdapter: ListAdapter<Chat, ChatAdapter.ChatViewHolder>(DiffCallback){
+class ChatAdapter: ListAdapter<ChatSimpleInfo, ChatAdapter.ChatViewHolder>(DiffCallback){
 
     class ChatViewHolder(
         private val binding: ChatboxItemBinding
     ): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(chat: Chat) {
+        fun bind(chatSimpleInfo: ChatSimpleInfo) {
             binding.apply {
-                commentTitle.text = chat.Name
-                commentContent.text = chat.content
-                commentTime.text = chat.date
+                commentTitle.text = chatSimpleInfo.id.toString()
+                commentContent.text = chatSimpleInfo.recentMessage
+                commentTime.text = "No Data from the server"
             }
             binding.executePendingBindings()
         }
@@ -32,15 +34,21 @@ class ChatAdapter: ListAdapter<Chat, ChatAdapter.ChatViewHolder>(DiffCallback){
     }
 
     override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
-        val getChat = getItem(position)
-        holder.bind(getChat)
+        val chatSimpleInfo = getItem(position)
+        holder.bind(chatSimpleInfo)
     }
-    companion object DiffCallback: DiffUtil.ItemCallback<Chat>() {
-        override fun areItemsTheSame(oldItem: Chat, newItem: Chat): Boolean {
-            return oldItem.Name == newItem.Name
+    companion object DiffCallback: DiffUtil.ItemCallback<ChatSimpleInfo>() {
+        override fun areItemsTheSame(
+            oldItem: ChatSimpleInfo,
+            newItem: ChatSimpleInfo
+        ): Boolean {
+            return (oldItem.id == newItem.id) && (oldItem.recentMessage == newItem.recentMessage)
         }
 
-        override fun areContentsTheSame(oldItem: Chat, newItem: Chat): Boolean {
+        override fun areContentsTheSame(
+            oldItem: ChatSimpleInfo,
+            newItem: ChatSimpleInfo
+        ): Boolean {
             return oldItem == newItem
         }
 

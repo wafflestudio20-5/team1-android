@@ -171,4 +171,7 @@ interface WafflyApiService {
         @Query("replyId") replyId: Long?,
         @Body() firstChatRequest: NewChatRequest
     ): Response<NewChatResponse>
+
+    @GET("/api/chat")
+    suspend fun getChatList() : Response<List<ChatSimpleInfo>>
 }

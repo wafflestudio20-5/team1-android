@@ -14,6 +14,7 @@ import com.waffle22.wafflytime.ui.login.LoginViewModel
 import com.waffle22.wafflytime.ui.login.SignUpEmailViewModel
 import com.waffle22.wafflytime.ui.login.SignUpViewModel
 import com.waffle22.wafflytime.ui.mainpage.MainHomeViewModel
+import com.waffle22.wafflytime.ui.notification.chat.ChatBoxViewModel
 import com.waffle22.wafflytime.ui.preferences.LogoutViewModel
 import com.waffle22.wafflytime.ui.preferences.SetNicknameViewModel
 import com.waffle22.wafflytime.ui.preferences.SetProfilePicViewModel
@@ -90,8 +91,8 @@ val appModule = module {
     viewModel { NewPostViewModel(get(), get()) }
     viewModel { NewChatViewModel(get(), get()) }
 
-    // Notification
+    // Notification && Chat
     viewModel { NotifyViewModel(get(), get()) }
-
+    viewModel { ChatBoxViewModel(get(), get()) }
 }
 
