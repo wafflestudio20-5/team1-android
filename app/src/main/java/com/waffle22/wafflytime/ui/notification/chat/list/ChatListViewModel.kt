@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.notification.chat
+package com.waffle22.wafflytime.ui.notification.chat.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-class ChatBoxViewModel(
+class ChatListViewModel(
     private val wafflyApiService: WafflyApiService,
     private val moshi: Moshi
 ): ViewModel() {

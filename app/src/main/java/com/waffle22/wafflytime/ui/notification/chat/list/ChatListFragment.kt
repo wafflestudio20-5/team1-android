@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.notification.chat
+package com.waffle22.wafflytime.ui.notification.chat.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,24 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.databinding.FragmentChatboxBinding
-import com.waffle22.wafflytime.network.dto.Chat
 import com.waffle22.wafflytime.network.dto.ChatSimpleInfo
 import com.waffle22.wafflytime.ui.notification.BaseNotificationViewModel
 import com.waffle22.wafflytime.util.SlackState
-import com.waffle22.wafflytime.util.Toaster
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class ChatBoxFragment : Fragment() {
-    private val viewModel: ChatBoxViewModel by sharedViewModel()
+class ChatListFragment : Fragment() {
+    private val viewModel: ChatListViewModel by sharedViewModel()
     private val baseNotificationViewModel: BaseNotificationViewModel by sharedViewModel()
     private lateinit var binding : FragmentChatboxBinding
-    private lateinit var adapter: ChatAdapter
+    private lateinit var adapter: ChatListAdapter
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
@@ -41,7 +37,7 @@ class ChatBoxFragment : Fragment() {
         viewModel.getChatList()
 
         recyclerView = binding.chatBoxRecyclerView
-        adapter = ChatAdapter{moveToChatRoom(it)}
+        adapter = ChatListAdapter{moveToChatRoom(it)}
         adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int){
                 if (positionStart == 0){

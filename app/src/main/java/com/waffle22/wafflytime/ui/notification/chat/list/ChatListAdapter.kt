@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.notification.chat
+package com.waffle22.wafflytime.ui.notification.chat.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,13 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.databinding.ChatboxItemBinding
-import com.waffle22.wafflytime.network.dto.Chat
 import com.waffle22.wafflytime.network.dto.ChatSimpleInfo
-import com.waffle22.wafflytime.network.dto.NotificationData
 
-class ChatAdapter(
+class ChatListAdapter(
     private val onClickedChat: (ChatSimpleInfo) -> Unit
-): ListAdapter<ChatSimpleInfo, ChatAdapter.ChatViewHolder>(DiffCallback){
+): ListAdapter<ChatSimpleInfo, ChatListAdapter.ChatViewHolder>(DiffCallback){
 
     class ChatViewHolder(
         private val binding: ChatboxItemBinding,

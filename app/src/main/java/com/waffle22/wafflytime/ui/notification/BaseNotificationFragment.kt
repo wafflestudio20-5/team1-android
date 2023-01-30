@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
@@ -14,7 +13,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.waffle22.wafflytime.databinding.FragmentBaseNotificationBinding
 import com.waffle22.wafflytime.network.dto.ChatSimpleInfo
 import com.waffle22.wafflytime.network.dto.NotificationData
-import com.waffle22.wafflytime.ui.notification.chat.ChatBoxFragment
+import com.waffle22.wafflytime.ui.notification.chat.list.ChatListFragment
 import com.waffle22.wafflytime.ui.notification.notify.NotifyFragment
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -22,7 +21,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class BaseNotificationFragment : Fragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var binding: FragmentBaseNotificationBinding
-    private lateinit var pageAdapter: NotificationPageAdapter
+    private lateinit var pageAdapter: BaseNotificationPageAdapter
 
     private val viewModel: BaseNotificationViewModel by sharedViewModel()
     private val tabTitleList = listOf("알림","쪽지")
@@ -39,9 +38,9 @@ class BaseNotificationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pageAdapter = NotificationPageAdapter(this.requireActivity())
+        pageAdapter = BaseNotificationPageAdapter(this.requireActivity())
         pageAdapter.addItems(NotifyFragment())
-        pageAdapter.addItems(ChatBoxFragment())
+        pageAdapter.addItems(ChatListFragment())
         viewPager = binding.viewPager
         viewPager.adapter = pageAdapter
         TabLayoutMediator(binding.topTap, viewPager) { tab, position ->
