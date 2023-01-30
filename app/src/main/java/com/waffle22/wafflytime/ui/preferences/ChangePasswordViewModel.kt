@@ -22,7 +22,7 @@ class ChangePasswordViewModel(
 ): ViewModel() {
 
     private val _state = MutableStateFlow(SlackState<Any>("0", null, null, null))
-    val state: StateFlow<SlackState<Nothing>> = _state
+    val state: StateFlow<SlackState<Any>> = _state
 
     fun changePassword(newPassword: String, oldPassword: String, confirmPassword: String) {
         _state.value = SlackState<Any>("0", null, null, null)

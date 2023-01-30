@@ -18,23 +18,23 @@ class LogoutViewModel(
     private val moshi: Moshi
 ) : ViewModel() {
 
-    private val _logoutState = MutableStateFlow(SlackState<Any>("0",null,null,null))
+    private val _logoutState = MutableStateFlow(SlackState("0",null,null,null))
     val logoutState: StateFlow<SlackState<Nothing>> = _logoutState
 
     fun logout() {
-        _logoutState.value = SlackState<Any>("0", null, null, null)
+        _logoutState.value = SlackState("0", null, null, null)
         viewModelScope.launch{
             try {
                 val response = wafflyApiService.logout()
                 if (response.isSuccessful) {
                     authStorage.clearAuthInfo()
-                    _logoutState.value = SlackState<Any>("200",null,null,null)
+                    _logoutState.value = SlackState("200",null,null,null)
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
-                    _logoutState.value = SlackState<Any>(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message,null)
+                    _logoutState.value = SlackState(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message,null)
                 }
             } catch (e:java.lang.Exception) {
-                _logoutState.value = SlackState<Any>("-1",null,"System Corruption",null)
+                _logoutState.value = SlackState("-1",null,"System Corruption",null)
             }
         }
     }
