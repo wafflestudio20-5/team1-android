@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.databinding.FragmentChatboxBinding
 import com.waffle22.wafflytime.network.dto.Chat
@@ -37,7 +38,7 @@ class ChatBoxFragment : Fragment() {
         viewModel.getChatList()
 
         recyclerView = binding.chatBoxRecyclerView
-        adapter = ChatAdapter()
+        adapter = ChatAdapter{moveToChatRoom(it)}
         adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int){
                 if (positionStart == 0){
@@ -77,5 +78,11 @@ class ChatBoxFragment : Fragment() {
 
         }
 
+    }
+
+    private fun moveToChatRoom(chatSimpleInfo: ChatSimpleInfo) {
+        // TODO: Pass args
+        val action = ChatBoxFragmentDirections.actionChatBoxFragmentToChatRoomFragment()
+        this.findNavController().navigate(action)
     }
 }

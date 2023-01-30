@@ -10,10 +10,13 @@ import com.waffle22.wafflytime.network.dto.Chat
 import com.waffle22.wafflytime.network.dto.ChatSimpleInfo
 import com.waffle22.wafflytime.network.dto.NotificationData
 
-class ChatAdapter: ListAdapter<ChatSimpleInfo, ChatAdapter.ChatViewHolder>(DiffCallback){
+class ChatAdapter(
+    private val onClickedChat: (ChatSimpleInfo) -> Unit
+): ListAdapter<ChatSimpleInfo, ChatAdapter.ChatViewHolder>(DiffCallback){
 
     class ChatViewHolder(
-        private val binding: ChatboxItemBinding
+        private val binding: ChatboxItemBinding,
+        private val onClickedChat: (ChatSimpleInfo) -> Unit
     ): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(chatSimpleInfo: ChatSimpleInfo) {
@@ -21,6 +24,7 @@ class ChatAdapter: ListAdapter<ChatSimpleInfo, ChatAdapter.ChatViewHolder>(DiffC
                 commentTitle.text = chatSimpleInfo.id.toString()
                 commentContent.text = chatSimpleInfo.recentMessage
                 commentTime.text = "No Data from the server"
+                root.setOnClickListener { onClickedChat(chatSimpleInfo) }
             }
             binding.executePendingBindings()
         }
@@ -29,7 +33,7 @@ class ChatAdapter: ListAdapter<ChatSimpleInfo, ChatAdapter.ChatViewHolder>(DiffC
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return ChatViewHolder(
-            ChatboxItemBinding.inflate(layoutInflater, parent, false)
+            ChatboxItemBinding.inflate(layoutInflater, parent, false), onClickedChat
         )
     }
 

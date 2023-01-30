@@ -163,4 +163,16 @@
             android:defaultValue="-1L"
             />
     </fragment>
+    <fragment
+        android:id="@+id/chatBoxFragment"
+        android:name="com.waffle22.wafflytime.ui.notification.chat.ChatBoxFragment"
+        android:label="ChatBoxFragment" >
+        <action
+            android:id="@+id/action_chatBoxFragment_to_chatRoomFragment"
+            app:destination="@id/chatRoomFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatRoomFragment"
+        android:name="com.waffle22.wafflytime.ui.notification.chat.room.ChatRoomFragment"
+        android:label="ChatRoomFragment" />
 </navigation>

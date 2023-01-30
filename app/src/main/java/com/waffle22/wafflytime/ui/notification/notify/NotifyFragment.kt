@@ -1,6 +1,7 @@
 package com.waffle22.wafflytime.ui.notification.notify
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,7 @@ class NotifyFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("debug","this is NotifyFragment")
         binding = FragmentNotificationBinding.inflate(inflater, container, false)
         return binding.root
     }
