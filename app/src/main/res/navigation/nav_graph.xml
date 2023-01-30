@@ -24,7 +24,14 @@
     <fragment
         android:id="@+id/baseNotificationFragment"
         android:name="com.waffle22.wafflytime.ui.notification.BaseNotificationFragment"
-        android:label="BaseNotificationFragment" />
+        android:label="BaseNotificationFragment" >
+        <action
+            android:id="@+id/action_baseNotificationFragment_to_chatRoomFragment"
+            app:destination="@id/chatRoomFragment" />
+        <action
+            android:id="@+id/action_baseNotificationFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
 
 
     <fragment
@@ -164,15 +171,11 @@
             />
     </fragment>
     <fragment
-        android:id="@+id/chatBoxFragment"
-        android:name="com.waffle22.wafflytime.ui.notification.chat.ChatBoxFragment"
-        android:label="ChatBoxFragment" >
-        <action
-            android:id="@+id/action_chatBoxFragment_to_chatRoomFragment"
-            app:destination="@id/chatRoomFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/chatRoomFragment"
         android:name="com.waffle22.wafflytime.ui.notification.chat.room.ChatRoomFragment"
-        android:label="ChatRoomFragment" />
+        android:label="ChatRoomFragment" >
+        <argument
+            android:name="chatId"
+            app:argType="long"/>
+    </fragment>
 </navigation>

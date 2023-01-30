@@ -24,10 +24,10 @@ data class NotificationData(
 )
 
 data class NotificationInfo(
-    @Json(name = "boardId") val boardId: Int,
+    @Json(name = "boardId") val boardId: Long,
     @Json(name = "boardTitle") val boardTitle: String,
-    @Json(name = "postId") val postId: Int,
-    @Json(name = "chatId") val chatId: Int?
+    @Json(name = "postId") val postId: Long,
+    @Json(name = "chatId") val chatId: Long?
 )
 
 // 채팅관련

@@ -10,10 +10,13 @@ import com.waffle22.wafflytime.databinding.LoadingItemBinding
 import com.waffle22.wafflytime.databinding.NotificationItemBinding
 import com.waffle22.wafflytime.network.dto.NotificationData
 
-class NotifyAdapter: ListAdapter<NotificationData, NotifyAdapter.NotifyViewHolder>(DiffCallback){
+class NotifyAdapter(
+    private val moveToPost: (NotificationData) -> Unit
+): ListAdapter<NotificationData, NotifyAdapter.NotifyViewHolder>(DiffCallback){
 
     class NotifyViewHolder(
-        private val binding: NotificationItemBinding
+        private val binding: NotificationItemBinding,
+        private val moveToPost: (NotificationData) -> Unit
     ): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(notificationData: NotificationData) {
@@ -21,6 +24,7 @@ class NotifyAdapter: ListAdapter<NotificationData, NotifyAdapter.NotifyViewHolde
                 commentTitle.text = notificationData.notificationType
                 commentContent.text = notificationData.notificationContent
                 commentTime.text = "hi"
+                root.setOnClickListener { moveToPost(notificationData) }
             }
             binding.executePendingBindings()
         }
@@ -42,7 +46,8 @@ class NotifyAdapter: ListAdapter<NotificationData, NotifyAdapter.NotifyViewHolde
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotifyViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return NotifyViewHolder(
-                NotificationItemBinding.inflate(layoutInflater, parent, false)
+                NotificationItemBinding.inflate(layoutInflater, parent, false),
+                moveToPost
             )
 
         /*

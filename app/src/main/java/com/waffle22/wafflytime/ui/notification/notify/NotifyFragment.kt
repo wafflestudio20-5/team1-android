@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.databinding.FragmentNotificationBinding
 import com.waffle22.wafflytime.network.dto.NotificationData
+import com.waffle22.wafflytime.ui.notification.BaseNotificationViewModel
 import com.waffle22.wafflytime.util.SlackState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -19,6 +20,7 @@ class NotifyFragment : Fragment() {
     private lateinit var binding : FragmentNotificationBinding
     private lateinit var alertDialog: AlertDialog
     private val viewModel: NotifyViewModel by sharedViewModel()
+    private val baseNotificationViewModel: BaseNotificationViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +38,7 @@ class NotifyFragment : Fragment() {
         viewModel.getNewNotifications()
 
         val recyclerView = binding.commentRecyclerView
-        val adapter = NotifyAdapter()
+        val adapter = NotifyAdapter { moveToPost(it) }
         adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (positionStart == 0){
@@ -87,5 +89,9 @@ class NotifyFragment : Fragment() {
                 binding.swipeRefreshLayout.isRefreshing=false
             }
         }
+    }
+
+    private fun moveToPost(notificationData: NotificationData) {
+        baseNotificationViewModel.setStatePost(notificationData)
     }
 }
