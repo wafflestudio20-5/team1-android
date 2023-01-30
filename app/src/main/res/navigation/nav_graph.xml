@@ -24,7 +24,14 @@
     <fragment
         android:id="@+id/baseNotificationFragment"
         android:name="com.waffle22.wafflytime.ui.notification.BaseNotificationFragment"
-        android:label="BaseNotificationFragment" />
+        android:label="BaseNotificationFragment" >
+        <action
+            android:id="@+id/action_baseNotificationFragment_to_chatRoomFragment"
+            app:destination="@id/chatRoomFragment" />
+        <action
+            android:id="@+id/action_baseNotificationFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
 
 
     <fragment
@@ -61,6 +68,10 @@
         <action
             android:id="@+id/action_postFragment_to_newPostFragment"
             app:destination="@id/newPostFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_newChatFragment"
+            app:destination="@id/newChatFragment"
+            app:popUpTo="@+id/postFragment"/>
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
@@ -142,5 +153,29 @@
         <action
             android:id="@+id/action_searchPostFragment_to_postFragment"
             app:destination="@id/postFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newChatFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.newchat.NewChatFragment"
+        android:label="NewChatFragment" >
+        <argument
+            android:name="boardId"
+            app:argType="long"/>
+        <argument
+            android:name="postId"
+            app:argType="long"/>
+        <argument
+            android:name="replyId"
+            app:argType="long"
+            android:defaultValue="-1L"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/chatRoomFragment"
+        android:name="com.waffle22.wafflytime.ui.notification.chat.room.ChatRoomFragment"
+        android:label="ChatRoomFragment" >
+        <argument
+            android:name="chatId"
+            app:argType="long"/>
     </fragment>
 </navigation>

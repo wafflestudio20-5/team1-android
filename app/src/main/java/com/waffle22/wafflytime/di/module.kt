@@ -7,13 +7,19 @@ import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.ui.AuthCheckViewModel
 import com.waffle22.wafflytime.ui.boards.boardlist.BoardListViewModel
 import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
+import com.waffle22.wafflytime.ui.boards.newchat.NewChatViewModel
 import com.waffle22.wafflytime.ui.boards.newpost.NewPostViewModel
 import com.waffle22.wafflytime.ui.boards.postscreen.PostViewModel
 import com.waffle22.wafflytime.ui.login.LoginViewModel
 import com.waffle22.wafflytime.ui.login.SignUpEmailViewModel
 import com.waffle22.wafflytime.ui.login.SignUpViewModel
 import com.waffle22.wafflytime.ui.mainpage.MainHomeViewModel
-import com.waffle22.wafflytime.ui.notification.NotifyViewModel
+import com.waffle22.wafflytime.ui.notification.BaseNotificationViewModel
+import com.waffle22.wafflytime.ui.notification.chat.list.ChatListViewModel
+import com.waffle22.wafflytime.ui.preferences.LogoutViewModel
+import com.waffle22.wafflytime.ui.preferences.SetNicknameViewModel
+import com.waffle22.wafflytime.ui.preferences.SetProfilePicViewModel
+import com.waffle22.wafflytime.ui.notification.notify.NotifyViewModel
 import com.waffle22.wafflytime.ui.preferences.*
 import com.waffle22.wafflytime.util.AuthStorage
 import com.waffle22.wafflytime.util.TokenInterceptor
@@ -84,9 +90,11 @@ val appModule = module {
     viewModel { BoardViewModel(get(), get()) }
     viewModel { PostViewModel(get()) }
     viewModel { NewPostViewModel(get(), get()) }
+    viewModel { NewChatViewModel(get(), get()) }
 
-    // Notification
+    // Notification && Chat
+    viewModel { BaseNotificationViewModel() }
     viewModel { NotifyViewModel(get(), get()) }
-
+    viewModel { ChatListViewModel(get(), get()) }
 }
 
