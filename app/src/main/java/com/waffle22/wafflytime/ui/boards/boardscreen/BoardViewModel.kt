@@ -134,6 +134,10 @@ class BoardViewModel(
             }
     }
 
+    fun fetchData(){
+        _boardScreenState.value = SlackState("200",null,null,currentData)
+    }
+
     fun resetState(){
         _boardScreenState.value = SlackState("0",null,null,currentData)
     }
