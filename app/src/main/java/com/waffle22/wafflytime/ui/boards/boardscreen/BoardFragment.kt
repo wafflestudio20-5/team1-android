@@ -18,18 +18,26 @@ import com.waffle22.wafflytime.databinding.FragmentBoardBinding
 import com.waffle22.wafflytime.network.dto.BoardType
 import com.waffle22.wafflytime.network.dto.LoadingStatus
 import com.waffle22.wafflytime.network.dto.PostTaskType
+import com.waffle22.wafflytime.util.SlackState
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class BoardFragment : Fragment() {
     private lateinit var binding: FragmentBoardBinding
+    private lateinit var postPreviewAdapter: PostPreviewAdapter
 
     private val viewModel: BoardViewModel by sharedViewModel()
-
     private val navigationArgs: BoardFragmentArgs by navArgs()
 
     private var boardId = 0L
     private lateinit var boardType: BoardType
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        boardId = navigationArgs.boardId
+        boardType = navigationArgs.boardType
+        viewModel.refreshBoard(boardId, boardType)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,64 +52,49 @@ class BoardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupMenu()
 
-        val postPreviewAdapter = PostPreviewAdapter{
+        postPreviewAdapter = PostPreviewAdapter{
             val action = BoardFragmentDirections.actionBoardFragmentToPostFragment(it.boardId, it.postId)
             this.findNavController().navigate(action)
         }
-        viewModel.posts.observe(this.viewLifecycleOwner){ items ->
-            items.let{
-                postPreviewAdapter.submitList(it)
-            }
-        }
-        binding.posts.adapter = postPreviewAdapter
-        binding.posts.layoutManager = LinearLayoutManager(this.context)
-
-        boardId = navigationArgs.boardId
-        boardType = navigationArgs.boardType
-        viewModel.getBoardInfo(boardId, boardType)
-        viewModel.getPosts(boardId, boardType)
-
         lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.postsLoadingState.collect{
-                    showPostsLogic(it)
+            viewModel.boardScreenState.collect {
+                boardScreenLogic(it)
+            }
+        }
+
+        binding.apply {
+            posts.adapter = postPreviewAdapter
+            posts.layoutManager = LinearLayoutManager(context)
+
+            if(boardType == BoardType.Common){
+                newThread.setOnClickListener{
+                    val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId, PostTaskType.CREATE)
+                    findNavController().navigate(action)
                 }
+            } else {
+                newThread.visibility = View.GONE
             }
-        }
 
-        if(boardType == BoardType.Common){
-            binding.newThread.setOnClickListener{
-                val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId, PostTaskType.CREATE)
-                this.findNavController().navigate(action)
+            toolbar.setNavigationOnClickListener {
+                findNavController().navigateUp()
             }
-        }
-        else    binding.newThread.visibility = View.GONE
 
+            swipeRefreshLayout.setOnRefreshListener {
+                viewModel.refreshBoard(boardId, boardType)
+                swipeRefreshLayout.isRefreshing = false
+            }
 
-        binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.refreshBoard(boardId, boardType)
-            binding.swipeRefreshLayout.isRefreshing = false
-        }
-
-        binding.posts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                // 스크롤이 끝에 도달했는지 확인
-                if (!binding.posts.canScrollVertically(1)) {
-                    Log.d("BoardFragment", "end of scroll")
-                    viewModel.getPosts(boardId, boardType)
+            posts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    // 스크롤이 끝에 도달했는지 확인
+                    if (!posts.canScrollVertically(1)) {
+                        // TODO: 커서기반 페이지네이션 나오면 그때 구현하기 고고
+                        //viewModel.getPosts(boardId, boardType)
+                    }
                 }
-            }
-        })
-    }
-
-    override fun onStop(){
-        super.onStop()
-        viewModel.reset()
+            })
+        }
     }
 
     private fun setupMenu(){
@@ -129,20 +122,23 @@ class BoardFragment : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    private fun showPostsLogic(status: LoadingStatus){
-        when (status) {
-            LoadingStatus.Standby -> Toast.makeText(context, "로딩중", Toast.LENGTH_SHORT).show()
-            LoadingStatus.Success ->{
-                Log.v("BoardFragment", "Posts Loading Success")
-                binding.toolbar.title = viewModel.boardInfo.value!!.title
-                binding.description.text = viewModel.boardInfo.value!!.description
-                //binding.toolbar.title = viewModel.boardInfo.value!!.title + "\n" + viewModel.boardInfo.value!!.description
+    private fun boardScreenLogic(state: SlackState<BoardDataHolder>) {
+        when (state.status) {
+            "0" -> null
+            else -> {
+                when (state.status) {
+                    "200" -> {
+                        val data = state.dataHolder!!
+                        binding.toolbar.title = data.boardInfo!!.title
+                        binding.description.text = data.boardInfo!!.description
+                        postPreviewAdapter.submitList(data.boardData)
+                    }
+                    else -> {
+                        Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                viewModel.resetState()
             }
-            LoadingStatus.Error -> {
-                Toast.makeText(context, viewModel.errorMessage, Toast.LENGTH_SHORT).show()
-                Log.v("BoardFragment", "Error occurred")
-            }
-            LoadingStatus.Corruption -> Toast.makeText(context, "알 수 없는 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
         }
     }
 }
