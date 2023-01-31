@@ -156,6 +156,7 @@ class BoardViewModel(
             response.writerId,
             response.nickname,
             response.isWriterAnonymous,
+            response.isMyPost,
             false,
             response.title,
             response.contents,
