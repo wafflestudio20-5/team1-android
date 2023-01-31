@@ -18,7 +18,7 @@
             android:id="@+id/profile_pic"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/ic_person"
+            android:src="@drawable/ic_baseline_person_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
