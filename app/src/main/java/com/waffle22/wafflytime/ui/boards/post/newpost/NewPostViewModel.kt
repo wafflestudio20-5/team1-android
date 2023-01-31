@@ -12,7 +12,32 @@ import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
+
+data class ImageStorage(
+    val imageRequest: ImageRequest,
+    val byteArray: ByteArray
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ImageStorage
+
+        if (imageRequest != other.imageRequest) return false
+        if (!byteArray.contentEquals(other.byteArray)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = imageRequest.hashCode()
+        result = 31 * result + byteArray.contentHashCode()
+        return result
+    }
+}
 
 class NewPostViewModel(
     private val wafflyApiService: WafflyApiService,
@@ -21,6 +46,9 @@ class NewPostViewModel(
     private var _boardInfo = MutableLiveData<BoardDTO>()
     val boardInfo: LiveData<BoardDTO>
         get() = _boardInfo
+    private var _images = MutableLiveData<MutableList<ImageStorage>>()
+    val images : LiveData<MutableList<ImageStorage>>
+        get() = _images
 
     private var _boardLoadingStatus = MutableStateFlow(LoadingStatus.Standby)
     val boardLoadingStatus: StateFlow<LoadingStatus>
@@ -56,11 +84,28 @@ class NewPostViewModel(
     fun createNewPost(title: String?, contents: String, isQuestion: Boolean, isAnonymous: Boolean){
         viewModelScope.launch {
             try {
-                val request = PostRequest(title, contents, isQuestion, isAnonymous, listOf())
+                var requestImages = mutableListOf<ImageRequest>()
+                for(image in _images.value!!)
+                    requestImages += image.imageRequest
+                val request = PostRequest(title, contents, isQuestion, isAnonymous, requestImages)
                 val response = wafflyApiService.createPost(_boardInfo.value!!.boardId, request)
                 when (response.code().toString()){
                     "200" -> {
                         Log.v("NewPostViewModel", "New Post Created")
+                        if (response.body()!!.images != null) {
+                            for (i in 0 until _images.value!!.size) {
+                                val url = response.body()!!.images?.get(i)?.preSignedUrl
+                                val imageResponse = url?.let {
+                                    wafflyApiService.uploadImage(
+                                        it,
+                                        _images.value!![i].byteArray.toRequestBody("application/octet-stream".toMediaTypeOrNull())
+                                    )
+                                }
+                                if (url != null) {
+                                    Log.d("NewPostViewModel", url)
+                                }
+                            }
+                        }
                         _createPostStatus.value = LoadingStatus.Success
                     }
                     else -> {
@@ -108,8 +153,22 @@ class NewPostViewModel(
 
     }
 
+    fun addNewImage(filename: String, byteArray: ByteArray){
+        if (_images.value == null)  _images.value = mutableListOf()
+        _images.value!! += ImageStorage(ImageRequest(_images.value!!.size, filename, ""),byteArray)
+    }
+
+    fun startEditImageDescription(imageRequest: ImageRequest){
+        //dialog 띄우기
+    }
+
+    fun deleteImage(imageRequest: ImageRequest){
+
+    }
+
     fun resetStates(){
         _createPostStatus.value = LoadingStatus.Standby
         _boardLoadingStatus.value = LoadingStatus.Standby
+        _images.value = mutableListOf()
     }
 }
