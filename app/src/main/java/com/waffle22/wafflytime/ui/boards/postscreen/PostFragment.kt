@@ -58,10 +58,8 @@ class PostFragment() : Fragment() {
         setUpMenu()
 
         lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.postState.collect {
-                    showPostLogic(it)
-                }
+            viewModel.postState.collect {
+                showPostLogic(it)
             }
         }
 
