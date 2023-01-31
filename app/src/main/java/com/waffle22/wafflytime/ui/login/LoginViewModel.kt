@@ -1,16 +1,8 @@
 package com.waffle22.wafflytime.ui.login
 
+
 import androidx.lifecycle.ViewModel
-import android.content.Intent
-import android.net.Uri
-import android.util.Log
-import androidx.core.content.ContextCompat.startActivity
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
-import com.waffle22.wafflytime.network.dto.SignUpRequest
-import com.waffle22.wafflytime.network.dto.TokenContainer
+import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService
@@ -20,13 +12,8 @@ import com.waffle22.wafflytime.util.SlackState
 import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import android.content.Context
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import retrofit2.Response
-
-// TODO: Add StateFlow Enum
-// Todo: Add Response Code Enum
 
 class LoginViewModel(
     private val wafflyApiService: WafflyApiService,

@@ -4,7 +4,6 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/authCheckFragment">
 
-
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.waffle22.wafflytime.ui.login.LoginFragment"
@@ -110,7 +109,11 @@
     <fragment
         android:id="@+id/mainHomeFragment"
         android:name="com.waffle22.wafflytime.ui.login.MainHomeFragment"
-        android:label="MainHomeFragment" />
+        android:label="MainHomeFragment" >
+        <action
+            android:id="@+id/action_mainHomeFragment_to_boardListFragment"
+            app:destination="@id/boardListFragment" />
+    </fragment>
     <action
         android:id="@+id/action_global_loginFragment"
         app:destination="@id/loginFragment"
