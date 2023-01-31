@@ -86,7 +86,7 @@ class BoardViewModel(
         }
     }
 
-    fun getBoardInfo(boardId: Long, boardType: BoardType){
+    suspend fun getBoardInfo(boardId: Long, boardType: BoardType){
        when(boardType) {
            BoardType.MyPosts -> currentData.boardInfo = BoardDTO(-1, "SPECIAL", "내가 작성한 글", "", true)
            BoardType.MyReplies -> currentData.boardInfo = BoardDTO(-1, "SPECIAL", "내가 댓글을 단 글", "", true)
@@ -94,7 +94,6 @@ class BoardViewModel(
            BoardType.Hot -> currentData.boardInfo = BoardDTO(-1, "SPECIAL", "HOT 게시판", "", true)
            BoardType.Best -> currentData.boardInfo = BoardDTO(-1, "SPECIAL", "BEST 게시판", "", true)
            BoardType.Common -> {
-               viewModelScope.launch {
                    try {
                        val response = wafflyApiService.getSingleBoard(boardId)
                        if (response.isSuccessful) {
@@ -106,14 +105,12 @@ class BoardViewModel(
                    } catch (e: java.lang.Exception) {
                        _boardScreenState.value = SlackState("-1", null, "System Corruption", currentData)
                    }
-               }
            }
        }
     }
     
     // TODO: 커서 기반 페이지네이션으로 바뀌면 currentPageNation.page -> currentPageNation.cursor 로 바꿀것
-    fun getPosts(boardId: Long, boardType: BoardType){
-        viewModelScope.launch {
+    suspend fun getPosts(boardId: Long, boardType: BoardType){
             try{
                 val response = when(boardType){
                     BoardType.Common -> wafflyApiService.getAllPosts(boardId, currentPageNation.page, currentPageNation.pageSize)
@@ -135,7 +132,6 @@ class BoardViewModel(
             } catch (e: java.lang.Exception){
                 _boardScreenState.value = SlackState("-1", null, "System Corruption", currentData)
             }
-        }
     }
 
     fun resetState(){
