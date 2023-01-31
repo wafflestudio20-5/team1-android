@@ -9,11 +9,12 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.kakao.sdk.common.KakaoSdk.keyHash
 import com.kakao.sdk.common.util.Utility
+import com.kakao.sdk.common.KakaoSdk.keyHash
+import androidx.navigation.ui.setupWithNavController
 import com.waffle22.wafflytime.databinding.ActivityMainBinding
 import kotlin.reflect.KParameter
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
