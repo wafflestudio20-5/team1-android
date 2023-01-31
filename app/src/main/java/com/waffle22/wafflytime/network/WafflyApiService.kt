@@ -174,4 +174,17 @@ interface WafflyApiService {
 
     @GET("/api/chat")
     suspend fun getChatList() : Response<List<ChatSimpleInfo>>
+
+    @GET("/api/chat/{chatId}/messages")
+    suspend fun getChatMessages(
+        @Path("chatId") chatId: Long,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): Response<MessagesPage>
+
+    @POST("/api/chat/{chatId}")
+    suspend fun sendChatMessage(
+        @Path("chatId") chatId: Long,
+        @Body() sendChatRequest: SendChatRequest
+    ): Response<MessageInfo>
 }

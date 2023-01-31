@@ -1,7 +1,9 @@
 package com.waffle22.wafflytime.ui.notification.chat.list
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,8 +21,13 @@ class ChatListAdapter(
 
         fun bind(chatSimpleInfo: ChatSimpleInfo) {
             binding.apply {
-                commentTitle.text = chatSimpleInfo.id.toString()
+                commentTitle.text = chatSimpleInfo.target
                 commentContent.text = chatSimpleInfo.recentMessage
+                if(chatSimpleInfo.unread > 0) {
+                    unreadNum.text = chatSimpleInfo.unread.toString()
+                } else {
+                    unreadNum.visibility = View.GONE
+                }
                 commentTime.text = "No Data from the server"
                 root.setOnClickListener { onClickedChat(chatSimpleInfo) }
             }
@@ -55,8 +62,4 @@ class ChatListAdapter(
         }
 
     }
-
-
-
-
 }

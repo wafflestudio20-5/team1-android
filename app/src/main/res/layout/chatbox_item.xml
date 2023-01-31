@@ -2,7 +2,6 @@
 
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -14,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        card_view:cardCornerRadius="4dp"
+        app:cardCornerRadius="4dp"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text="익명"
                 app:layout_constraintTop_toTopOf="parent"
-                card_view:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 tools:text="익명"/>
 
             <TextView
@@ -41,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:text="자유게시판"
                 app:layout_constraintTop_toBottomOf="@id/comment_title"
-                card_view:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 tools:text="파이팅"/>
 
             <TextView
@@ -50,9 +49,19 @@
                 android:layout_height="wrap_content"
                 android:text="자유게시판"
 
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="01/05 18:00" />
+
+            <TextView
+                android:id="@+id/unread_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/comment_time"
+                android:background="@drawable/bg_unread"
+                android:textColor="@color/white"
+                tools:text="1"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

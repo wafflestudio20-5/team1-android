@@ -177,5 +177,8 @@
         <argument
             android:name="chatId"
             app:argType="long"/>
+        <argument
+            android:name="chatTarget"
+            app:argType="string"/>
     </fragment>
 </navigation>
