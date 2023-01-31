@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/notification"
+        android:title="대댓글 알림 켜기"/>
+    <item
+        android:id="@+id/dm"
+        android:title="쪽지 보내기"/>
+    <item
+        android:id="@+id/edit"
+        android:title="댓글 수정"/>
+
+    <item
+        android:id="@+id/delete"
+        android:title="댓글 삭제"/>
+</menu>

@@ -41,15 +41,6 @@
             android:textAppearance="?attr/textAppearanceCaption"
             android:text="홍길동 / 와플" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/school_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/username_text"
-            app:layout_constraintStart_toEndOf="@id/profile_pic"
-            android:textAppearance="?attr/textAppearanceCaption"
-            android:text="서울대 23학번" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
     
 

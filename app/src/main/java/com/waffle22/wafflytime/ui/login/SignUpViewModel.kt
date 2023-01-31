@@ -9,7 +9,7 @@ import com.waffle22.wafflytime.network.dto.LoginRequest
 import com.waffle22.wafflytime.network.dto.SignUpRequest
 import com.waffle22.wafflytime.network.dto.TokenContainer
 import com.waffle22.wafflytime.util.AuthStorage
-import com.waffle22.wafflytime.util.StateStorage
+import com.waffle22.wafflytime.util.SlackState
 import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,11 +27,11 @@ class SignUpViewModel(
 ): ViewModel() {
 
     // TODO: Change String type to Enum Class!!!
-    private val _signUpState = MutableStateFlow<StateStorage>(StateStorage("0",null,null))
-    val signUpState: StateFlow<StateStorage> = _signUpState
+    private val _signUpState = MutableStateFlow(SlackState("0",null,null,null))
+    val signUpState: StateFlow<SlackState<Nothing>> = _signUpState
 
     fun resetSignUpState(){
-        _signUpState.value = StateStorage("0",null,null)
+        _signUpState.value = SlackState("0",null,null,null)
     }
 
     fun signUp(id: String, password: String, nickName: String){
@@ -40,13 +40,13 @@ class SignUpViewModel(
                 val response: Response<TokenContainer> = wafflyApiService.signUp(SignUpRequest(id, password, nickName))
                 if (response.isSuccessful) {
                     authStorage.setTokenInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
-                    _signUpState.value = StateStorage("200",null,null)
+                    _signUpState.value = SlackState("200",null,null,null)
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
-                    _signUpState.value = StateStorage(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message)
+                    _signUpState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message,null)
                 }
             } catch (e:java.lang.Exception) {
-                _signUpState.value = StateStorage("-1",null,"System Corruption")
+                _signUpState.value = SlackState("-1",null,"System Corruption",null)
             }
         }
     }

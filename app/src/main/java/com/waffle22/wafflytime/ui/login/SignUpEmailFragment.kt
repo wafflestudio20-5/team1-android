@@ -11,9 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.waffle22.wafflytime.databinding.FragmentSignupBinding
 import com.waffle22.wafflytime.databinding.FragmentSignupEmailBinding
-import com.waffle22.wafflytime.util.StateStorage
+import com.waffle22.wafflytime.util.SlackState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SignUpEmailFragment: Fragment() {
@@ -53,7 +52,7 @@ class SignUpEmailFragment: Fragment() {
         viewModel.signUpEmail(binding.emailEditText.text.toString())
     }
 
-    private fun signUpEmailLogic(state: StateStorage){
+    private fun signUpEmailLogic(state: SlackState<Nothing>){
         when (state.status){
             "0" -> {
                 null

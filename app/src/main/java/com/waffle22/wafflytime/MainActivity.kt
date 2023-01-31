@@ -6,28 +6,22 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
-<<<<<<< HEAD
+import androidx.navigation.ui.setupWithNavController
 import com.kakao.sdk.common.KakaoSdk.keyHash
 import com.kakao.sdk.common.util.Utility
-=======
+import com.kakao.sdk.common.KakaoSdk.keyHash
 import androidx.navigation.ui.setupWithNavController
->>>>>>> 84f1f575a43063fb3394bb769aaf08e2515303ca
 import com.waffle22.wafflytime.databinding.ActivityMainBinding
 import kotlin.reflect.KParameter
 
 class MainActivity : AppCompatActivity() {
-<<<<<<< HEAD
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        Log.e("Debug", Utility.getKeyHash(this))
-    }
-    /*
-=======
->>>>>>> 84f1f575a43063fb3394bb769aaf08e2515303ca
     private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.e("Debug", Utility.getKeyHash(this))
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -48,10 +42,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun hideBottomNav() {
+    private fun hideBottomNav() {
         binding.bottomNav.visibility = View.GONE
     }
-    fun showBottomNav() {
+    private fun showBottomNav() {
         binding.bottomNav.visibility = View.VISIBLE
     }
 }

@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService
-import com.waffle22.wafflytime.network.dto.LoginRequest
 import com.waffle22.wafflytime.util.AuthStorage
-import com.waffle22.wafflytime.util.StateStorage
+import com.waffle22.wafflytime.util.SlackState
 import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,11 +17,11 @@ class AuthCheckViewModel(
     private val authStorage: AuthStorage,
     private val moshi: Moshi
 ): ViewModel() {
-    private val _authState = MutableStateFlow<StateStorage>(StateStorage("0",null,null))
-    val authState: StateFlow<StateStorage> = _authState
+    private val _authState = MutableStateFlow<SlackState<Any?>>(SlackState("0",null,null, null))
+    val authState: StateFlow<SlackState<Any?>> = _authState
 
     fun resetAuthState(){
-        _authState.value = StateStorage("0",null,null)
+        _authState.value = SlackState("0",null,null, null)
     }
 
     fun checkAuth(){
@@ -31,15 +30,15 @@ class AuthCheckViewModel(
                 val responseUserInfo = wafflyApiService.getUserInfo()
                 if (responseUserInfo.isSuccessful){
                     authStorage.setUserDtoInfo(responseUserInfo.body()!!)
-                    _authState.value = StateStorage("200",null,null)
+                    _authState.value = SlackState("200",null,null, null)
                 } else {
                     authStorage.clearAuthInfo()
                     val errorResponse = HttpException(responseUserInfo).parseError(moshi)!!
-                    _authState.value = StateStorage(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message)
+                    _authState.value = SlackState(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message, null)
                 }
             } catch (e:java.lang.Exception) {
                 authStorage.clearAuthInfo()
-                _authState.value = StateStorage("-1",null,"System Corruption")
+                _authState.value = SlackState("-1",null,"System Corruption", null)
             }
         }
     }

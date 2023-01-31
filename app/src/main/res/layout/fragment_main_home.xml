@@ -35,11 +35,7 @@
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="40dp"
         android:layout_height="40dp"
-<<<<<<< HEAD
         android:drawableTop="@drawable/ic_baseline_search_24"
-=======
-        android:drawableTop="@drawable/ic_baseline_home_24"
->>>>>>> 84f1f575a43063fb3394bb769aaf08e2515303ca
         android:text=""
         app:iconTint="@color/purple_500"
         app:layout_constraintEnd_toStartOf="@id/button_my_page"
@@ -51,11 +47,7 @@
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="40dp"
         android:layout_height="40dp"
-<<<<<<< HEAD
         android:drawableTop="@drawable/ic_baseline_person_24"
-=======
-        android:drawableTop="@drawable/ic_person"
->>>>>>> 84f1f575a43063fb3394bb769aaf08e2515303ca
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

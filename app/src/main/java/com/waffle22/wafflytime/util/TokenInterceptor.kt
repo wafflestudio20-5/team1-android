@@ -1,12 +1,9 @@
 package com.waffle22.wafflytime.util
 
 import android.content.SharedPreferences
-import android.util.Log
 import com.squareup.moshi.Moshi
-import com.waffle22.wafflytime.network.dto.ErrorDTO
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.Retrofit
 
 class TokenInterceptor(
     private val sharedPreferences: SharedPreferences,
@@ -21,7 +18,7 @@ class TokenInterceptor(
         // 1. Access Token 있으면 토큰을 헤더에 추가한다.
         val accessToken : String = getAccessToken()
         // 일부러 에러를 위해 access token 조작
-        if (accessToken.isNotEmpty()) {
+        if (accessToken.isNotEmpty() && chain.request().body?.contentType().toString() != "application/octet-stream") {
             requestOriginal = requestOriginal.putTokenHeader(accessToken)
         }
         // 2. 요청을 보내본다. 돌아온 요청을 파싱하여 토큰에 문제가 없으면 넘긴다. 문제있으면 로직 계속

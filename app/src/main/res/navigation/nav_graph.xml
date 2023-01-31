@@ -2,11 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-<<<<<<< HEAD
-    app:startDestination="@id/loginFragment">
-=======
     app:startDestination="@id/authCheckFragment">
->>>>>>> 84f1f575a43063fb3394bb769aaf08e2515303ca
 
     <fragment
         android:id="@+id/loginFragment"
@@ -27,7 +23,14 @@
     <fragment
         android:id="@+id/baseNotificationFragment"
         android:name="com.waffle22.wafflytime.ui.notification.BaseNotificationFragment"
-        android:label="BaseNotificationFragment" />
+        android:label="BaseNotificationFragment" >
+        <action
+            android:id="@+id/action_baseNotificationFragment_to_chatRoomFragment"
+            app:destination="@id/chatRoomFragment" />
+        <action
+            android:id="@+id/action_baseNotificationFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
 
 
     <fragment
@@ -35,11 +38,11 @@
         android:name="com.waffle22.wafflytime.ui.boards.boardscreen.BoardFragment"
         android:label="BoardFragment" >
         <action
-            android:id="@+id/action_boardFragment_to_threadFragment"
-            app:destination="@id/threadFragment" />
+            android:id="@+id/action_boardFragment_to_postFragment"
+            app:destination="@id/postFragment" />
         <action
-            android:id="@+id/action_boardFragment_to_newThreadFragment"
-            app:destination="@id/newThreadFragment"
+            android:id="@+id/action_boardFragment_to_newPostFragment"
+            app:destination="@id/newPostFragment"
             app:popUpTo="@+id/boardFragment"/>
         <argument
             android:name="boardId"
@@ -47,15 +50,39 @@
         <argument
             android:name="boardType"
             app:argType="com.waffle22.wafflytime.network.dto.BoardType" />
+        <action
+            android:id="@+id/action_boardFragment_to_searchPostFragment"
+            app:destination="@id/searchPostFragment"/>
     </fragment>
     <fragment
-        android:id="@+id/threadFragment"
+        android:id="@+id/postFragment"
         android:name="com.waffle22.wafflytime.ui.boards.postscreen.PostFragment"
-        android:label="ThreadFragment" />
+        android:label="PostFragment">
+        <argument
+            android:name="boardId"
+            app:argType="long"/>
+        <argument
+            android:name="postId"
+            app:argType="long"/>
+        <action
+            android:id="@+id/action_postFragment_to_newPostFragment"
+            app:destination="@id/newPostFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_newChatFragment"
+            app:destination="@id/newChatFragment"
+            app:popUpTo="@+id/postFragment"/>
+    </fragment>
     <fragment
-        android:id="@+id/newThreadFragment"
-        android:name="com.waffle22.wafflytime.ui.boards.NewPostFragment"
-        android:label="NewThreadFragment"/>
+        android:id="@+id/newPostFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.newpost.NewPostFragment"
+        android:label="NewPostFragment">
+        <argument
+            android:name="boardId"
+            app:argType="long"/>
+        <argument
+            android:name="taskType"
+            app:argType="com.waffle22.wafflytime.network.dto.PostTaskType"/>
+    </fragment>
     <fragment
         android:id="@+id/boardListFragment"
         android:name="com.waffle22.wafflytime.ui.boards.boardlist.BoardListFragment"
@@ -74,18 +101,19 @@
         <action
             android:id="@+id/action_boardSearchFragment_to_boardFragment"
             app:destination="@id/boardFragment"/>
+        <action
+            android:id="@+id/action_boardSearchFragment_to_newBoardFragment"
+            app:destination="@id/newBoardFragment"
+            app:popUpTo="@id/boardSearchFragment" />
     </fragment>
     <fragment
         android:id="@+id/mainHomeFragment"
         android:name="com.waffle22.wafflytime.ui.login.MainHomeFragment"
-<<<<<<< HEAD
         android:label="MainHomeFragment" >
         <action
             android:id="@+id/action_mainHomeFragment_to_boardListFragment"
             app:destination="@id/boardListFragment" />
     </fragment>
-=======
-        android:label="MainHomeFragment" />
     <action
         android:id="@+id/action_global_loginFragment"
         app:destination="@id/loginFragment"
@@ -117,5 +145,40 @@
         app:destination="@id/authCheckFragment"
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true"/>
->>>>>>> 84f1f575a43063fb3394bb769aaf08e2515303ca
+    <fragment
+        android:id="@+id/newBoardFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.boardlist.NewBoardFragment"
+        android:label="NewBoardFragment" />
+    <fragment
+        android:id="@+id/searchPostFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.boardscreen.SearchPostFragment"
+        android:label="SearchPostFragment" >
+        <action
+            android:id="@+id/action_searchPostFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newChatFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.newchat.NewChatFragment"
+        android:label="NewChatFragment" >
+        <argument
+            android:name="boardId"
+            app:argType="long"/>
+        <argument
+            android:name="postId"
+            app:argType="long"/>
+        <argument
+            android:name="replyId"
+            app:argType="long"
+            android:defaultValue="-1L"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/chatRoomFragment"
+        android:name="com.waffle22.wafflytime.ui.notification.chat.room.ChatRoomFragment"
+        android:label="ChatRoomFragment" >
+        <argument
+            android:name="chatId"
+            app:argType="long"/>
+    </fragment>
 </navigation>
