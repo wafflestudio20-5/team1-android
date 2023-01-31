@@ -63,6 +63,7 @@ data class PostResponse( // PostResponse
     @Json(name = "writerId") val writerId: Long,
     @Json(name = "nickname") val nickname: String?,
     @Json(name = "isWriterAnonymous") val isWriterAnonymous : Boolean,
+    @Json(name = "isMyPost") val isMyPost: Boolean,
     @Json(name = "isQuestion") val isQuestion: Boolean,
     @Json(name = "title") val title: String?,
     @Json(name = "contents") val contents: String,
