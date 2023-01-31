@@ -6,6 +6,8 @@ import android.view.*
 import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -25,6 +27,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class BoardFragment : Fragment() {
     private lateinit var binding: FragmentBoardBinding
     private lateinit var postPreviewAdapter: PostPreviewAdapter
+    private var isCreated: Boolean = false
 
     private val viewModel: BoardViewModel by sharedViewModel()
     private val navigationArgs: BoardFragmentArgs by navArgs()
@@ -95,6 +98,14 @@ class BoardFragment : Fragment() {
                 }
             })
         }
+
+        if (isCreated) {
+            viewModel.fetchData()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
     }
 
     private fun setupMenu(){
@@ -132,6 +143,7 @@ class BoardFragment : Fragment() {
                         binding.toolbar.title = data.boardInfo!!.title
                         binding.description.text = data.boardInfo!!.description
                         postPreviewAdapter.submitList(data.boardData)
+                        isCreated = true
                     }
                     else -> {
                         Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
