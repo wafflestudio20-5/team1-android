@@ -27,7 +27,6 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class BoardFragment : Fragment() {
     private lateinit var binding: FragmentBoardBinding
     private lateinit var postPreviewAdapter: PostPreviewAdapter
-    private var isCreated: Boolean = false
 
     private val viewModel: BoardViewModel by sharedViewModel()
     private val navigationArgs: BoardFragmentArgs by navArgs()
@@ -39,7 +38,6 @@ class BoardFragment : Fragment() {
         super.onCreate(savedInstanceState)
         boardId = navigationArgs.boardId
         boardType = navigationArgs.boardType
-        viewModel.refreshBoard(boardId, boardType)
     }
 
     override fun onCreateView(
@@ -53,12 +51,22 @@ class BoardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setupMenu()
 
         postPreviewAdapter = PostPreviewAdapter{
+            viewModel.currentViewModelState = BoardViewModelState.FromPostNone
             val action = BoardFragmentDirections.actionBoardFragmentToPostFragment(it.boardId, it.postId)
             this.findNavController().navigate(action)
         }
+        postPreviewAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == 0){
+                    binding.posts.scrollToPosition(0)
+                }
+            }
+        })
+
         lifecycleScope.launch {
             viewModel.boardScreenState.collect {
                 boardScreenLogic(it)
@@ -71,6 +79,7 @@ class BoardFragment : Fragment() {
 
             if(boardType == BoardType.Common){
                 newThread.setOnClickListener{
+                    viewModel.currentViewModelState = BoardViewModelState.FromCancelThread
                     val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId, PostTaskType.CREATE)
                     findNavController().navigate(action)
                 }
@@ -98,13 +107,7 @@ class BoardFragment : Fragment() {
             })
         }
 
-        if (isCreated) {
-            viewModel.fetchData()
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
+        viewModel.launchViewModel(boardId, boardType)
     }
 
     private fun setupMenu(){
@@ -134,6 +137,7 @@ class BoardFragment : Fragment() {
 
     private fun boardScreenLogic(state: SlackState<BoardDataHolder>) {
         when (state.status) {
+            // StandBy
             "0" -> null
             else -> {
                 when (state.status) {
@@ -142,7 +146,6 @@ class BoardFragment : Fragment() {
                         binding.toolbar.title = data.boardInfo!!.title
                         binding.description.text = data.boardInfo!!.description
                         postPreviewAdapter.submitList(data.boardData.toList())
-                        isCreated = true
                     }
                     else -> {
                         Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
