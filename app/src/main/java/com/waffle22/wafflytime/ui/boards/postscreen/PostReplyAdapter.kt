@@ -17,7 +17,8 @@ import com.waffle22.wafflytime.network.dto.ReplyResponse
 class PostReplyAdapter(
     private val replyClicked: (ReplyResponse) -> Unit,
     private val editable: (ReplyResponse) -> Boolean,
-    private val modifyReply: (Boolean, ReplyResponse) -> Unit
+    private val modifyReply: (Boolean, ReplyResponse) -> Unit,
+    private val moveToNewChat: (ReplyResponse) -> Unit
 ) : ListAdapter<ReplyResponse, PostReplyAdapter.PostReplyViewHolder>(DiffCallback){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostReplyViewHolder {
@@ -30,7 +31,7 @@ class PostReplyAdapter(
 
     override fun onBindViewHolder(holder: PostReplyViewHolder, position: Int) {
         val current = getItem(position)
-        holder.bind(current, replyClicked, editable, modifyReply)
+        holder.bind(current, replyClicked, editable, modifyReply, moveToNewChat)
     }
 
     class PostReplyViewHolder(private var binding: PostReplyBinding, private var context: Context)
@@ -38,7 +39,8 @@ class PostReplyAdapter(
         fun bind(reply: ReplyResponse,
                  replyClicked: (ReplyResponse) -> Unit,
                  editable: (ReplyResponse) -> Boolean,
-                 modifyReply: (Boolean, ReplyResponse) -> Unit) {
+                 modifyReply: (Boolean, ReplyResponse) -> Unit,
+                 moveToNewChat: (ReplyResponse) -> Unit) {
             binding.apply{
                 nickname.text = if(reply.nickname == "익명" && reply.isPostWriter)"익명(글쓴이)" else reply.nickname
                 //time.text = ""
@@ -60,7 +62,7 @@ class PostReplyAdapter(
                     popupMenu.setOnMenuItemClickListener { item ->
                         when(item.itemId){
                             R.id.notification -> {}
-                            R.id.dm -> {}
+                            R.id.dm -> {moveToNewChat(reply)}
                             R.id.edit -> {modifyReply(true, reply)}
                             R.id.delete -> {modifyReply(false, reply)}
                         }

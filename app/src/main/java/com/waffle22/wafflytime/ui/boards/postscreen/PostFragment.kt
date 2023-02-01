@@ -68,7 +68,8 @@ class PostFragment() : Fragment() {
         val postReplyAdapter = PostReplyAdapter(
             {setReplyState(it.replyId)},
             {viewModel.canEditReply()},
-            {flag, reply -> modifyReplyLogic(flag, reply)}
+            {flag, reply -> modifyReplyLogic(flag, reply)},
+            {reply -> moveToNewChat(reply.replyId)}
         )
         viewModel.replies.observe(this.viewLifecycleOwner){ items ->
             items.let{
@@ -133,6 +134,10 @@ class PostFragment() : Fragment() {
                     R.id.refresh -> viewModel.refresh(boardId, postId)
                     R.id.edit -> {
                         val action = PostFragmentDirections.actionPostFragmentToNewPostFragment(boardId, PostTaskType.EDIT)
+                        findNavController().navigate(action)
+                    }
+                    R.id.dm -> {
+                        val action = PostFragmentDirections.actionPostFragmentToNewChatFragment(boardId, postId)
                         findNavController().navigate(action)
                     }
                     R.id.delete -> {
@@ -247,6 +252,11 @@ class PostFragment() : Fragment() {
                 }
             }
         }
+    }
+
+    private fun moveToNewChat(replyId: Long) {
+        val action = PostFragmentDirections.actionPostFragmentToNewChatFragment(boardId, postId, replyId)
+        findNavController().navigate(action)
     }
 
     private fun timeToText(time: TimeDTO): String{

@@ -12,8 +12,8 @@ android {
         applicationId "com.waffle22.wafflytime"
         minSdk 21
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -88,6 +88,8 @@ dependencies {
     //Swipe Refresh Layout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
+
     //Menu handling
     implementation "androidx.activity:activity-ktx:1.7.0-alpha03"
+
 }

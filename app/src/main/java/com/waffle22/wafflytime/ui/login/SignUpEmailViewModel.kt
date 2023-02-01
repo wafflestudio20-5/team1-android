@@ -46,10 +46,10 @@ class SignUpEmailViewModel(
                     _signUpEmailState.value = SlackState("200",null,null,null)
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
-                    _signUpEmailState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, null)
+                    _signUpEmailState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message,null)
                 }
             } catch (e:java.lang.Exception) {
-                _signUpEmailState.value = SlackState("-1",null,"System Corruption", null)
+                _signUpEmailState.value = SlackState("-1",null,"System Corruption",null)
             }
         }
     }
@@ -66,16 +66,16 @@ class SignUpEmailViewModel(
                     val response = wafflyApiService.emailPatch(EmailRequest(email!!))
                     if (response.isSuccessful){
                         authStorage.setTokenInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
-                        _signUpCodeState.value = SlackState("200",null,null, null)
+                        _signUpCodeState.value = SlackState("200",null,null,null)
                     } else {
                         val errorResponse = HttpException(response).parseError(moshi)!!
-                        _signUpCodeState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, null)
+                        _signUpCodeState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message,null)
                     }
                 } else {
-                    _signUpCodeState.value = SlackState("-2",null,"코드가 일치하지 않습니다.", null)
+                    _signUpCodeState.value = SlackState("-2",null,"코드가 일치하지 않습니다.",null)
                 }
             } catch (e:java.lang.Exception) {
-                _signUpCodeState.value = SlackState("-1",null,"System Corruption", null)
+                _signUpCodeState.value = SlackState("-1",null,"System Corruption",null)
             }
         }
     }

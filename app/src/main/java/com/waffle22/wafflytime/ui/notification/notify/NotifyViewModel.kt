@@ -1,5 +1,6 @@
-package com.waffle22.wafflytime.ui.notification
+package com.waffle22.wafflytime.ui.notification.notify
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
@@ -27,6 +28,10 @@ class NotifyViewModel(
     val notificationDataset: List<NotificationData> = _notificationDataset
     */
     private lateinit var _notificationDataset: List<NotificationData>
+
+    init {
+        Log.d("debug","I'm notifyViewModel")
+    }
 
 
     fun resetNotifyState(){

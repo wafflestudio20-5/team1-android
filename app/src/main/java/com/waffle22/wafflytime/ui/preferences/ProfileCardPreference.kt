@@ -35,14 +35,14 @@ class ProfileCardPreference(context: Context, attrs: AttributeSet?): Preference(
 
     private fun displayProfilePic() {
         if(profileUrl == null) {
-            binding.profilePic.setImageResource(R.drawable.ic_person)
+            binding.profilePic.setImageResource(R.drawable.ic_baseline_person_24)
         }
         else {
             Glide.with(context)
                 .load(profileUrl)
-                .placeholder(R.drawable.ic_person)
-                .error(R.drawable.ic_person)
-                .fallback(R.drawable.ic_person)
+                .placeholder(R.drawable.ic_baseline_person_24)
+                .error(R.drawable.ic_baseline_person_24)
+                .fallback(R.drawable.ic_baseline_person_24)
                 .into(binding.profilePic)
         }
     }
