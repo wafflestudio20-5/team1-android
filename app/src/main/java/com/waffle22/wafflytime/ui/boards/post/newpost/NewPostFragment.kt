@@ -1,41 +1,55 @@
-package com.waffle22.wafflytime.ui.boards.newpost
+package com.waffle22.wafflytime.ui.boards.post.newpost
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.waffle22.wafflytime.databinding.FragmentNewThreadBinding
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.waffle22.wafflytime.databinding.FragmentNewPostBinding
 import com.waffle22.wafflytime.network.dto.LoadingStatus
 import com.waffle22.wafflytime.network.dto.PostTaskType
-import com.waffle22.wafflytime.ui.boards.postscreen.PostViewModel
+import com.waffle22.wafflytime.ui.boards.post.PostViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.io.ByteArrayOutputStream
 
 class NewPostFragment : Fragment() {
-    private lateinit var binding: FragmentNewThreadBinding
+    private lateinit var binding: FragmentNewPostBinding
     private val viewModel: NewPostViewModel by sharedViewModel()
     private val postViewModel: PostViewModel by sharedViewModel()
     private val navigationArgs: NewPostFragmentArgs by navArgs()
+    private lateinit var getImage: ActivityResultLauncher<Intent>
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentNewThreadBinding.inflate(inflater,container,false)
+        binding = FragmentNewPostBinding.inflate(inflater,container,false)
+        getImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ res ->
+            addImageReceiver(res)
+        }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        resetStates()
 
         if (navigationArgs.taskType == PostTaskType.EDIT){
             binding.title.setText(postViewModel.curPost.value!!.title?:"")
@@ -57,9 +71,32 @@ class NewPostFragment : Fragment() {
                 }
             }
         }
+
+        val newPostImageAdapter = NewPostImageAdapter(
+            {image, description -> viewModel.editImageDescription(image, description)},
+            {viewModel.deleteImage(it)}
+        )
+        viewModel.images.observe(this.viewLifecycleOwner){ items ->
+            items.let{
+                newPostImageAdapter.submitList(it)
+            }
+        }
+        binding.images.adapter = newPostImageAdapter
+        binding.images.layoutManager = LinearLayoutManager(this.context,LinearLayoutManager.HORIZONTAL, false)
+
         binding.toolbar.setNavigationOnClickListener {
+            resetStates()
             findNavController().navigateUp()
         }
+        binding.newImage.setOnClickListener{
+            uploadNewImage()
+        }
+    }
+
+    private fun resetStates() {
+        binding.title.setText("")
+        binding.contents.setText("")
+        viewModel.resetStates()
     }
 
     fun bindSubmitButton(status: LoadingStatus){
@@ -84,18 +121,12 @@ class NewPostFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        binding.title.setText("")
-        binding.contents.setText("")
-        viewModel.resetStates()
-    }
-
     fun submitPostLogic(status: LoadingStatus){
         when(status){
             LoadingStatus.Standby -> Toast.makeText(context, "로딩중", Toast.LENGTH_SHORT).show()
             LoadingStatus.Success -> {
                 Toast.makeText(context, "업로드 성공", Toast.LENGTH_SHORT).show()
+                resetStates()
                 findNavController().navigateUp()
             }
             LoadingStatus.Error -> {
@@ -103,6 +134,51 @@ class NewPostFragment : Fragment() {
                 Log.v("BoardFragment", "Error occurred")
             }
             LoadingStatus.Corruption -> Toast.makeText(context, "알 수 없는 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun uploadNewImage(){
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png", "image/jpg"))
+        getImage.launch(intent)
+    }
+
+    fun addImageReceiver(result: ActivityResult){
+        if(result.resultCode == RESULT_OK){
+            try {
+                result.data?.data?.let { returnUri ->
+                    val filename = requireContext().contentResolver.query(
+                        returnUri,
+                        null,
+                        null,
+                        null,
+                        null
+                    )!!.use { cursor ->
+                        val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                        cursor.moveToFirst()
+                        cursor.getString(nameIndex)
+                    }
+                    Log.v("NewPostFragment", "Get Image filename")
+                    val byteArray =
+                        requireContext().contentResolver.openInputStream(returnUri)!!
+                            .use { stream ->
+                                val bytestream = ByteArrayOutputStream()
+                                val buffer = ByteArray(1000)
+                                var size: Int
+                                while(true){
+                                    size = stream.read(buffer)
+                                    if(size == -1)  break
+                                    bytestream.write(buffer, 0, size)
+                                }
+                                bytestream.toByteArray()
+                            }
+                    Log.v("NewPostFragment", "Get Image as ByteArray")
+                    viewModel.addNewImage(filename, byteArray)
+                }
+            } catch (e: java.lang.Exception) {
+                Log.d("NewPostFragment", e.toString())
+            }
         }
     }
 }
