@@ -28,8 +28,9 @@ data class BoardDataHolder(
 
 // TODO: 커서 기반 페이지네이션으로 바뀌면 currentPageNation.page -> currentPageNation.cursor 로 바꿀것
 data class PageNation(
-    var page: Int,
-    var pageSize: Int = 20
+    var cursor: Int?,
+    var pageSize: Int = 20,
+    var isEnd: Boolean = false
 )
 
 class BoardViewModel(
@@ -66,7 +67,8 @@ class BoardViewModel(
         viewModelScope.launch {
             currentData.boardInfo = null
             currentData.boardData = mutableListOf()
-            currentPageNation.page = 0
+            currentPageNation.cursor = null
+            currentPageNation.isEnd = false
             val asyncGetBoardInfo =
                 async{
                     if (boardType == BoardType.Common){
@@ -82,6 +84,13 @@ class BoardViewModel(
             asyncGetPosts.await()
 
             // Make StateFlow
+            _boardScreenState.value = SlackState("200", null, null, currentData)
+        }
+    }
+
+    fun getBelowBoard(boardId: Long, boardType: BoardType){
+        viewModelScope.launch {
+            getPosts(boardId, boardType)
             _boardScreenState.value = SlackState("200", null, null, currentData)
         }
     }
@@ -111,27 +120,31 @@ class BoardViewModel(
     
     // TODO: 커서 기반 페이지네이션으로 바뀌면 currentPageNation.page -> currentPageNation.cursor 로 바꿀것
     suspend fun getPosts(boardId: Long, boardType: BoardType){
-            try{
-                val response = when(boardType){
-                    BoardType.Common -> wafflyApiService.getAllPosts(boardId, currentPageNation.page, currentPageNation.pageSize)
-                    BoardType.MyPosts -> wafflyApiService.getMyPosts(currentPageNation.page, currentPageNation.pageSize)
-                    BoardType.Scraps -> wafflyApiService.getMyScraps(currentPageNation.page, currentPageNation.pageSize)
-                    BoardType.Hot -> wafflyApiService.getHotPosts(currentPageNation.page, currentPageNation.pageSize)
-                    BoardType.Best -> wafflyApiService.getBestPosts(currentPageNation.page, currentPageNation.pageSize)
-                    else -> {null}
-                }
-
-                if(response!!.isSuccessful){
-                    currentPageNation.page += 1
-                    currentData.boardData.addAll(response.body()!!.content)
-                } else{
-                    val errorResponse = HttpException(response).parseError(moshi)!!
-                    _boardScreenState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, currentData)
-                }
-
-            } catch (e: java.lang.Exception){
-                _boardScreenState.value = SlackState("-1", null, "System Corruption", currentData)
+        if (currentPageNation.isEnd) {
+            return
+        }
+        try{
+            val response = when(boardType){
+                BoardType.Common -> wafflyApiService.getAllPosts(boardId, currentPageNation.cursor, currentPageNation.pageSize)
+                BoardType.MyPosts -> wafflyApiService.getMyPosts(currentPageNation.cursor, currentPageNation.pageSize)
+                BoardType.Scraps -> wafflyApiService.getMyScraps(currentPageNation.cursor, currentPageNation.pageSize)
+                BoardType.Hot -> wafflyApiService.getHotPosts(currentPageNation.cursor, currentPageNation.pageSize)
+                BoardType.Best -> wafflyApiService.getBestPosts(currentPageNation.cursor, currentPageNation.pageSize)
+                else -> {null}
             }
+
+            if(response!!.isSuccessful){
+                currentPageNation.cursor = response.body()!!.cursor
+                if (currentPageNation.cursor == 1) currentPageNation.isEnd = true
+                currentData.boardData.addAll(response.body()!!.content)
+            } else{
+                val errorResponse = HttpException(response).parseError(moshi)!!
+                _boardScreenState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, currentData)
+            }
+
+        } catch (e: java.lang.Exception){
+            _boardScreenState.value = SlackState("-1", null, "System Corruption", currentData)
+        }
     }
 
     fun fetchData(){

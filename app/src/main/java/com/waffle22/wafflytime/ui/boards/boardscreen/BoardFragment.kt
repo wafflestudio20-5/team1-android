@@ -92,8 +92,7 @@ class BoardFragment : Fragment() {
                     super.onScrolled(recyclerView, dx, dy)
                     // 스크롤이 끝에 도달했는지 확인
                     if (!posts.canScrollVertically(1)) {
-                        // TODO: 커서기반 페이지네이션 나오면 그때 구현하기 고고
-                        //viewModel.getPosts(boardId, boardType)
+                        viewModel.getBelowBoard(boardId, boardType)
                     }
                 }
             })
@@ -142,7 +141,7 @@ class BoardFragment : Fragment() {
                         val data = state.dataHolder!!
                         binding.toolbar.title = data.boardInfo!!.title
                         binding.description.text = data.boardInfo!!.description
-                        postPreviewAdapter.submitList(data.boardData)
+                        postPreviewAdapter.submitList(data.boardData.toList())
                         isCreated = true
                     }
                     else -> {
