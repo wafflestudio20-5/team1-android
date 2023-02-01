@@ -39,8 +39,6 @@ class PostViewModel(
     val replies: LiveData<List<ReplyResponse>>
         get() = _replies
 
-    private var isMyPost: Boolean = false
-
     fun refresh(boardId: Long, postId: Long){
         _postState.value = PostStatus.StandBy
         _repliesState.value = PostStatus.StandBy
@@ -60,7 +58,6 @@ class PostViewModel(
                             "200" -> {
                                 _curPost.value = response.body()
                                 _postState.value = PostStatus.Success
-                                isMyPost = response.body()!!.isMyPost
                             }
                             "505" -> _postState.value = PostStatus.NotFound
                             "506" -> _postState.value = PostStatus.BadRequest
@@ -156,7 +153,7 @@ class PostViewModel(
     }
 
     fun canEditPost(): Boolean{
-        return isMyPost
+        return false
     }
 
     fun canEditReply(): Boolean{
