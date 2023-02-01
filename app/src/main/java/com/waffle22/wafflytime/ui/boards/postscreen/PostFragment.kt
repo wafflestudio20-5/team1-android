@@ -44,7 +44,6 @@ class PostFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpMenu()
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh(boardId, postId)
@@ -56,11 +55,11 @@ class PostFragment() : Fragment() {
         postId = navigationArgs.postId
         viewModel.getPost(boardId, postId)
 
+        setUpMenu()
+
         lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.postState.collect {
-                    showPostLogic(it)
-                }
+            viewModel.postState.collect {
+                showPostLogic(it)
             }
         }
 
