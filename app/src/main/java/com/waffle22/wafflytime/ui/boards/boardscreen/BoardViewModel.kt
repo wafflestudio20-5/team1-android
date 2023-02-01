@@ -26,12 +26,15 @@ data class BoardDataHolder(
     var boardData: MutableList<PostResponse>
 )
 
-// TODO: 커서 기반 페이지네이션으로 바뀌면 currentPageNation.page -> currentPageNation.cursor 로 바꿀것
 data class PageNation(
     var cursor: Int?,
     var pageSize: Int = 20,
     var isEnd: Boolean = false
 )
+
+enum class BoardViewModelState{
+    Init, Stanby, FromPost, FromCancelThread, FromSendThread
+}
 
 class BoardViewModel(
     private val wafflyApiService: WafflyApiService,
@@ -43,25 +46,32 @@ class BoardViewModel(
     private val currentData: BoardDataHolder = BoardDataHolder(null, mutableListOf())
     private val currentPageNation: PageNation = PageNation(0)
 
-    /*
-    private var _boardInfo = MutableLiveData<BoardDTO>()
-    val boardInfo: LiveData<BoardDTO>
-        get() = _boardInfo
-    private var _posts = MutableLiveData<MutableList<PostResponse>>()
-    val posts: LiveData<MutableList<PostResponse>>
-        get() = _posts
-    private var _announcements = MutableLiveData<MutableList<PostResponse>>()
-    private var _searchResults = MutableLiveData<MutableList<PostResponse>>()
-    val searchResults : LiveData<MutableList<PostResponse>>
-        get() = _searchResults
-    private var _postsLoadingState = MutableStateFlow(LoadingStatus.Standby)
-    val postsLoadingState: StateFlow<LoadingStatus>
-        get() = _postsLoadingState
-    private var _page = 0
-    private val _pageSize = 20
-    private var _boardId = -1L
-    var errorMessage = ""
-     */
+    var currentViewModelState: BoardViewModelState = BoardViewModelState.Init
+
+    fun launchViewModel(boardId: Long, boardType: BoardType) {
+        when(currentViewModelState){
+            BoardViewModelState.Init -> {
+                refreshBoard(boardId, boardType)
+                currentViewModelState = BoardViewModelState.Stanby
+            }
+            BoardViewModelState.Stanby -> {
+                generateData()
+            }
+            BoardViewModelState.FromPost -> {
+                generateData()
+                currentViewModelState = BoardViewModelState.Stanby
+            }
+            BoardViewModelState.FromCancelThread -> {
+                generateData()
+                currentViewModelState = BoardViewModelState.Stanby
+            }
+            BoardViewModelState.FromSendThread -> {
+                refreshBoard(boardId, boardType)
+                currentViewModelState = BoardViewModelState.Stanby
+            }
+            else -> null
+        }
+    }
 
     fun refreshBoard(boardId: Long, boardType: BoardType){
         viewModelScope.launch {
@@ -71,9 +81,7 @@ class BoardViewModel(
             currentPageNation.isEnd = false
             val asyncGetBoardInfo =
                 async{
-                    if (boardType == BoardType.Common){
-                        getBoardInfo(boardId, boardType)
-                    }
+                    getBoardInfo(boardId, boardType)
                 }
             val asyncGetPosts =
                 async{
@@ -147,7 +155,7 @@ class BoardViewModel(
         }
     }
 
-    fun fetchData(){
+    fun generateData(){
         _boardScreenState.value = SlackState("200",null,null,currentData)
     }
 

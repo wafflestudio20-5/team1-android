@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -22,6 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentNewPostBinding
 import com.waffle22.wafflytime.network.dto.LoadingStatus
 import com.waffle22.wafflytime.network.dto.PostTaskType
+import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
+import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModelState
 import com.waffle22.wafflytime.ui.boards.post.PostViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -31,6 +34,7 @@ class NewPostFragment : Fragment() {
     private lateinit var binding: FragmentNewPostBinding
     private val viewModel: NewPostViewModel by sharedViewModel()
     private val postViewModel: PostViewModel by sharedViewModel()
+    private val boardViewModel: BoardViewModel by activityViewModels()
     private val navigationArgs: NewPostFragmentArgs by navArgs()
     private lateinit var getImage: ActivityResultLauncher<Intent>
 
@@ -127,6 +131,9 @@ class NewPostFragment : Fragment() {
             LoadingStatus.Success -> {
                 Toast.makeText(context, "업로드 성공", Toast.LENGTH_SHORT).show()
                 resetStates()
+                if (navigationArgs.taskType == PostTaskType.CREATE) {
+                    boardViewModel.currentViewModelState = BoardViewModelState.FromSendThread
+                }
                 findNavController().navigateUp()
             }
             LoadingStatus.Error -> {
