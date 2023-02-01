@@ -90,7 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:text="와브리타임 로그인"
+        android:text="와플리타임 로그인"
         android:layout_marginTop="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,37 +128,47 @@
         app:layout_constraintTop_toBottomOf="@+id/socialLogin_text"
 
         >
+
         <ImageButton
             android:id="@+id/kakao_login_button"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            app:srcCompat="@drawable/kakaoicon"
-            android:adjustViewBounds="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:scaleType="centerInside"/>
+            android:adjustViewBounds="true"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/kakaoicon"
+            android:scaleType="centerCrop" />
+
         <ImageButton
             android:id="@+id/naver_login_button"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            app:srcCompat="@drawable/btng_"
-            android:adjustViewBounds="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:scaleType="centerInside"/>
+
+            android:layout_marginEnd="10dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/btng_"
+            android:scaleType="centerCrop"/>
+
         <ImageButton
             android:id="@+id/google_login_button"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            app:srcCompat="@drawable/google_apps_icon_png_11"
-            android:adjustViewBounds="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:scaleType="centerInside"/>
+            android:adjustViewBounds="true"
+
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/google_apps_icon_png_11"
+            android:scaleType="centerCrop"/>
+
         <ImageButton
             android:id="@+id/github_login_button"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            app:srcCompat="@drawable/github"
-            android:adjustViewBounds="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:scaleType="centerInside"/>
+            android:adjustViewBounds="true"
+
+            android:background="@drawable/github"
+            android:scaleType="centerCrop"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
