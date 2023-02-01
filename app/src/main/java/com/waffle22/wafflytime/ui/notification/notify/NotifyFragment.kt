@@ -14,6 +14,7 @@ import com.waffle22.wafflytime.databinding.FragmentNotificationBinding
 import com.waffle22.wafflytime.network.dto.NotificationData
 import com.waffle22.wafflytime.ui.notification.BaseNotificationViewModel
 import com.waffle22.wafflytime.util.SlackState
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class NotifyFragment : Fragment() {
@@ -27,7 +28,6 @@ class NotifyFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("debug","this is NotifyFragment")
         binding = FragmentNotificationBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -47,7 +47,7 @@ class NotifyFragment : Fragment() {
             }
         })
 
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launch {
             viewModel.notifyState.collect {
                 notifyLogic(it, adapter)
             }
@@ -55,7 +55,7 @@ class NotifyFragment : Fragment() {
 
         binding.apply {
             commentRecyclerView.adapter = adapter
-            /*
+
             commentRecyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -65,12 +65,15 @@ class NotifyFragment : Fragment() {
                     }
                 }
             })
-             */
-            swipeRefreshLayout.setOnRefreshListener { viewModel.getNewNotifications() }
+
+            swipeRefreshLayout.setOnRefreshListener {
+                viewModel.initNotifications()
+                binding.swipeRefreshLayout.isRefreshing=false
+            }
         }
     }
 
-    private fun notifyLogic(state: SlackState<List<NotificationData>>, adapter: NotifyAdapter) {
+    private fun notifyLogic(state: SlackState<MutableList<NotificationData>>, adapter: NotifyAdapter) {
         when (state.status){
             "0" -> {
                 null
@@ -79,14 +82,13 @@ class NotifyFragment : Fragment() {
                 //alertDialog.dismiss()
                 when(state.status) {
                     "200" -> {
-                        adapter.submitList(state.dataHolder)
+                        adapter.submitList(state.dataHolder!!.toList())
                     }
                     else -> {
                         Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
                 viewModel.resetNotifyState()
-                binding.swipeRefreshLayout.isRefreshing=false
             }
         }
     }
