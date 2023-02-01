@@ -59,6 +59,14 @@ class BoardFragment : Fragment() {
             val action = BoardFragmentDirections.actionBoardFragmentToPostFragment(it.boardId, it.postId)
             this.findNavController().navigate(action)
         }
+        postPreviewAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == 0){
+                    binding.posts.scrollToPosition(0)
+                }
+            }
+        })
+
         lifecycleScope.launch {
             viewModel.boardScreenState.collect {
                 boardScreenLogic(it)
