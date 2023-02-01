@@ -3,7 +3,6 @@ package com.waffle22.wafflytime.ui.login
 import android.content.ContentValues.TAG
 
 import androidx.lifecycle.ViewModel
-import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService

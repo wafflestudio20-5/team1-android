@@ -16,7 +16,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentSignupBinding
 import com.waffle22.wafflytime.databinding.FragmentSignupSocialBinding
-import com.waffle22.wafflytime.util.StateStorage
+import com.waffle22.wafflytime.util.SlackState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SignUpSocialFragment : Fragment() {
