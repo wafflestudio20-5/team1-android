@@ -138,7 +138,9 @@
         android:label="AuthCheckFragment" >
         <action
             android:id="@+id/action_authCheckFragment_to_mainHomeFragment"
-            app:destination="@id/mainHomeFragment" />
+            app:destination="@id/mainHomeFragment"
+            app:popUpTo="@id/authCheckFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <action
         android:id="@+id/action_global_authCheckFragment"
