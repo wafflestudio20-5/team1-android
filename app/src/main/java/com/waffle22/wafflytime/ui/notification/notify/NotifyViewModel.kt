@@ -64,9 +64,7 @@ class NotifyViewModel(
                         currentPageNation.isEnd = true
                     }
                     notificationDataset.addAll(response.body()!!.notifications)
-                    val hi = mutableListOf<NotificationData>()
-                    hi.addAll(notificationDataset)
-                    _notifyState.value = SlackState("200", null, null, hi)
+                    _notifyState.value = SlackState("200", null, null, notificationDataset)
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
                     _notifyState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, null)

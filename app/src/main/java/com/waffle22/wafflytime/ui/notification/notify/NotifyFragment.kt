@@ -25,6 +25,7 @@ class NotifyFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.refreshNotifications()
     }
 
     override fun onCreateView(
@@ -38,8 +39,6 @@ class NotifyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.refreshNotifications()
 
         val recyclerView = binding.commentRecyclerView
         val adapter = NotifyAdapter { moveToPost(it) }
