@@ -67,7 +67,7 @@ class BaseNotificationFragment : Fragment() {
             }
             NavigationState.ChatRoom -> {
                 val chatRoomData = state.dataHolder as ChatSimpleInfo
-                val action = BaseNotificationFragmentDirections.actionBaseNotificationFragmentToChatRoomFragment(chatRoomData.id, chatRoomData.target)
+                val action = BaseNotificationFragmentDirections.actionBaseNotificationFragmentToChatRoomFragment(chatRoomData.id, chatRoomData.target, chatRoomData.blocked)
                 findNavController().navigate(action)
             }
         }

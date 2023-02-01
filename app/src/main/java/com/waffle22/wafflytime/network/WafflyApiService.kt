@@ -172,19 +172,28 @@ interface WafflyApiService {
         @Body() firstChatRequest: NewChatRequest
     ): Response<NewChatResponse>
 
-    @GET("/api/chat")
-    suspend fun getChatList() : Response<List<ChatSimpleInfo>>
+    @GET("/api/chats")
+    suspend fun getChatListPaged(
+        @Query("size") size: Long,
+        @Query("cursor") cursor: Long?,
+    ) : Response<GetChatListResponse>
 
     @GET("/api/chat/{chatId}/messages")
-    suspend fun getChatMessages(
+    suspend fun getMessagesPaged(
         @Path("chatId") chatId: Long,
-        @Query("page") page: Int,
-        @Query("size") size: Int,
-    ): Response<MessagesPage>
+        @Query("cursor") cursor: Long?,
+        @Query("size") size: Long,
+    ): Response<GetMessagesResponse>
 
     @POST("/api/chat/{chatId}")
     suspend fun sendChatMessage(
         @Path("chatId") chatId: Long,
         @Body() sendChatRequest: SendChatRequest
     ): Response<MessageInfo>
+
+    @PUT("/api/chat/{chatId}")
+    suspend fun blockChatRoom(
+        @Path("chatId") chatId: Long,
+        @Body() blockChatRoomRequest: BlockChatRoomRequest
+    ): Response<ChatSimpleInfo>
 }

@@ -180,5 +180,8 @@
         <argument
             android:name="chatTarget"
             app:argType="string"/>
+        <argument
+            android:name="blocked"
+            app:argType="boolean"/>
     </fragment>
 </navigation>
