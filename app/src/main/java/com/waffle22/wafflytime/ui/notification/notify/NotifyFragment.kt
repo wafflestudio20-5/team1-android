@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.databinding.FragmentNotificationBinding
 import com.waffle22.wafflytime.network.dto.NotificationData
@@ -19,9 +20,12 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class NotifyFragment : Fragment() {
     private lateinit var binding : FragmentNotificationBinding
-    private lateinit var alertDialog: AlertDialog
     private val viewModel: NotifyViewModel by sharedViewModel()
     private val baseNotificationViewModel: BaseNotificationViewModel by sharedViewModel()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +39,7 @@ class NotifyFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getNewNotifications()
+        viewModel.refreshNotifications()
 
         val recyclerView = binding.commentRecyclerView
         val adapter = NotifyAdapter { moveToPost(it) }
@@ -55,19 +59,20 @@ class NotifyFragment : Fragment() {
 
         binding.apply {
             commentRecyclerView.adapter = adapter
+            commentRecyclerView.layoutManager = LinearLayoutManager(context)
 
             commentRecyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
                     if (!commentRecyclerView.canScrollVertically(1)) {
-                        viewModel.getPastNotifications()
+                        viewModel.getNotifications()
                     }
                 }
             })
 
             swipeRefreshLayout.setOnRefreshListener {
-                viewModel.initNotifications()
+                viewModel.refreshNotifications()
                 binding.swipeRefreshLayout.isRefreshing=false
             }
         }

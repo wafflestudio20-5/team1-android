@@ -42,13 +42,14 @@ class NotifyViewModel(
         _notifyState.value = SlackState("0",null,null, null)
     }
 
-    fun initNotifications() {
+    fun refreshNotifications() {
         currentPageNation.isEnd = false
         currentPageNation.cursor = null
-        getNewNotifications()
+        notificationDataset.clear()
+        getNotifications()
     }
 
-    fun getNewNotifications() {
+    fun getNotifications() {
         if (currentPageNation.isEnd) {
             Log.d("debug","im end")
             return
@@ -59,11 +60,13 @@ class NotifyViewModel(
 
                 if (response.isSuccessful) {
                     currentPageNation.cursor = response.body()!!.cursor
-                    if (currentPageNation.cursor == null) {
+                    if (response.body()!!.notifications.isEmpty()) {
                         currentPageNation.isEnd = true
                     }
                     notificationDataset.addAll(response.body()!!.notifications)
-                    _notifyState.value = SlackState("200", null, null, notificationDataset)
+                    val hi = mutableListOf<NotificationData>()
+                    hi.addAll(notificationDataset)
+                    _notifyState.value = SlackState("200", null, null, hi)
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
                     _notifyState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, null)
@@ -74,31 +77,8 @@ class NotifyViewModel(
         }
     }
 
-    fun getPastNotifications() {
-        /*
-        viewModelScope.launch {
-            try {
-                val response = wafflyApiService.getNotifications(page, Size)
-
-                if (response.isSuccessful) {
-                    page += 1
-                    if(_notificationDataset.size > 1 && _notificationDataset.last() == null){
-                        _notificationDataset.removeLast()
-                    }
-                    _notificationDataset.addAll(response.body()!!.notifications)
-                    if (!response.body()!!.last) {
-                        _notificationDataset.add(getLoadingNotificationData())
-                    }
-                    _notifyState.value = NotifyState("200", null, null, notificationDataset)
-                } else {
-                    val errorResponse = HttpException(response).parseError(moshi)!!
-                    _notifyState.value = NotifyState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, null)
-                }
-            } catch (e:java.lang.Exception) {
-                _notifyState.value = NotifyState("-1", null, "system Corruption", null)
-            }
-        }
-         */
+    fun fetchData(){
+        _notifyState.value = SlackState("200",null,null,notificationDataset)
     }
 
     fun getLoadingNotificationData(): NotificationData {
