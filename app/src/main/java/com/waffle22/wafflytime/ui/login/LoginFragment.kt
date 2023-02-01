@@ -71,11 +71,15 @@ class LoginFragment :  Fragment() {
         alertDialog.setCanceledOnTouchOutside(false)
 
         viewModel.login(binding.idEditText.text.toString(), binding.passwordEditText.text.toString())
+
     }
 
+    /*
     private fun kakaoLogin() {
+
         viewModel.kakaoSocialLogin(requireContext())
     }
+*/
 
     private fun naverLogin() {
         viewModel.naverSocialLogin()
