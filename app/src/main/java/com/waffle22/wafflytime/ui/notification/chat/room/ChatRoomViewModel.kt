@@ -24,7 +24,6 @@ class ChatRoomViewModel(
     private val moshi: Moshi
 ) : ViewModel() {
 
-
     val messagesPager = Pager(PagingConfig(pageSize = 20)) {
         ChatRoomPagingSource(chatId, wafflyApiService)
     }.flow.cachedIn(viewModelScope)
@@ -90,10 +89,5 @@ class ChatRoomViewModel(
 
     fun resetBlockState() {
         _blockState.value = SlackState("0", null, null, null)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        Log.d("CHATROOM", "onCleared")
     }
 }

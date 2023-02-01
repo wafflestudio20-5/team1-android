@@ -21,10 +21,4 @@ class ChatListViewModel(
     val chatListPager = Pager(PagingConfig(pageSize = 20)) {
         ChatListPagingSource(wafflyApiService)
     }.flow.cachedIn(viewModelScope)
-
-
-    override fun onCleared() {
-        super.onCleared()
-        Log.d("CHATLIST", "onCleared")
-    }
 }
