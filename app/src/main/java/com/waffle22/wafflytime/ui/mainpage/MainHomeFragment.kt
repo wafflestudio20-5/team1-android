@@ -33,6 +33,10 @@ class MainHomeFragment :  Fragment() {
     private lateinit var alertDialog: AlertDialog
     private lateinit var getResult: ActivityResultLauncher<Intent>
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        findNavController().graph.setStartDestination(R.id.mainHomeFragment)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

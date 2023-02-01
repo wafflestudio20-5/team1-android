@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.boards.postscreen
+package com.waffle22.wafflytime.ui.boards.post
 
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +18,8 @@ import com.waffle22.wafflytime.network.dto.LoadingStatus
 import com.waffle22.wafflytime.network.dto.PostTaskType
 import com.waffle22.wafflytime.network.dto.ReplyResponse
 import com.waffle22.wafflytime.network.dto.TimeDTO
+import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
+import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModelState
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.LocalDate
@@ -26,6 +28,7 @@ class PostFragment() : Fragment() {
     private lateinit var binding: FragmentPostBinding
 
     private val viewModel: PostViewModel by sharedViewModel()
+    private val boardViewModel: BoardViewModel by sharedViewModel()
     private val navigationArgs: PostFragmentArgs by navArgs()
 
     private var boardId = 0L
@@ -44,11 +47,9 @@ class PostFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpMenu()
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh(boardId, postId)
-            binding.swipeRefreshLayout.isRefreshing = false
         }
 
         //게시글 부분
@@ -56,13 +57,23 @@ class PostFragment() : Fragment() {
         postId = navigationArgs.postId
         viewModel.getPost(boardId, postId)
 
+        setUpMenu()
+
         lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.postState.collect {
-                    showPostLogic(it)
-                }
+            viewModel.postState.collect {
+                showPostLogic(it)
             }
         }
+
+        // 게시물 이미지
+        val postImageAdapter = PostImageAdapter()
+        viewModel.images.observe(this.viewLifecycleOwner) { items ->
+            items.let{
+                postImageAdapter.submitList(it)
+            }
+        }
+        binding.images.adapter = postImageAdapter
+        binding.images.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
 
         // 댓글 부분
         val postReplyAdapter = PostReplyAdapter(
@@ -77,7 +88,7 @@ class PostFragment() : Fragment() {
             }
         }
         binding.comments.adapter = postReplyAdapter
-        binding.comments.layoutManager = LinearLayoutManager(this.context)
+        binding.comments.layoutManager = LinearLayoutManager(this.context,LinearLayoutManager.HORIZONTAL, false)
 
         viewModel.getReplies(boardId, postId)
         lifecycleScope.launch {
@@ -112,6 +123,12 @@ class PostFragment() : Fragment() {
         setReplyState(null)
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.refresh(boardId, postId)
+        //Log.v("PostFragment", viewModel.curPost.value!!.contents)
+    }
+
     private fun setUpMenu(){
         binding.toolbar.addMenuProvider(object : MenuProvider{
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -142,6 +159,7 @@ class PostFragment() : Fragment() {
                     }
                     R.id.delete -> {
                         viewModel.deletePost()
+                        boardViewModel.currentViewModelState = BoardViewModelState.FromPostRefresh
                         findNavController().navigateUp()
                     }
                 }
@@ -155,10 +173,16 @@ class PostFragment() : Fragment() {
             PostStatus.StandBy -> Toast.makeText(context, "게시물 로딩중", Toast.LENGTH_SHORT).show()
             PostStatus.Success -> {
                 Toast.makeText(context, "게시물 로딩 완료!", Toast.LENGTH_SHORT).show()
+                binding.swipeRefreshLayout.isRefreshing = false
                 binding.apply {
                     binding.toolbar.title = viewModel.curBoard.title
                     nickname.text = viewModel.curPost.value!!.nickname ?: "익명"
                     time.text = timeToText(viewModel.curPost.value!!.createdAt)
+                    if (viewModel.curPost.value!!.title != null) {
+                        title.text = viewModel.curPost.value!!.title
+                        title.visibility = View.VISIBLE
+                    }
+                    else    title.visibility = View.GONE
                     mainText.text = viewModel.curPost.value!!.contents
                     likesText.text = viewModel.curPost.value!!.nlikes.toString()
                     commentsText.text = viewModel.curPost.value!!.nreplies.toString()

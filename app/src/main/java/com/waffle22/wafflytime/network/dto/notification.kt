@@ -4,14 +4,9 @@ import com.squareup.moshi.Json
 
 // 알림 관련
 data class Notification(
-    @Json(name = "totalPages") val totalPages: Int,
-    @Json(name = "totalElements") val totalElements: Int,
+    @Json(name = "contents") val notifications: List<NotificationData>,
+    @Json(name = "cursor") val cursor: Int?,
     @Json(name = "size") val size: Int,
-    @Json(name = "number") val number: Int,
-    @Json(name = "last") val last: Boolean,
-    @Json(name = "pageable") val pageable: Pageable,
-    @Json(name = "sort") val sort: PageableSorted,
-    @Json(name = "content") val notifications: List<NotificationData>
 )
 
 data class NotificationData(

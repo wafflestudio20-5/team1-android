@@ -4,7 +4,6 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/authCheckFragment">
 
-
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.waffle22.wafflytime.ui.login.LoginFragment"
@@ -57,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/postFragment"
-        android:name="com.waffle22.wafflytime.ui.boards.postscreen.PostFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.post.PostFragment"
         android:label="PostFragment">
         <argument
             android:name="boardId"
@@ -75,7 +74,7 @@
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
-        android:name="com.waffle22.wafflytime.ui.boards.newpost.NewPostFragment"
+        android:name="com.waffle22.wafflytime.ui.boards.post.newpost.NewPostFragment"
         android:label="NewPostFragment">
         <argument
             android:name="boardId"
@@ -110,7 +109,11 @@
     <fragment
         android:id="@+id/mainHomeFragment"
         android:name="com.waffle22.wafflytime.ui.login.MainHomeFragment"
-        android:label="MainHomeFragment" />
+        android:label="MainHomeFragment" >
+        <action
+            android:id="@+id/action_mainHomeFragment_to_boardListFragment"
+            app:destination="@id/boardListFragment" />
+    </fragment>
     <action
         android:id="@+id/action_global_loginFragment"
         app:destination="@id/loginFragment"
@@ -135,7 +138,9 @@
         android:label="AuthCheckFragment" >
         <action
             android:id="@+id/action_authCheckFragment_to_mainHomeFragment"
-            app:destination="@id/mainHomeFragment" />
+            app:destination="@id/mainHomeFragment"
+            app:popUpTo="@id/authCheckFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <action
         android:id="@+id/action_global_authCheckFragment"

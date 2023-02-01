@@ -50,7 +50,6 @@ class AuthCheckFragment: Fragment() {
                         findNavController().navigate(AuthCheckFragmentDirections.actionAuthCheckFragmentToMainHomeFragment())
                     }
                     else -> {
-                        Toast.makeText(context, "인증에 실패했습니다 (${state.errorMessage})", Toast.LENGTH_SHORT).show()
                         findNavController().navigate(AuthCheckFragmentDirections.actionGlobalLoginFragment())
                     }
                 }
