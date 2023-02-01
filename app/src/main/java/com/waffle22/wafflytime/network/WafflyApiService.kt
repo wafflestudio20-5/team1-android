@@ -75,27 +75,27 @@ interface WafflyApiService {
 
     @GET("/api/board/{boardId}/posts")
     suspend fun getAllPosts(
-        @Path("boardId") boardId: Long, @Query("page") page: Int, @Query("size") size: Int
+        @Path("boardId") boardId: Long, @Query("cursor") cursor: Int?, @Query("size") size: Int
     ): Response<PostsPage>
 
     @GET("/api/user/mypost")
     suspend fun getMyPosts(
-        @Query("page") page: Int, @Query("size") size: Int
+        @Query("cursor") cursor: Int?, @Query("size") size: Int
     ): Response<PostsPage>
 
     @GET("/api/user/myscrap")
     suspend fun getMyScraps(
-        @Query("page") page: Int, @Query("size") size: Int
+        @Query("cursor") cursor: Int?, @Query("size") size: Int
     ): Response<PostsPage>
 
     @GET("/api/hotpost")
     suspend fun getHotPosts(
-        @Query("page") page: Int, @Query("size") size: Int
+        @Query("cursor") cursor: Int?, @Query("size") size: Int
     ): Response<PostsPage>
 
     @GET("/api/bestpost")
     suspend fun getBestPosts(
-        @Query("page") page: Int, @Query("size") size: Int
+        @Query("cursor") cursor: Int?, @Query("size") size: Int
     ): Response<PostsPage>
 
     @POST("/api/board/{boardId}/post")

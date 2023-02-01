@@ -108,9 +108,9 @@ data class Pageable(
     @Json(name = "paged") val paged: Boolean,
     @Json(name = "unpaged") val unpaged: Boolean
 )
-
+/*
 data class PostsPage(
-    @Json(name = "content") val content: List<PostResponse>?,
+    @Json(name = "content") val content: List<PostResponse>,
     @Json(name = "pageable") val pageable: Pageable,
     @Json(name = "totalPages") val totalPages: Int,
     @Json(name = "totalElements") val totalElements: Int,
@@ -121,6 +121,12 @@ data class PostsPage(
     @Json(name = "numberOfElements") val numberOfElements: Int,
     @Json(name = "first") val first: Boolean,
     @Json(name = "empty") val empty: Boolean
+)*/
+
+data class PostsPage(
+    @Json(name = "contents") val content: List<PostResponse>,
+    @Json(name = "cursor") val cursor: Int,
+    @Json(name = "size") val size: Int
 )
 
 //Post 관련
