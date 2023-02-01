@@ -12,9 +12,8 @@ import com.waffle22.wafflytime.network.dto.PostResponse
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import java.time.LocalDate
 
-class PostPreviewAdapter(
-    private val clicked: (PostResponse) -> Unit
-): ListAdapter<PostResponse, RecyclerView.ViewHolder>(DiffCallback){
+class PostPreviewAdapter(private val clicked: (PostResponse) -> Unit)
+    : ListAdapter<PostResponse, RecyclerView.ViewHolder>(DiffCallback){
 
     override fun getItemViewType(position: Int): Int {
         return if (getItem(position).isQuestion) 1 else 0

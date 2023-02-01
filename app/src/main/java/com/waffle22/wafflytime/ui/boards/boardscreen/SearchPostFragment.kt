@@ -27,7 +27,6 @@ class SearchPostFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /*
         binding.text.setText("")
         viewModel.searchPost("")
         showSearchResultLogic()
@@ -48,11 +47,10 @@ class SearchPostFragment : Fragment() {
             viewModel.searchPost(binding.text.text.toString())
             showSearchResultLogic()
         }
-        */
+
         binding.backButton.setOnClickListener {findNavController().navigateUp()}
     }
 
-    /*
     private fun showSearchResultLogic(){
         if (viewModel.searchResults.value!!.isEmpty()) {
             binding.searchResult.visibility = View.GONE
@@ -63,5 +61,4 @@ class SearchPostFragment : Fragment() {
             binding.noSearchResult.visibility = View.GONE
         }
     }
-     */
 }
