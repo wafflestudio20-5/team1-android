@@ -17,7 +17,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
 
 data class ImageStorage(
-    val imageRequest: ImageRequest,
+    var imageRequest: ImageRequest,
     val byteArray: ByteArray
 ) {
     override fun equals(other: Any?): Boolean {
@@ -153,17 +153,31 @@ class NewPostViewModel(
 
     }
 
-    fun addNewImage(filename: String, byteArray: ByteArray){
-        if (_images.value == null)  _images.value = mutableListOf()
-        _images.value!! += ImageStorage(ImageRequest(_images.value!!.size, filename, ""),byteArray)
+    private fun newImageId(): Int{
+        if (_images.value!!.isNotEmpty())  return _images.value!![_images.value!!.size-1].imageRequest.imageId + 1
+        else    return 0
     }
 
-    fun startEditImageDescription(imageRequest: ImageRequest){
-        //dialog 띄우기
+    fun addNewImage(filename: String, byteArray: ByteArray){
+        if (_images.value == null)  _images.value = mutableListOf()
+        _images.value!! += ImageStorage(ImageRequest(newImageId(),filename, ""),byteArray)
+    }
+
+    fun editImageDescription(imageRequest: ImageRequest, newDescription: String){
+        for (image in _images.value!!){
+            if (image.imageRequest == imageRequest){
+                image.imageRequest = ImageRequest(
+                    imageRequest.imageId,
+                    imageRequest.fileName,
+                    newDescription
+                )
+                break
+            }
+        }
     }
 
     fun deleteImage(imageRequest: ImageRequest){
-
+        _images.value!!.removeIf{imageStorage -> imageStorage.imageRequest == imageRequest}
     }
 
     fun resetStates(){

@@ -73,7 +73,7 @@ class NewPostFragment : Fragment() {
         }
 
         val newPostImageAdapter = NewPostImageAdapter(
-            {viewModel.startEditImageDescription(it)},
+            {image, description -> viewModel.editImageDescription(image, description)},
             {viewModel.deleteImage(it)}
         )
         viewModel.images.observe(this.viewLifecycleOwner){ items ->
@@ -82,7 +82,7 @@ class NewPostFragment : Fragment() {
             }
         }
         binding.images.adapter = newPostImageAdapter
-        binding.images.layoutManager = LinearLayoutManager(this.context)
+        binding.images.layoutManager = LinearLayoutManager(this.context,LinearLayoutManager.HORIZONTAL, false)
 
         binding.toolbar.setNavigationOnClickListener {
             resetStates()
@@ -159,6 +159,7 @@ class NewPostFragment : Fragment() {
                         cursor.moveToFirst()
                         cursor.getString(nameIndex)
                     }
+                    Log.v("NewPostFragment", "Get Image filename")
                     val byteArray =
                         requireContext().contentResolver.openInputStream(returnUri)!!
                             .use { stream ->
@@ -172,7 +173,8 @@ class NewPostFragment : Fragment() {
                                 }
                                 bytestream.toByteArray()
                             }
-                    viewModel.addNewImage(filename, byteArray) //TODO
+                    Log.v("NewPostFragment", "Get Image as ByteArray")
+                    viewModel.addNewImage(filename, byteArray)
                 }
             } catch (e: java.lang.Exception) {
                 Log.d("NewPostFragment", e.toString())

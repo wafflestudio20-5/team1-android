@@ -11,7 +11,7 @@ import com.waffle22.wafflytime.network.dto.ImageRequest
 import com.bumptech.glide.Glide
 
 class NewPostImageAdapter(
-    private val onEditDescription: (ImageRequest) -> Unit,
+    private val onEditDescription: (ImageRequest, String) -> Unit,
     private val onDeleteImage: (ImageRequest) -> Unit
 )
     : ListAdapter<ImageStorage, NewPostImageAdapter.NewPostImageViewHolder>(DiffCallback) {
@@ -32,7 +32,7 @@ class NewPostImageAdapter(
         : RecyclerView.ViewHolder(binding.root){
         fun bind(
             image: ImageStorage,
-            onEditDescription: (ImageRequest) -> Unit,
+            onEditDescription: (ImageRequest, String) -> Unit,
             onDeleteImage: (ImageRequest) -> Unit
         ){
             Glide.with(context)
@@ -40,7 +40,8 @@ class NewPostImageAdapter(
                 .load(image.byteArray)
                 .into(binding.image)
             binding.addDescription.setOnClickListener {
-                onEditDescription(image.imageRequest)
+                var newDescription = ""
+                onEditDescription(image.imageRequest, newDescription)
             }
             binding.deleteImage.setOnClickListener {
                 onDeleteImage(image.imageRequest)
@@ -54,7 +55,7 @@ class NewPostImageAdapter(
                 oldItem: ImageStorage,
                 newItem: ImageStorage
             ): Boolean {
-                return oldItem == newItem
+                return oldItem.imageRequest == newItem.imageRequest
             }
 
             override fun areItemsTheSame(
