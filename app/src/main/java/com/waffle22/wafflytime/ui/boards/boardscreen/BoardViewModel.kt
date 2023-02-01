@@ -53,6 +53,7 @@ class BoardViewModel(
             BoardViewModelState.Init -> {
                 refreshBoard(boardId, boardType)
                 currentViewModelState = BoardViewModelState.Stanby
+                currentViewModelState
             }
             BoardViewModelState.Stanby -> {
                 generateData()

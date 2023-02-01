@@ -36,6 +36,8 @@ class BoardFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        boardId = navigationArgs.boardId
+        boardType = navigationArgs.boardType
     }
 
     override fun onCreateView(
@@ -49,10 +51,6 @@ class BoardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        boardId = navigationArgs.boardId
-        boardType = navigationArgs.boardType
-        viewModel.launchViewModel(boardId, boardType)
 
         setupMenu()
 
@@ -100,11 +98,8 @@ class BoardFragment : Fragment() {
                 }
             })
         }
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.currentViewModelState = BoardViewModelState.Init
+        viewModel.launchViewModel(boardId, boardType)
     }
 
     private fun setupMenu(){
