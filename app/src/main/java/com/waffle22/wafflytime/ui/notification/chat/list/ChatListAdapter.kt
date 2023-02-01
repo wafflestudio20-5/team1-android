@@ -1,7 +1,10 @@
 package com.waffle22.wafflytime.ui.notification.chat.list
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,21 +13,28 @@ import com.waffle22.wafflytime.network.dto.ChatSimpleInfo
 
 class ChatListAdapter(
     private val onClickedChat: (ChatSimpleInfo) -> Unit
-): ListAdapter<ChatSimpleInfo, ChatListAdapter.ChatViewHolder>(DiffCallback){
+): PagingDataAdapter<ChatSimpleInfo, ChatListAdapter.ChatViewHolder>(DiffCallback){
 
     class ChatViewHolder(
         private val binding: ChatboxItemBinding,
         private val onClickedChat: (ChatSimpleInfo) -> Unit
     ): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(chatSimpleInfo: ChatSimpleInfo) {
-            binding.apply {
-                commentTitle.text = chatSimpleInfo.id.toString()
-                commentContent.text = chatSimpleInfo.recentMessage
-                commentTime.text = "No Data from the server"
-                root.setOnClickListener { onClickedChat(chatSimpleInfo) }
+        fun bind(chatSimpleInfo: ChatSimpleInfo?) {
+            chatSimpleInfo?.let {
+                binding.apply {
+                    commentTitle.text = chatSimpleInfo.target
+                    commentContent.text = chatSimpleInfo.recentMessage
+                    if(chatSimpleInfo.unread > 0) {
+                        unreadNum.text = chatSimpleInfo.unread.toString()
+                    } else {
+                        unreadNum.visibility = View.GONE
+                    }
+                    commentTime.text = "No Data from the server"
+                    root.setOnClickListener { onClickedChat(chatSimpleInfo) }
+                    executePendingBindings()
+                }
             }
-            binding.executePendingBindings()
         }
     }
 
@@ -55,8 +65,4 @@ class ChatListAdapter(
         }
 
     }
-
-
-
-
 }

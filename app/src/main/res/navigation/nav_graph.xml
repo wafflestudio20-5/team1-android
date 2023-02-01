@@ -182,5 +182,11 @@
         <argument
             android:name="chatId"
             app:argType="long"/>
+        <argument
+            android:name="chatTarget"
+            app:argType="string"/>
+        <argument
+            android:name="blocked"
+            app:argType="boolean"/>
     </fragment>
 </navigation>
