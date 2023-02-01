@@ -1,7 +1,6 @@
-package com.waffle22.wafflytime.ui.boards.postscreen
+package com.waffle22.wafflytime.ui.boards.post
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,6 +34,9 @@ class PostViewModel(
     private var _curPost = MutableLiveData<PostResponse>()
     val curPost: LiveData<PostResponse>
         get() = _curPost
+    private var _images = MutableLiveData<List<ImageResponse>>()
+    val images: LiveData<List<ImageResponse>>
+        get() = _images
     private var _replies = MutableLiveData<List<ReplyResponse>>()
     val replies: LiveData<List<ReplyResponse>>
         get() = _replies
@@ -59,6 +61,7 @@ class PostViewModel(
                         when (response.code().toString()){
                             "200" -> {
                                 _curPost.value = response.body()
+                                _images.value = _curPost.value!!.images ?: listOf()
                                 _postState.value = PostStatus.Success
                                 isMyPost = response.body()!!.isMyPost
                             }

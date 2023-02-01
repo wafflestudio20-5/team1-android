@@ -7,6 +7,10 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface WafflyApiService {
+    //url에 이미지를 업로드
+    @PUT
+    suspend fun uploadImage(@Url preSignedUrl: String, @Body() request: RequestBody): Response<Unit>
+
     // Auth 관련
     @POST("/api/auth/local/login")
     suspend fun basicLogin(@Body() request: LoginRequest): Response<TokenContainer>
@@ -40,9 +44,6 @@ interface WafflyApiService {
 
     @DELETE("/api/auth/logout")
     suspend fun logout(): Response<ResponseBody>
-
-    @PUT
-    suspend fun uploadProfilePic(@Url preSignedUrl: String, @Body() request: RequestBody): Response<Unit>
 
     @DELETE("/api/user/me/profile")
     suspend fun deleteProfilePic(): Response<UserDTO>
@@ -101,7 +102,7 @@ interface WafflyApiService {
     suspend fun createPost(
         @Path("boardId") boardId: Long,
         @Body() postRequest: PostRequest
-    ): Response<PostRequest>
+        ): Response<PostResponse>
 
     @DELETE("/api/board/{boardId}/post/{postId}")
     suspend fun deletePost(

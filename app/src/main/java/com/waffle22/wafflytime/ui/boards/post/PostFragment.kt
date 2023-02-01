@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.boards.postscreen
+package com.waffle22.wafflytime.ui.boards.post
 
 import android.os.Bundle
 import android.util.Log
@@ -47,7 +47,6 @@ class PostFragment() : Fragment() {
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh(boardId, postId)
-            binding.swipeRefreshLayout.isRefreshing = false
         }
 
         //게시글 부분
@@ -63,6 +62,16 @@ class PostFragment() : Fragment() {
             }
         }
 
+        // 게시물 이미지
+        val postImageAdapter = PostImageAdapter()
+        viewModel.images.observe(this.viewLifecycleOwner) { items ->
+            items.let{
+                postImageAdapter.submitList(it)
+            }
+        }
+        binding.images.adapter = postImageAdapter
+        binding.images.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+
         // 댓글 부분
         val postReplyAdapter = PostReplyAdapter(
             {setReplyState(it.replyId)},
@@ -76,7 +85,7 @@ class PostFragment() : Fragment() {
             }
         }
         binding.comments.adapter = postReplyAdapter
-        binding.comments.layoutManager = LinearLayoutManager(this.context)
+        binding.comments.layoutManager = LinearLayoutManager(this.context,LinearLayoutManager.HORIZONTAL, false)
 
         viewModel.getReplies(boardId, postId)
         lifecycleScope.launch {
@@ -109,6 +118,12 @@ class PostFragment() : Fragment() {
             }
         }
         setReplyState(null)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.refresh(boardId, postId)
+        //Log.v("PostFragment", viewModel.curPost.value!!.contents)
     }
 
     private fun setUpMenu(){
@@ -154,10 +169,16 @@ class PostFragment() : Fragment() {
             PostStatus.StandBy -> Toast.makeText(context, "게시물 로딩중", Toast.LENGTH_SHORT).show()
             PostStatus.Success -> {
                 Toast.makeText(context, "게시물 로딩 완료!", Toast.LENGTH_SHORT).show()
+                binding.swipeRefreshLayout.isRefreshing = false
                 binding.apply {
                     binding.toolbar.title = viewModel.curBoard.title
                     nickname.text = viewModel.curPost.value!!.nickname ?: "익명"
                     time.text = timeToText(viewModel.curPost.value!!.createdAt)
+                    if (viewModel.curPost.value!!.title != null) {
+                        title.text = viewModel.curPost.value!!.title
+                        title.visibility = View.VISIBLE
+                    }
+                    else    title.visibility = View.GONE
                     mainText.text = viewModel.curPost.value!!.contents
                     likesText.text = viewModel.curPost.value!!.nlikes.toString()
                     commentsText.text = viewModel.curPost.value!!.nreplies.toString()
