@@ -131,9 +131,7 @@ class NewPostFragment : Fragment() {
             LoadingStatus.Success -> {
                 Toast.makeText(context, "업로드 성공", Toast.LENGTH_SHORT).show()
                 resetStates()
-                if (navigationArgs.taskType == PostTaskType.CREATE) {
-                    boardViewModel.currentViewModelState = BoardViewModelState.FromSendThread
-                }
+                boardViewModel.currentViewModelState = BoardViewModelState.FromSendThread
                 findNavController().navigateUp()
             }
             LoadingStatus.Error -> {

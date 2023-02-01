@@ -33,7 +33,7 @@ data class PageNation(
 )
 
 enum class BoardViewModelState{
-    Init, Stanby, FromPost, FromCancelThread, FromSendThread
+    Init, Stanby, FromPostNone, FromPostRefresh, FromCancelThread, FromSendThread
 }
 
 class BoardViewModel(
@@ -53,13 +53,16 @@ class BoardViewModel(
             BoardViewModelState.Init -> {
                 refreshBoard(boardId, boardType)
                 currentViewModelState = BoardViewModelState.Stanby
-                currentViewModelState
             }
             BoardViewModelState.Stanby -> {
                 generateData()
             }
-            BoardViewModelState.FromPost -> {
+            BoardViewModelState.FromPostNone -> {
                 generateData()
+                currentViewModelState = BoardViewModelState.Stanby
+            }
+            BoardViewModelState.FromPostRefresh -> {
+                refreshBoard(boardId, boardType)
                 currentViewModelState = BoardViewModelState.Stanby
             }
             BoardViewModelState.FromCancelThread -> {

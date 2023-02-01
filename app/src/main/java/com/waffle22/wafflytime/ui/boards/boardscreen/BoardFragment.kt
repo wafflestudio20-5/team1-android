@@ -55,7 +55,7 @@ class BoardFragment : Fragment() {
         setupMenu()
 
         postPreviewAdapter = PostPreviewAdapter{
-            viewModel.currentViewModelState = BoardViewModelState.FromPost
+            viewModel.currentViewModelState = BoardViewModelState.FromPostNone
             val action = BoardFragmentDirections.actionBoardFragmentToPostFragment(it.boardId, it.postId)
             this.findNavController().navigate(action)
         }

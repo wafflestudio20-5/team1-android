@@ -28,6 +28,7 @@ class PostFragment() : Fragment() {
     private lateinit var binding: FragmentPostBinding
 
     private val viewModel: PostViewModel by sharedViewModel()
+    private val boardViewModel: BoardViewModel by sharedViewModel()
     private val navigationArgs: PostFragmentArgs by navArgs()
 
     private var boardId = 0L
@@ -158,6 +159,7 @@ class PostFragment() : Fragment() {
                     }
                     R.id.delete -> {
                         viewModel.deletePost()
+                        boardViewModel.currentViewModelState = BoardViewModelState.FromPostRefresh
                         findNavController().navigateUp()
                     }
                 }
