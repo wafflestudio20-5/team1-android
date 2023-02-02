@@ -69,7 +69,7 @@ class PostFragment() : Fragment() {
         val postImageAdapter = PostImageAdapter()
         viewModel.images.observe(this.viewLifecycleOwner) { items ->
             items.let{
-                postImageAdapter.submitList(it)
+                postImageAdapter.submitList(it.toList())
             }
         }
         binding.images.adapter = postImageAdapter
@@ -84,7 +84,7 @@ class PostFragment() : Fragment() {
         )
         viewModel.replies.observe(this.viewLifecycleOwner){ items ->
             items.let{
-                postReplyAdapter.submitList(it)
+                postReplyAdapter.submitList(it.toList())
             }
         }
         binding.comments.adapter = postReplyAdapter

@@ -15,6 +15,13 @@ enum class PostStatus{
     StandBy, Success, NotFound, BadRequest, Corruption
 }
 
+data class PageNation(
+    var firstCursor: Int?,
+    var secondCursor: Int?,
+    var pageSize: Int = 20,
+    var isEnd: Boolean = false
+)
+
 class PostViewModel(
     private val wafflyApiService: WafflyApiService,
 ) : ViewModel() {
@@ -43,7 +50,12 @@ class PostViewModel(
 
     private var isMyPost: Boolean = false
 
+    private val currentPageNation = PageNation(null, null)
+
     fun refresh(boardId: Long, postId: Long){
+        currentPageNation.firstCursor = null
+        currentPageNation.secondCursor = null
+        currentPageNation.isEnd = false
         _postState.value = PostStatus.StandBy
         _repliesState.value = PostStatus.StandBy
         getPost(boardId, postId)
@@ -78,12 +90,18 @@ class PostViewModel(
     }
 
     fun getReplies(boardId: Long, postId: Long){
+        if (currentPageNation.isEnd) return
         viewModelScope.launch {
             try{
                 _repliesState.value = PostStatus.StandBy
-                val response = wafflyApiService.getReplies(boardId, postId)
+                val response = wafflyApiService.getReplies(
+                    boardId, postId, null, currentPageNation.firstCursor, currentPageNation.secondCursor, currentPageNation.pageSize
+                )
                 when (response.code().toString()){
                     "200" -> {
+                        currentPageNation.firstCursor = response.body()!!.cursor?.first
+                        currentPageNation.secondCursor = response.body()!!.cursor?.second
+                        currentPageNation.isEnd = response.body()!!.isLast
                         _replies.value = response.body()!!.content ?: listOf()
                         _repliesState.value = PostStatus.Success
                     }

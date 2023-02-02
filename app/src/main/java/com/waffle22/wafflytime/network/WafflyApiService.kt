@@ -135,7 +135,12 @@ interface WafflyApiService {
     //Reply 관련
     @GET("/api/board/{boardId}/post/{postId}/replies")
     suspend fun getReplies(
-        @Path("boardId") boardId: Long, @Path("postId") postId: Long
+        @Path("boardId") boardId: Long,
+        @Path("postId") postId: Long,
+        @Query("page") page: Int?,
+        @Query("first") first: Int?,
+        @Query("second") second: Int?,
+        @Query("size") size: Int?
     ): Response<RepliesPage>
 
     @POST("/api/board/{boardId}/post/{postId}/reply")
