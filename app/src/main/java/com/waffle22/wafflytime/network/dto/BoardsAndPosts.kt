@@ -14,7 +14,7 @@ data class TimeDTO(
 //BoardList 관련
 data class BoardAbstract(
     @Json(name = "boardId") val boardId : Long,
-    @Json(name = "name") val name: String
+    @Json(name = "title") val name: String
 )
 
 data class BoardListResponse(
@@ -126,7 +126,8 @@ data class PostsPage(
 data class PostsPage(
     @Json(name = "contents") val content: List<PostResponse>,
     @Json(name = "cursor") val cursor: Int,
-    @Json(name = "size") val size: Int
+    @Json(name = "size") val size: Int,
+    @Json(name = "isLast") val isLast: Boolean
 )
 
 //Post 관련
