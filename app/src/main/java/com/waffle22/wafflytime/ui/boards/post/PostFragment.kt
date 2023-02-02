@@ -36,6 +36,14 @@ class PostFragment() : Fragment() {
     private var replyParent: Long? = null
     private var editingReply: ReplyResponse? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        boardId = navigationArgs.boardId
+        postId = navigationArgs.postId
+        viewModel.initalization()
+        viewModel.refresh(boardId, postId)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,11 +61,7 @@ class PostFragment() : Fragment() {
         }
 
         //게시글 부분
-        boardId = navigationArgs.boardId
-        postId = navigationArgs.postId
         viewModel.getPost(boardId, postId)
-
-        setUpMenu()
 
         lifecycleScope.launch {
             viewModel.postState.collect {
@@ -123,12 +127,6 @@ class PostFragment() : Fragment() {
         setReplyState(null)
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.refresh(boardId, postId)
-        //Log.v("PostFragment", viewModel.curPost.value!!.contents)
-    }
-
     private fun setUpMenu(){
         binding.toolbar.addMenuProvider(object : MenuProvider{
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -172,10 +170,11 @@ class PostFragment() : Fragment() {
         when (status){
             PostStatus.StandBy -> Toast.makeText(context, "게시물 로딩중", Toast.LENGTH_SHORT).show()
             PostStatus.Success -> {
+                setUpMenu()
                 Toast.makeText(context, "게시물 로딩 완료!", Toast.LENGTH_SHORT).show()
                 binding.swipeRefreshLayout.isRefreshing = false
                 binding.apply {
-                    binding.toolbar.title = viewModel.curBoard.title
+                    binding.toolbar.title = viewModel.curBoard!!.title
                     nickname.text = viewModel.curPost.value!!.nickname ?: "익명"
                     time.text = timeToText(viewModel.curPost.value!!.createdAt)
                     if (viewModel.curPost.value!!.title != null) {

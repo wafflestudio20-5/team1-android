@@ -28,13 +28,14 @@ import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModelState
 import com.waffle22.wafflytime.ui.boards.post.PostViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.ByteArrayOutputStream
 
 class NewPostFragment : Fragment() {
     private lateinit var binding: FragmentNewPostBinding
-    private val viewModel: NewPostViewModel by sharedViewModel()
+    private val viewModel: NewPostViewModel by viewModel()
     private val postViewModel: PostViewModel by sharedViewModel()
-    private val boardViewModel: BoardViewModel by activityViewModels()
+    private val boardViewModel: BoardViewModel by sharedViewModel()
     private val navigationArgs: NewPostFragmentArgs by navArgs()
     private lateinit var getImage: ActivityResultLauncher<Intent>
 
