@@ -12,6 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentPostBinding
 import com.waffle22.wafflytime.network.dto.LoadingStatus
@@ -35,6 +36,7 @@ class PostFragment() : Fragment() {
     private var postId = 0L
     private var replyParent: Long? = null
     private var editingReply: ReplyResponse? = null
+    private var isSetUpMenu: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,18 +84,29 @@ class PostFragment() : Fragment() {
         // 댓글 부분
         val postReplyAdapter = PostReplyAdapter(
             {setReplyState(it.replyId)},
-            {viewModel.canEditReply()},
+            {viewModel.canEditReply(it.isMyReply)},
             {flag, reply -> modifyReplyLogic(flag, reply)},
             {reply -> moveToNewChat(reply.replyId)}
         )
         binding.comments.adapter = postReplyAdapter
+
+        binding.comments.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                // 스크롤이 끝에 도달했는지 확인
+                if (!binding.comments.canScrollVertically(1)) {
+                    viewModel.getReplies(boardId, postId)
+                }
+            }
+        })
+
+
         viewModel.replies.observe(this.viewLifecycleOwner){ items ->
             items.let{
                 postReplyAdapter.submitList(it.toList())
             }
         }
 
-        viewModel.getReplies(boardId, postId)
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.repliesState.collect{
@@ -115,18 +128,20 @@ class PostFragment() : Fragment() {
                     replyParent,
                     binding.anonymous.isChecked
                 )
-                viewModel.getReplies(boardId, postId)
+                viewModel.refresh(boardId, postId)
                 binding.newCommentText.setText("")
                 setReplyState(null)
             }
             else {
                 editReply(binding.newCommentText.text.toString())
             }
+            replyParent = null
         }
         setReplyState(null)
     }
 
     private fun setUpMenu(){
+        isSetUpMenu = true
         binding.toolbar.addMenuProvider(object : MenuProvider{
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.post_actions, menu)
@@ -169,7 +184,7 @@ class PostFragment() : Fragment() {
         when (status){
             PostStatus.StandBy -> Toast.makeText(context, "게시물 로딩중", Toast.LENGTH_SHORT).show()
             PostStatus.Success -> {
-                setUpMenu()
+                if(isSetUpMenu) null else setUpMenu()
                 Toast.makeText(context, "게시물 로딩 완료!", Toast.LENGTH_SHORT).show()
                 binding.swipeRefreshLayout.isRefreshing = false
                 binding.apply {

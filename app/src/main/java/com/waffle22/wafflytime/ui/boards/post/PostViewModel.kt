@@ -194,8 +194,8 @@ class PostViewModel(
         return isMyPost
     }
 
-    fun canEditReply(): Boolean{
-        return false
+    fun canEditReply(check: Boolean): Boolean{
+        return check
     }
 
     fun likePost(){
