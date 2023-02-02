@@ -20,6 +20,7 @@ import com.waffle22.wafflytime.network.dto.ReplyResponse
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
 import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModelState
+import com.waffle22.wafflytime.util.timeToString
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.LocalDate
@@ -177,7 +178,7 @@ class PostFragment() : Fragment() {
                 binding.apply {
                     binding.toolbar.title = viewModel.curBoard.title
                     nickname.text = viewModel.curPost.value!!.nickname ?: "익명"
-                    time.text = timeToText(viewModel.curPost.value!!.createdAt)
+                    time.text = viewModel.curPost.value!!.createdAt.timeToString()
                     if (viewModel.curPost.value!!.title != null) {
                         title.text = viewModel.curPost.value!!.title
                         title.visibility = View.VISIBLE
@@ -281,12 +282,5 @@ class PostFragment() : Fragment() {
     private fun moveToNewChat(replyId: Long) {
         val action = PostFragmentDirections.actionPostFragmentToNewChatFragment(boardId, postId, replyId)
         findNavController().navigate(action)
-    }
-
-    private fun timeToText(time: TimeDTO): String{
-        var timeText = time.month.toString() + '/' + time.day.toString() + ' ' + time.hour.toString() + ':' + time.minute.toString()
-        if (LocalDate.now().year != time.year)
-            timeText = time.year.toString() + '/' + timeText
-        return timeText
     }
 }
