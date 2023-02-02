@@ -11,8 +11,57 @@ import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.PostReplyBinding
 import com.waffle22.wafflytime.network.dto.ReplyResponse
-//import com.waffle22.wafflytime.network.dto.TimeDTO
-//import java.time.LocalDate
+/*
+class PostReplyAdapter(
+    private val replyClicked: (ReplyResponse) -> Unit,
+    private val editable: (ReplyResponse) -> Boolean,
+    private val modifyReply: (Boolean, ReplyResponse) -> Unit,
+    private val moveToNewChat: (ReplyResponse) -> Unit
+) : ListAdapter<ReplyResponse, PostReplyAdapter.PostReplyViewHolder>(DiffCallback){
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostReplyViewHolder {
+        return PostReplyViewHolder(
+            PostReplyBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            ), parent.context
+        )
+    }
+
+    override fun onBindViewHolder(holder: PostReplyViewHolder, position: Int) {
+        val current = getItem(position)
+        holder.bind(current, replyClicked, editable, modifyReply, moveToNewChat)
+    }
+
+    class PostReplyViewHolder(private var binding: PostReplyBinding, private var context: Context)
+        : RecyclerView.ViewHolder(binding.root) {
+        fun bind(reply: ReplyResponse,
+                 replyClicked: (ReplyResponse) -> Unit,
+                 editable: (ReplyResponse) -> Boolean,
+                 modifyReply: (Boolean, ReplyResponse) -> Unit,
+                 moveToNewChat: (ReplyResponse) -> Unit) {
+            binding.nickname.text = reply.contents
+        }
+    }
+
+    companion object {
+        private val DiffCallback = object : DiffUtil.ItemCallback<ReplyResponse>() {
+            override fun areContentsTheSame(
+                oldItem: ReplyResponse,
+                newItem: ReplyResponse
+            ): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areItemsTheSame(
+                oldItem: ReplyResponse,
+                newItem: ReplyResponse
+            ): Boolean {
+                return oldItem.replyId == newItem.replyId
+            }
+        }
+    }
+}
+ */
 
 class PostReplyAdapter(
     private val replyClicked: (ReplyResponse) -> Unit,
@@ -72,12 +121,6 @@ class PostReplyAdapter(
                 }
             }
         }
-        /*private fun timeToText(time: TimeDTO): String{
-            var timeText = time.month.toString() + '/' + time.day.toString() + ' ' + time.hour.toString() + ':' + time.minute.toString()
-            if (LocalDate.now().year != time.year)
-                timeText = time.year.toString() + '/' + timeText
-            return timeText
-        }*/
     }
 
     companion object {

@@ -22,17 +22,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toTopOf="@id/new_comment_text">
+        app:layout_constraintBottom_toTopOf="@id/bottom_edit">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/profile_pic"
@@ -161,14 +159,15 @@
                     app:layout_constraintStart_toEndOf="@id/like_post"
                     app:layout_constraintTop_toBottomOf="@id/likes_icon" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/comments"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/like_post"
-                    app:layout_constraintBottom_toBottomOf=""/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/comments"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/like_post"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -176,45 +175,43 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <TextView
-        android:id="@+id/error_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toTopOf="@+id/new_comment_text"/>
-
-    <CheckBox
-        android:id="@+id/anonymous"
-        android:layout_width="60dp"
-        android:layout_height="45dp"
-        android:background="@color/white"
-        android:text="익명"
-        app:layout_constraintTop_toTopOf="@id/new_comment_text"
-        app:layout_constraintBottom_toBottomOf="@id/new_comment_text"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:id="@+id/new_comment_text"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginEnd="45dp"
-        android:inputType="textMultiLine"
-        android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/anonymous"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="Hello World!\nHello World\nHello World\nabc\ndifheoh"/>
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/new_comment_button"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:background="@drawable/ic_baseline_edit_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/new_comment_text"
-        app:layout_constraintBottom_toBottomOf="@id/new_comment_text"/>
+        <CheckBox
+            android:id="@+id/anonymous"
+            android:layout_width="60dp"
+            android:layout_height="45dp"
+            android:background="@color/white"
+            android:text="익명"
+            app:layout_constraintTop_toTopOf="@id/new_comment_text"
+            app:layout_constraintBottom_toBottomOf="@id/new_comment_text"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/new_comment_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginEnd="45dp"
+            android:inputType="textMultiLine"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/anonymous"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Hello World!\nHello World\nHello World\nabc\ndifheoh"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/new_comment_button"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/ic_baseline_edit_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/new_comment_text"
+            app:layout_constraintBottom_toBottomOf="@id/new_comment_text"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -86,20 +86,12 @@ class PostFragment() : Fragment() {
             {flag, reply -> modifyReplyLogic(flag, reply)},
             {reply -> moveToNewChat(reply.replyId)}
         )
-        val exam = listOf(
-            ReplyResponse(1,"h",TimeDTO(1,2,3,4,5),true,"i",false,false,false,1),
-            ReplyResponse(2,"h",TimeDTO(1,2,3,4,5),true,"i",false,false,false,1),
-            ReplyResponse(3,"h",TimeDTO(1,2,3,4,5),true,"i",false,false,false,1)
-            )
-        postReplyAdapter.submitList(exam)
-        /*
+        binding.comments.adapter = postReplyAdapter
         viewModel.replies.observe(this.viewLifecycleOwner){ items ->
             items.let{
                 postReplyAdapter.submitList(it.toList())
             }
-        }*/
-        binding.comments.adapter = postReplyAdapter
-        binding.comments.layoutManager = LinearLayoutManager(this.context,LinearLayoutManager.HORIZONTAL, false)
+        }
 
         viewModel.getReplies(boardId, postId)
         lifecycleScope.launch {
@@ -199,11 +191,7 @@ class PostFragment() : Fragment() {
                 binding.scrapPost.setOnClickListener { viewModel.scrapPost() }
             }
             else -> {
-                binding.errorText.text = when(status){
-                    PostStatus.NotFound -> "존재하지 않는 게시물입니다."
-                    PostStatus.BadRequest -> "해당 게시판의 게시물이 아닙니다."
-                    else -> "알 수 없는 오류"
-                }
+                Toast.makeText(context, "오류", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -216,11 +204,7 @@ class PostFragment() : Fragment() {
                 Log.v("PostFragment", "댓글 받아오기 성공!")
             }
             else -> {
-                binding.errorText.text = when(status){
-                    PostStatus.NotFound -> "존재하지 않는 게시물입니다."
-                    PostStatus.BadRequest -> "해당 게시판의 게시물이 아닙니다."
-                    else -> "알 수 없는 오류"
-                }
+                Toast.makeText(context, "오류", Toast.LENGTH_SHORT).show()
             }
         }
     }
