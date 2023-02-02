@@ -86,11 +86,18 @@ class PostFragment() : Fragment() {
             {flag, reply -> modifyReplyLogic(flag, reply)},
             {reply -> moveToNewChat(reply.replyId)}
         )
+        val exam = listOf(
+            ReplyResponse(1,"h",TimeDTO(1,2,3,4,5),true,"i",false,false,false,1),
+            ReplyResponse(2,"h",TimeDTO(1,2,3,4,5),true,"i",false,false,false,1),
+            ReplyResponse(3,"h",TimeDTO(1,2,3,4,5),true,"i",false,false,false,1)
+            )
+        postReplyAdapter.submitList(exam)
+        /*
         viewModel.replies.observe(this.viewLifecycleOwner){ items ->
             items.let{
                 postReplyAdapter.submitList(it.toList())
             }
-        }
+        }*/
         binding.comments.adapter = postReplyAdapter
         binding.comments.layoutManager = LinearLayoutManager(this.context,LinearLayoutManager.HORIZONTAL, false)
 

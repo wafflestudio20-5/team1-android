@@ -93,7 +93,7 @@ class PostReplyAdapter(
                 oldItem: ReplyResponse,
                 newItem: ReplyResponse
             ): Boolean {
-                return oldItem == newItem
+                return oldItem.replyId == newItem.replyId
             }
         }
     }
