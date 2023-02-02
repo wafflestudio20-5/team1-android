@@ -12,11 +12,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.databinding.FragmentSignupEmailBinding
+import com.waffle22.wafflytime.databinding.FragmentSignupEmailCodeBinding
 import com.waffle22.wafflytime.util.SlackState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SignUpCodeFragment: Fragment() {
-    private lateinit var binding: FragmentSignupEmailBinding
+    private lateinit var binding: FragmentSignupEmailCodeBinding
     private lateinit var alertDialog: AlertDialog
     private val viewModel: SignUpEmailViewModel by sharedViewModel()
 
@@ -25,34 +26,34 @@ class SignUpCodeFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSignupEmailBinding.inflate(inflater, container, false)
+        binding = FragmentSignupEmailCodeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply{
-            btnSendEmailCode.setOnClickListener { emailVerify() }
+            btnCheckEmailCode.setOnClickListener { codeVerify() }
         }
 
         lifecycleScope.launchWhenStarted {
-            viewModel.signUpEmailState.collect {
-                signUpEmailLogic(it)
+            viewModel.signUpCodeState.collect {
+                signUpCodeLogic(it)
             }
         }
     }
 
-    private fun emailVerify(){
+    private fun codeVerify(){
         alertDialog = MaterialAlertDialogBuilder(this.requireContext())
             .setView(ProgressBar(this.requireContext()))
             .setMessage("Loading...")
             .show()
         alertDialog.setCanceledOnTouchOutside(false)
 
-        viewModel.signUpEmail(binding.emailEditText.text.toString())
+        viewModel.signUpCode(binding.codeEditText.text.toString())
     }
 
-    private fun signUpEmailLogic(state: SlackState<Nothing>){
+    private fun signUpCodeLogic(state: SlackState<Nothing>){
         when (state.status){
             "0" -> {
                 null
@@ -61,13 +62,17 @@ class SignUpCodeFragment: Fragment() {
                 alertDialog.dismiss()
                 when(state.status) {
                     "200" -> {
-                        findNavController().navigate(SignUpEmailFragmentDirections.actionSignUpEmailFragmentToSignUpCodeFragment())
+                        Toast.makeText(context, "회원가입이 모두 완료되었습니다!!", Toast.LENGTH_SHORT).show()
+                        findNavController().navigate(SignUpCodeFragmentDirections.actionGlobalAuthCheckFragment())
+                    }
+                    "-2" -> {
+                        Toast.makeText(context, "코드를 다시 입력해주세요...", Toast.LENGTH_SHORT).show()
                     }
                     else -> {
                         Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
-                viewModel.resetSignUpEmailState()
+                viewModel.resetSignUpCodeState()
             }
         }
     }

@@ -22,6 +22,10 @@ data class EmailRequest(
     @Json(name = "email") val email: String
 )
 
+data class EmailCodeRequest(
+    @Json(name = "code") val code: String
+)
+
 data class TokenContainer(
     @Json(name = "accessToken") val accessToken: String,
     @Json(name = "refreshToken") val refreshToken: String

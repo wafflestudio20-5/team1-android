@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.network.dto.EmailCode
+import com.waffle22.wafflytime.network.dto.EmailCodeRequest
 import com.waffle22.wafflytime.network.dto.EmailRequest
 import com.waffle22.wafflytime.util.AuthStorage
 import com.waffle22.wafflytime.util.SlackState
@@ -12,6 +13,7 @@ import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.ResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
 
@@ -26,7 +28,6 @@ class MypageEmailViewModel(
     private val _codeState = MutableStateFlow(SlackState("0", null, null, null))
     val codeState: StateFlow<SlackState<Nothing>> = _codeState
     private lateinit var email: String
-    private lateinit var code: String
 
     fun isVerified(): Boolean {
         return authStorage.authInfo.value?.userInfo?.univEmail?.isNotEmpty() ?: false
@@ -37,9 +38,8 @@ class MypageEmailViewModel(
         viewModelScope.launch {
             try {
                 email = emailInput
-                val response: Response<EmailCode> = wafflyApiService.emailAuth(EmailRequest(email))
+                val response: Response<ResponseBody> = wafflyApiService.emailAuth(EmailRequest(email))
                 if (response.isSuccessful){
-                    code = response.body()!!.emailCode
                     _emailState.value = SlackState(response.code().toString(),null,null,null)
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
@@ -55,18 +55,14 @@ class MypageEmailViewModel(
         _codeState.value = SlackState("0", null, null, null)
         viewModelScope.launch {
             try {
-                if (codeInput == code) {
-                    val response = wafflyApiService.emailPatch(EmailRequest(email))
-                    if (response.isSuccessful){
-                        authStorage.modifyUserDtoInfo(AuthStorage.UserUnivEmailKey, email)
-//                        authStorage.setTokenInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
-                        _codeState.value = SlackState(response.code().toString(),null,null, null)
-                    } else {
-                        val errorResponse = HttpException(response).parseError(moshi)!!
-                        _codeState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, null)
-                    }
+                val response = wafflyApiService.emailPatch(EmailCodeRequest(codeInput))
+                if (response.isSuccessful){
+                    authStorage.modifyUserDtoInfo(AuthStorage.UserUnivEmailKey, email)
+                    authStorage.setTokenInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
+                    _codeState.value = SlackState(response.code().toString(),null,null, null)
                 } else {
-                    _codeState.value = SlackState("-2",null,"코드가 일치하지 않습니다.", null)
+                    val errorResponse = HttpException(response).parseError(moshi)!!
+                    _codeState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, null)
                 }
             } catch (e:java.lang.Exception) {
                 _codeState.value = SlackState("-1",null,"System Corruption", null)
