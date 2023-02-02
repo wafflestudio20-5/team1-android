@@ -10,6 +10,8 @@ import com.waffle22.wafflytime.databinding.BoardAnnouncementBinding
 import com.waffle22.wafflytime.databinding.BoardThreadBinding
 import com.waffle22.wafflytime.network.dto.PostResponse
 import com.waffle22.wafflytime.network.dto.TimeDTO
+import com.waffle22.wafflytime.util.previewText
+import com.waffle22.wafflytime.util.timeToString
 import java.time.LocalDate
 
 class PostPreviewAdapter(
@@ -44,20 +46,14 @@ class PostPreviewAdapter(
         fun bind(postAbstract: PostResponse, clicked: (PostResponse) -> Unit) {
             binding.apply{
                 nickname.text = postAbstract.nickname ?: "익명"
-                time.text = timeToText(postAbstract.createdAt)
-                previewText.text = postAbstract.contents
+                time.text = postAbstract.createdAt.timeToString()
+                previewText.text = postAbstract.contents.previewText(3)
                 likesText.text = postAbstract.nlikes.toString()
                 commentsText.text = postAbstract.nreplies.toString()
                 if (postAbstract.title != null) title.text = postAbstract.title
                 else    title.visibility = View.GONE
                 layout.setOnClickListener{clicked(postAbstract)}
             }
-        }
-        private fun timeToText(time: TimeDTO): String{
-            var timeText = time.month.toString() + '/' + time.day.toString() + ' ' + time.hour.toString() + ':' + time.minute.toString()
-            if (LocalDate.now().year != time.year)
-                timeText = time.year.toString() + '/' + timeText
-            return timeText
         }
     }
 
@@ -66,18 +62,12 @@ class PostPreviewAdapter(
         fun bind(postAbstract: PostResponse, clicked: (PostResponse) -> Unit){
             binding.apply{
                 tag.text = "질문"
-                time.text = timeToText(postAbstract.createdAt)
-                previewText.text = postAbstract.title ?: postAbstract.contents
+                time.text = postAbstract.createdAt.timeToString()
+                previewText.text = postAbstract.title ?: postAbstract.contents.previewText(2)
                 likesText.text = postAbstract.nlikes.toString()
                 commentsText.text = postAbstract.nreplies.toString()
                 layout.setOnClickListener{clicked(postAbstract)}
             }
-        }
-        private fun timeToText(time: TimeDTO): String{
-            var timeText = time.month.toString() + '/' + time.day.toString() + ' ' + time.hour.toString() + ':' + time.minute.toString()
-            if (LocalDate.now().year != time.year)
-                timeText = time.year.toString() + '/' + timeText
-            return timeText
         }
     }
 
