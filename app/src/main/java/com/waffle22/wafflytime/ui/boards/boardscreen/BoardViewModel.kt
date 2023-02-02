@@ -49,6 +49,12 @@ class BoardViewModel(
     var currentViewModelState: BoardViewModelState = BoardViewModelState.Init
 
     fun launchViewModel(boardId: Long, boardType: BoardType) {
+        _boardScreenState.value = INITIAL_STATE
+        currentData.boardInfo = null
+        currentData.boardData = mutableListOf()
+        currentPageNation.cursor = null
+        currentPageNation.isEnd = false
+        currentViewModelState = BoardViewModelState.Init
         when(currentViewModelState){
             BoardViewModelState.Init -> {
                 refreshBoard(boardId, boardType)
@@ -147,7 +153,7 @@ class BoardViewModel(
 
             if(response!!.isSuccessful){
                 currentPageNation.cursor = response.body()!!.cursor
-                if (currentPageNation.cursor == 1) currentPageNation.isEnd = true
+                if (currentPageNation.isEnd) currentPageNation.isEnd = true
                 currentData.boardData.addAll(response.body()!!.content)
             } else{
                 val errorResponse = HttpException(response).parseError(moshi)!!
@@ -161,10 +167,6 @@ class BoardViewModel(
 
     fun generateData(){
         _boardScreenState.value = SlackState("200",null,null,currentData)
-    }
-
-    fun resetState(){
-        _boardScreenState.value = SlackState("0",null,null,currentData)
     }
 
     /*

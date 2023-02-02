@@ -38,6 +38,7 @@ class BoardFragment : Fragment() {
         super.onCreate(savedInstanceState)
         boardId = navigationArgs.boardId
         boardType = navigationArgs.boardType
+        viewModel.launchViewModel(boardId, boardType)
     }
 
     override fun onCreateView(
@@ -106,8 +107,10 @@ class BoardFragment : Fragment() {
                 }
             })
         }
+    }
 
-        viewModel.launchViewModel(boardId, boardType)
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     private fun setupMenu(){
@@ -151,7 +154,6 @@ class BoardFragment : Fragment() {
                         Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
-                viewModel.resetState()
             }
         }
     }

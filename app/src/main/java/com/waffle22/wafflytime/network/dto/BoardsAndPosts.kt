@@ -125,7 +125,7 @@ data class PostsPage(
 
 data class PostsPage(
     @Json(name = "contents") val content: List<PostResponse>,
-    @Json(name = "cursor") val cursor: Int,
+    @Json(name = "cursor") val cursor: Int?,
     @Json(name = "size") val size: Int,
     @Json(name = "isLast") val isLast: Boolean
 )
