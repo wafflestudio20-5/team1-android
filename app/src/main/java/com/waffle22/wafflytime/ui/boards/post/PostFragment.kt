@@ -20,7 +20,6 @@ import com.waffle22.wafflytime.network.dto.PostTaskType
 import com.waffle22.wafflytime.network.dto.ReplyResponse
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
-import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModelState
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.LocalDate
@@ -171,7 +170,7 @@ class PostFragment() : Fragment() {
                     }
                     R.id.delete -> {
                         viewModel.deletePost()
-                        boardViewModel.currentViewModelState = BoardViewModelState.FromPostRefresh
+                        boardViewModel.setRefresh()
                         findNavController().navigateUp()
                     }
                 }

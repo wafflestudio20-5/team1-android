@@ -24,7 +24,6 @@ import com.waffle22.wafflytime.databinding.FragmentNewPostBinding
 import com.waffle22.wafflytime.network.dto.LoadingStatus
 import com.waffle22.wafflytime.network.dto.PostTaskType
 import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
-import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModelState
 import com.waffle22.wafflytime.ui.boards.post.PostViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -132,7 +131,7 @@ class NewPostFragment : Fragment() {
             LoadingStatus.Success -> {
                 Toast.makeText(context, "업로드 성공", Toast.LENGTH_SHORT).show()
                 resetStates()
-                boardViewModel.currentViewModelState = BoardViewModelState.FromSendThread
+                boardViewModel.setRefresh()
                 findNavController().navigateUp()
             }
             LoadingStatus.Error -> {

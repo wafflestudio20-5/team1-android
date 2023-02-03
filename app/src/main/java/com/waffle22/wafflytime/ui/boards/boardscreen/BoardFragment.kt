@@ -34,13 +34,13 @@ class BoardFragment : Fragment() {
     private var boardId = 0L
     private lateinit var boardType: BoardType
 
-    private var isCreated = false
+    private var holdFocus: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         boardId = navigationArgs.boardId
         boardType = navigationArgs.boardType
-        viewModel.launchViewModel(boardId, boardType)
+        viewModel.reInitViewModel(boardId, boardType)
     }
 
     override fun onCreateView(
@@ -58,14 +58,16 @@ class BoardFragment : Fragment() {
         setupMenu()
 
         postPreviewAdapter = PostPreviewAdapter{
-            viewModel.currentViewModelState = BoardViewModelState.FromPostNone
+            holdFocus = true
             val action = BoardFragmentDirections.actionBoardFragmentToPostFragment(it.boardId, it.postId)
             this.findNavController().navigate(action)
         }
         postPreviewAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (positionStart == 0){
+                if (positionStart == 0 && !holdFocus){
                     binding.posts.scrollToPosition(0)
+                } else{
+                    holdFocus = false
                 }
             }
         })
@@ -82,7 +84,6 @@ class BoardFragment : Fragment() {
 
             if(boardType == BoardType.Common){
                 newThread.setOnClickListener{
-                    viewModel.currentViewModelState = BoardViewModelState.FromCancelThread
                     val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId, PostTaskType.CREATE)
                     findNavController().navigate(action)
                 }
@@ -95,7 +96,8 @@ class BoardFragment : Fragment() {
             }
 
             swipeRefreshLayout.setOnRefreshListener {
-                viewModel.refreshBoard(boardId, boardType)
+                viewModel.setRefresh()
+                viewModel.requestData(boardId, boardType)
                 swipeRefreshLayout.isRefreshing = false
             }
 
@@ -109,11 +111,7 @@ class BoardFragment : Fragment() {
                 }
             })
 
-            if (isCreated) {
-                viewModel.resetState()
-                viewModel.generateData()
-            }
-            isCreated = true
+            viewModel.requestData(boardId, boardType)
         }
     }
 
@@ -135,7 +133,10 @@ class BoardFragment : Fragment() {
                         val action = BoardFragmentDirections.actionBoardFragmentToSearchPostFragment()
                         findNavController().navigate(action)
                     }
-                    R.id.refresh -> viewModel.refreshBoard(boardId, boardType)
+                    R.id.refresh -> {
+                        viewModel.setRefresh()
+                        viewModel.requestData(boardId, boardType)
+                    }
                     R.id.write -> {
                         val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId, PostTaskType.CREATE)
                         findNavController().navigate(action)
