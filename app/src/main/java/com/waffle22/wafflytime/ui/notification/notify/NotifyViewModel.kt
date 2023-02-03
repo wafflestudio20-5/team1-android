@@ -80,7 +80,7 @@ class NotifyViewModel(
     }
 
     fun getLoadingNotificationData(): NotificationData {
-        val timeDTO = TimeDTO(-1,-1,-1,-1,-1)
+        val timeDTO = TimeDTO(-1,-1,-1,-1,-1, -1)
         val info = NotificationInfo(-1,"null",-1,null)
         return NotificationData(-1,"null","null",false,timeDTO,info)
     }
