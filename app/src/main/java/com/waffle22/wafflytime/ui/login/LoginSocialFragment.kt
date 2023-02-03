@@ -48,7 +48,7 @@ class LoginSocialFragment : Fragment() {
                 loginLogic(it)
             }
         }
-        val webview = WebView()
+
 
         val args: LoginSocialFragmentArgs by navArgs() //Args 만든 후
         var path = args.path // 아까 만든 msg 를 tMsg에 대입

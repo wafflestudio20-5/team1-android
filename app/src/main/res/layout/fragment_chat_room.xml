@@ -40,6 +40,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:background="@drawable/round_border"
             android:id="@+id/messageInputText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,7 +53,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="hihihihi"/>
+                tools:text="메세지를 입력하세요"/>
         </com.google.android.material.textfield.TextInputLayout>
 
 <!--        <androidx.appcompat.widget.AppCompatButton-->

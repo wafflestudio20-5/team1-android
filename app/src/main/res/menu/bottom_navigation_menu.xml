@@ -4,16 +4,16 @@
         android:id="@+id/mainHomeFragment"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_home_24"
-        android:title="TODO" />
+        android:title="Home" />
     <item
         android:id="@+id/boardListFragment"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_list_alt_24"
-        android:title="Board List" />
+        android:title="Board" />
     <item
         android:id="@+id/baseNotificationFragment"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_notifications_24"
-        android:title="TODO" />
+        android:title="Notice" />
 
 </menu>
