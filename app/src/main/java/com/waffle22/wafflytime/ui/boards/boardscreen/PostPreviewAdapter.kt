@@ -67,6 +67,7 @@ class PostPreviewAdapter(
                 else {
                     imagePreview.visibility = View.GONE
                 }
+                boardName.text = postAbstract.boardTitle
                 layout.setOnClickListener{clicked(postAbstract)}
             }
         }

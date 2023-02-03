@@ -166,17 +166,4 @@ class BoardViewModel(
             return NetWorkResultReturn(false, "-1", null,e.toString())
         }
     }
-
-    /*
-    fun searchPost(keyword: String){
-        _searchResults.value = mutableListOf()
-        if (keyword == "")  return
-        for (post in _posts.value!!){
-            if (post.contents.contains(keyword))    _searchResults.value!! += post
-            else if(post.title!=null){
-                if(post.title.contains(keyword))    _searchResults.value!! += post
-            }
-        }
-    }
-     */
 }
