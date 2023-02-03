@@ -79,8 +79,8 @@ class ChatViewModel(
             val response = wafflyApiService.getChatListPaged(size = 10, cursor = chatListCursor)
             try {
                 if (response.isSuccessful) {
-                    _chatList.value = response.body()!!.contents + chatList.value
-                    _chatListState.value = SlackState("200", null, null, null)
+                    _chatList.value = chatList.value + response.body()!!.contents
+                            _chatListState.value = SlackState("200", null, null, null)
                     if (response.body()!!.size > 0) chatListCursor = response.body()!!.cursor
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
@@ -166,28 +166,30 @@ class ChatViewModel(
                         contents = info.contents
                     )
                 }
-                _chatList.value = _chatList.value.map {
-                    if (it.id == info.chatId) {
-                        it.copy(
-                            recentMessage = info.contents,
-                            recentTime = info.sentAt,
-                            unread = if (curChat?.id != info.chatId) it.unread + 1 else it.unread
-                        )
-                    } else {
-                        it
-                    }
-                }.sortedBy { it.recentTime }
+                val temp = _chatList.value.find {it.id == info.chatId}!!
+                val newList = _chatList.value.toMutableList()
+                newList.remove(temp)
+                newList.add(
+                    0, temp.copy(
+                        recentMessage = info.contents,
+                        recentTime = info.sentAt,
+                        unread = temp.unread + 1
+                    )
+                )
+                _chatList.value = newList
             }
             "NEWCHAT" -> {
                 val info = moshi.adapter(WebChatCreationInfo::class.java).fromJson(text)!!
-                _chatList.value = (_chatList.value + ChatSimpleInfo(
-                    id = info.chatId,
-                    target = info.target,
-                    recentMessage = null,
-                    recentTime = null,
-                    unread = 0,
-                    blocked = false,
-                )).sortedBy { it.recentTime }
+                _chatList.value = mutableListOf(
+                    ChatSimpleInfo(
+                        id = info.chatId,
+                        target = info.target,
+                        recentMessage = null,
+                        recentTime = null,
+                        unread = -1,
+                        blocked = false,
+                    )
+                ) + _chatList.value
             }
             "NEED_UPDATE" -> {
                 val info = moshi.adapter(WebChatNeedUpdateInfo::class.java).fromJson(text)!!
@@ -196,7 +198,7 @@ class ChatViewModel(
                         new.id == old.id
                     }]
                     old.copy(unread = unread)
-                }.sortedBy { it.recentTime }
+                }
             }
         }
     }
