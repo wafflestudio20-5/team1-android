@@ -12,8 +12,8 @@ android {
         applicationId "com.waffle22.wafflytime"
         minSdk 21
         targetSdk 33
-        versionCode 4
-        versionName "1.0.0"
+        versionCode 5
+        versionName "1.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -92,4 +92,6 @@ dependencies {
     //Menu handling
     implementation "androidx.activity:activity-ktx:1.7.0-alpha03"
 
+    // Paging 3
+    implementation "androidx.paging:paging-runtime:3.1.1"
 }

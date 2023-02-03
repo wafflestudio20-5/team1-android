@@ -16,6 +16,7 @@ import com.waffle22.wafflytime.ui.login.SignUpViewModel
 import com.waffle22.wafflytime.ui.mainpage.MainHomeViewModel
 import com.waffle22.wafflytime.ui.notification.BaseNotificationViewModel
 import com.waffle22.wafflytime.ui.notification.chat.list.ChatListViewModel
+import com.waffle22.wafflytime.ui.notification.chat.room.ChatRoomViewModel
 import com.waffle22.wafflytime.ui.preferences.LogoutViewModel
 import com.waffle22.wafflytime.ui.preferences.SetNicknameViewModel
 import com.waffle22.wafflytime.ui.preferences.SetProfilePicViewModel
@@ -77,6 +78,7 @@ val appModule = module {
     viewModel { SetNicknameViewModel(get(), get(), get()) }
     viewModel { SetProfilePicViewModel(get(), get(), get()) }
     viewModel { LogoutViewModel(get(), get(), get()) }
+    viewModel { MypageEmailViewModel(get(), get(), get()) }
 
     // Main Home
     viewModel { MainHomeViewModel(get(), get(), get()) }
@@ -86,10 +88,12 @@ val appModule = module {
     viewModel { BoardViewModel(get(), get()) }
     viewModel { PostViewModel(get()) }
     viewModel { NewPostViewModel(get(), get()) }
+    viewModel { NewChatViewModel(get(), get()) }
 
     // Notification && Chat
     viewModel { BaseNotificationViewModel() }
     viewModel { NotifyViewModel(get(), get()) }
     viewModel { ChatListViewModel(get(), get()) }
+    viewModel { (chatId: Long) -> ChatRoomViewModel(chatId, get(), get())}
 }
 
