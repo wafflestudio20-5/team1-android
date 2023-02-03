@@ -66,11 +66,11 @@ class NewPostViewModel(
     val createPostState: SharedFlow<SlackState<PostResponseHolder>> = _createPostState
     private var _currentCreatePostState : SlackState<PostResponseHolder> =
         SlackState("0", null, null, PostResponseHolder(null))
-    val currentCreatePostState: SlackState<PostResponseHolder> = _currentCreatePostState
 
-    private var _images = MutableLiveData<MutableList<ImageStorage>>()
-    val images : LiveData<MutableList<ImageStorage>> = _images
-    private var _oldImages = MutableLiveData<MutableList<ImageStorage>>()
+    private var _imageStorageState = MutableSharedFlow<List<ImageStorage>>()
+    val imageStorageState: SharedFlow<List<ImageStorage>> = _imageStorageState
+    private lateinit var _images : MutableList<ImageStorage>
+    private lateinit var _oldImages : MutableList<ImageStorage>
 
     // OnCreate
     fun initViewModel(boardId: Long, postId: Long, taskType: PostTaskType){
@@ -95,10 +95,11 @@ class NewPostViewModel(
                 getFormerImages()
             }
             else{
-                _images.value = mutableListOf()
-                _oldImages.value = mutableListOf()
+                _images = mutableListOf()
+                _oldImages = mutableListOf()
             }
             _boardInfoState.emit(_currentState)
+            _imageStorageState.emit(_images.toList())
         }
     }
 
@@ -144,8 +145,8 @@ class NewPostViewModel(
     }
 
     fun getFormerImages(){
-        _oldImages.value = mutableListOf()
-        _images.value = mutableListOf()
+        _oldImages = mutableListOf()
+        _images = mutableListOf()
         for (image in _currentState.dataHolder!!.originalPost!!.images ?: listOf()){
             viewModelScope.launch {
                 try {
@@ -178,8 +179,8 @@ class NewPostViewModel(
                             image.description
                         ), byteArray
                     )
-                    _oldImages.value!! += imageStorage
-                    _images.value!! += imageStorage
+                    _oldImages += imageStorage
+                    _images += imageStorage
                     Log.v("NewPostViewModel", "loading complete")
                 } catch (e: java.lang.Exception) {
                     Log.v("NewPostViewModel", e.toString())
@@ -194,8 +195,8 @@ class NewPostViewModel(
         viewModelScope.launch {
             try {
                 val requestImages = mutableListOf<ImageRequest>()
-                if (_images.value != null)
-                    for(image in _images.value!!)
+                if (!_images.isEmpty())
+                    for(image in _images)
                         requestImages += image.imageRequest
                 val request = PostRequest(
                     title, contents, isQuestion, isAnonymous,
@@ -207,7 +208,7 @@ class NewPostViewModel(
                     if (_currentCreatePostState.dataHolder!!.postResponse!!.images != null){
                         val currentImages = _currentCreatePostState.dataHolder!!.postResponse!!.images
                         for (image in currentImages!!){
-                            for (imageStorage in _images.value!!){
+                            for (imageStorage in _images){
                                 if (image.imageId == imageStorage.imageRequest.imageId){
                                     val imageResponse = image.preSignedUrl.let{
                                         wafflyApiService.uploadImage(it!!,
@@ -243,14 +244,14 @@ class NewPostViewModel(
         viewModelScope.launch {
             try {
                 val requestImages = mutableListOf<ImageRequest>()
-                if (_images.value != null)
-                    for (image in _images.value!!)
+                if (!_images.isEmpty())
+                    for (image in _images)
                         requestImages += image.imageRequest
                 val deletedImages = mutableListOf<String>()
-                if (_oldImages.value != null)
-                    for (oldImage in _oldImages.value!!){
+                if (_oldImages != null)
+                    for (oldImage in _oldImages){
                         var imageStillIncluded = false
-                        for (image in _images.value!!)
+                        for (image in _images)
                             if (image.imageRequest.fileName == oldImage.imageRequest.fileName){
                                 imageStillIncluded = true
                                 break
@@ -271,10 +272,10 @@ class NewPostViewModel(
                     _currentCreatePostState.dataHolder!!.postResponse = response.body()
                     //Log.v("NewPostViewModel", _currentCreatePostState.dataHolder!!.postResponse.toString())
                     if (_currentCreatePostState.dataHolder!!.postResponse!!.images != null) {
-                        for (imageStorage in _images.value!!){
+                        for (imageStorage in _images){
                             Log.v("NewPostViewModel", imageStorage.imageRequest.fileName)
                             var needsUpload = true
-                            for (oldImage in _oldImages.value!!){
+                            for (oldImage in _oldImages){
                                 Log.v("NewPostViewModel", "old: "+ oldImage.imageRequest.fileName)
                                 if (imageStorage.imageRequest.fileName == oldImage.imageRequest.fileName){
                                     needsUpload = false
@@ -318,17 +319,20 @@ class NewPostViewModel(
     }
 
     private fun newImageId(): Int{
-        return if (_images.value!!.isNotEmpty()) _images.value!![_images.value!!.size-1].imageRequest.imageId + 1
+        return if (_images.isNotEmpty()) _images[_images.size-1].imageRequest.imageId + 1
         else 0
     }
 
     fun addNewImage(filename: String, byteArray: ByteArray){
-        if (_images.value == null)  _images.value = mutableListOf()
-        _images.value!! += ImageStorage(ImageRequest(newImageId(),filename, ""),byteArray)
+        if (_images == null)  _images = mutableListOf()
+        _images += ImageStorage(ImageRequest(newImageId(),filename, ""),byteArray)
+        viewModelScope.launch {
+            _imageStorageState.emit(_images.toList())
+        }
     }
 
     fun editImageDescription(imageRequest: ImageRequest, newDescription: String){
-        for (image in _images.value!!){
+        for (image in _images){
             if (image.imageRequest == imageRequest){
                 image.imageRequest = ImageRequest(
                     imageRequest.imageId,
@@ -338,9 +342,15 @@ class NewPostViewModel(
                 break
             }
         }
+        viewModelScope.launch {
+            _imageStorageState.emit(_images.toList())
+        }
     }
 
     fun deleteImage(imageRequest: ImageRequest){
-        _images.value!!.removeIf{imageStorage -> imageStorage.imageRequest == imageRequest}
+        _images.removeIf{imageStorage -> imageStorage.imageRequest == imageRequest}
+        viewModelScope.launch {
+            _imageStorageState.emit(_images.toList())
+        }
     }
 }

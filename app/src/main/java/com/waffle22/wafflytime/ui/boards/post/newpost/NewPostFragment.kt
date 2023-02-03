@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream
 
 class NewPostFragment : Fragment() {
     private lateinit var binding: FragmentNewPostBinding
+    private lateinit var newPostImageAdapter: NewPostImageAdapter
 
     private val viewModel: NewPostViewModel by sharedViewModel()
     private val boardViewModel: BoardViewModel by sharedViewModel()
@@ -68,16 +69,16 @@ class NewPostFragment : Fragment() {
                submitPostLogic(it)
            }
         }
-
-        val newPostImageAdapter = NewPostImageAdapter(
-            {image, description -> viewModel.editImageDescription(image, description)},
-            {viewModel.deleteImage(it)}
-        )
-        viewModel.images.observe(this.viewLifecycleOwner){ items ->
-            items.let{
+        lifecycleScope.launch {
+            viewModel.imageStorageState.collect{
                 newPostImageAdapter.submitList(it)
             }
         }
+
+        newPostImageAdapter = NewPostImageAdapter(
+            {image, description -> viewModel.editImageDescription(image, description)},
+            {viewModel.deleteImage(it)}
+        )
         binding.images.adapter = newPostImageAdapter
         binding.images.layoutManager = LinearLayoutManager(this.context,LinearLayoutManager.HORIZONTAL, false)
 
