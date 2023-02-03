@@ -42,6 +42,7 @@ data class ImageRequest(
 
 data class ImageResponse(
     @Json(name = "imageId") val imageId: Int,
+    @Json(name = "filename") val filename: String,
     @Json(name = "preSignedUrl") val preSignedUrl: String,
     @Json(name = "description") val description: String
 )

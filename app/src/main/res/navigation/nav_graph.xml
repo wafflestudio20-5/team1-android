@@ -83,6 +83,9 @@
             android:name="boardId"
             app:argType="long"/>
         <argument
+            android:name="postId"
+            app:argType="long"/>
+        <argument
             android:name="taskType"
             app:argType="com.waffle22.wafflytime.network.dto.PostTaskType"/>
     </fragment>

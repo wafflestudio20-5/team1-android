@@ -84,7 +84,7 @@ class BoardFragment : Fragment() {
 
             if(boardType == BoardType.Common){
                 newThread.setOnClickListener{
-                    val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId, PostTaskType.CREATE)
+                    val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId, -1, PostTaskType.CREATE)
                     findNavController().navigate(action)
                 }
             } else {
@@ -138,7 +138,7 @@ class BoardFragment : Fragment() {
                         viewModel.requestData(boardId, boardType)
                     }
                     R.id.write -> {
-                        val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId, PostTaskType.CREATE)
+                        val action = BoardFragmentDirections.actionBoardFragmentToNewPostFragment(boardId, -1, PostTaskType.CREATE)
                         findNavController().navigate(action)
                     }
                 }

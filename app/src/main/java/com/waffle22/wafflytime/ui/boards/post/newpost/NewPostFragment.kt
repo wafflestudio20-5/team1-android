@@ -13,30 +13,30 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.waffle22.wafflytime.databinding.FragmentNewPostBinding
-import com.waffle22.wafflytime.network.dto.LoadingStatus
 import com.waffle22.wafflytime.network.dto.PostTaskType
 import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
-import com.waffle22.wafflytime.ui.boards.post.PostViewModel
+import com.waffle22.wafflytime.util.SlackState
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.ByteArrayOutputStream
 
 class NewPostFragment : Fragment() {
     private lateinit var binding: FragmentNewPostBinding
-    private val viewModel: NewPostViewModel by viewModel()
-    private val postViewModel: PostViewModel by sharedViewModel()
+
+    private val viewModel: NewPostViewModel by sharedViewModel()
     private val boardViewModel: BoardViewModel by sharedViewModel()
+
     private val navigationArgs: NewPostFragmentArgs by navArgs()
     private lateinit var getImage: ActivityResultLauncher<Intent>
+
+    private var boardId = 0L
+    private var postId = 0L
+    private lateinit var taskType: PostTaskType
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,33 +47,32 @@ class NewPostFragment : Fragment() {
         getImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ res ->
             addImageReceiver(res)
         }
+        boardId = navigationArgs.boardId
+        postId = navigationArgs.postId
+        taskType = navigationArgs.taskType
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.initViewModel(boardId, postId, taskType)
+
         resetStates()
 
-        if (navigationArgs.taskType == PostTaskType.EDIT){
-            binding.title.setText(postViewModel.curPost.value!!.title?:"")
-            binding.contents.setText(postViewModel.curPost.value!!.contents)
+        if (taskType == PostTaskType.EDIT){
+            //뷰모델에서 제목, 내용 가져오기
         }
 
-        viewModel.getBoardInfo(navigationArgs.boardId)
         lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.boardLoadingStatus.collect {
-                    bindSubmitButton(it)
-                }
+            viewModel.boardInfoState.collect {
+                bindSubmitButton(it)
             }
         }
         lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.createPostStatus.collect{
-                    submitPostLogic(it)
-                }
-            }
+           viewModel.createPostState.collect{
+               submitPostLogic(it)
+           }
         }
 
         val newPostImageAdapter = NewPostImageAdapter(
@@ -100,45 +99,54 @@ class NewPostFragment : Fragment() {
     private fun resetStates() {
         binding.title.setText("")
         binding.contents.setText("")
-        viewModel.resetStates()
     }
 
-    fun bindSubmitButton(status: LoadingStatus){
-        when (status){
-            LoadingStatus.Standby -> null
-            LoadingStatus.Success -> {
-                binding.title.visibility = if(viewModel.boardInfo.value!!.boardType == "DEFAULT") View.VISIBLE else View.GONE
-                binding.submitButton.setOnClickListener{
-                    if(navigationArgs.taskType == PostTaskType.CREATE)
-                        viewModel.createNewPost(if(viewModel.boardInfo.value!!.boardType == "DEFAULT") binding.title.text.toString() else null,
-                        binding.contents.text.toString(), binding.isQuestion.isChecked, binding.isAnonymous.isChecked)
-                    else
-                        viewModel.editPost(postViewModel.curPost.value!!,
-                            if(viewModel.boardInfo.value!!.boardType == "DEFAULT") binding.title.text.toString() else null,
-                            binding.contents.text.toString())
-                }
-            }
+    fun bindSubmitButton(state: SlackState<NewPostInfoHolder>){
+        when (state.status){
+            "0" -> null
             else -> {
-                Toast.makeText(context, viewModel.errorMessage, Toast.LENGTH_SHORT).show()
-                Log.v("NewPostFragment", "Board Loading Error")
+                when (state.status) {
+                    "200" -> {
+                        binding.title.visibility =
+                            if (state.dataHolder!!.boardInfo!!.boardType == "DEFAULT") View.VISIBLE else View.GONE
+                        binding.submitButton.setOnClickListener {
+//                    if(taskType == PostTaskType.CREATE)
+//                        viewModel.submitPost(if(viewModel.boardInfo.value!!.boardType == "DEFAULT") binding.title.text.toString() else null,
+//                        binding.contents.text.toString(), binding.isQuestion.isChecked, binding.isAnonymous.isChecked)
+//                    else
+//                        viewModel.editPost(postViewModel.curPost.value!!,
+//                            if(viewModel.boardInfo.value!!.boardType == "DEFAULT") binding.title.text.toString() else null,
+//                            binding.contents.text.toString())
+                            viewModel.submitPost(
+                                if (state.dataHolder!!.boardInfo!!.boardType == "DEFAULT") binding.title.text.toString() else null,
+                                binding.contents.text.toString(),
+                                binding.isQuestion.isChecked,
+                                binding.isAnonymous.isChecked
+                            )
+                        }
+                    }
+                    else -> {
+                        Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
 
-    fun submitPostLogic(status: LoadingStatus){
-        when(status){
-            LoadingStatus.Standby -> Toast.makeText(context, "로딩중", Toast.LENGTH_SHORT).show()
-            LoadingStatus.Success -> {
-                Toast.makeText(context, "업로드 성공", Toast.LENGTH_SHORT).show()
-                resetStates()
-                if(navigationArgs.taskType == PostTaskType.CREATE) boardViewModel.setRefresh() else null //TODO
-                findNavController().navigateUp()
+    fun submitPostLogic(state: SlackState<PostResponseHolder>){
+        when(state.status){
+            "0" -> null
+            else -> {
+                when (state.status){
+                    "200" -> {
+                        if(taskType == PostTaskType.CREATE) boardViewModel.setRefresh() else null //TODO
+                        findNavController().navigateUp()
+                    }
+                    else -> {
+                        Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
-            LoadingStatus.Error -> {
-                Toast.makeText(context, viewModel.errorMessage, Toast.LENGTH_SHORT).show()
-                Log.v("BoardFragment", "Error occurred")
-            }
-            LoadingStatus.Corruption -> Toast.makeText(context, "알 수 없는 오류가 발생했습니다", Toast.LENGTH_SHORT).show()
         }
     }
 
