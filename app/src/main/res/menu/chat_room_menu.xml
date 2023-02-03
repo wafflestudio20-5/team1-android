@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/block_menu_item"
+        android:title="차단"/>
+    <item
+        android:id="@+id/unblock_menu_item"
+        android:title="차단 해제"/>
+</menu>

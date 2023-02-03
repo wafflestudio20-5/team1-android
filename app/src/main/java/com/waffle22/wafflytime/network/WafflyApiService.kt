@@ -7,6 +7,10 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface WafflyApiService {
+    //url에 이미지를 업로드
+    @PUT
+    suspend fun uploadImage(@Url preSignedUrl: String, @Body() request: RequestBody): Response<Unit>
+
     // Auth 관련
     @POST("/api/auth/local/login")
     suspend fun basicLogin(@Body() request: LoginRequest): Response<TokenContainer>
@@ -18,10 +22,10 @@ interface WafflyApiService {
     suspend fun refresh(): Response<TokenContainer>
 
     @POST("/api/user/verify-mail")
-    suspend fun emailAuth(@Body() email: EmailRequest): Response<EmailCode>
+    suspend fun emailAuth(@Body() email: EmailRequest): Response<ResponseBody>
 
-    @PATCH("/api/user/verified-mail")
-    suspend fun emailPatch(@Body() email: EmailRequest): Response<TokenContainer>
+    @PATCH("/api/user/verify-mail")
+    suspend fun emailPatch(@Body() email: EmailCodeRequest): Response<TokenContainer>
 
     @GET("/api/user/me")
     suspend fun getUserInfo(): Response<UserDTO>
@@ -40,9 +44,6 @@ interface WafflyApiService {
 
     @DELETE("/api/auth/logout")
     suspend fun logout(): Response<ResponseBody>
-
-    @PUT
-    suspend fun uploadProfilePic(@Url preSignedUrl: String, @Body() request: RequestBody): Response<Unit>
 
     @DELETE("/api/user/me/profile")
     suspend fun deleteProfilePic(): Response<UserDTO>
@@ -74,34 +75,39 @@ interface WafflyApiService {
 
     @GET("/api/board/{boardId}/posts")
     suspend fun getAllPosts(
-        @Path("boardId") boardId: Long, @Query("page") page: Int, @Query("size") size: Int
+        @Path("boardId") boardId: Long, @Query("cursor") cursor: Int?, @Query("size") size: Int
     ): Response<PostsPage>
 
     @GET("/api/user/mypost")
     suspend fun getMyPosts(
-        @Query("page") page: Int, @Query("size") size: Int
+        @Query("cursor") cursor: Int?, @Query("size") size: Int
+    ): Response<PostsPage>
+
+    @GET("/api/user/myrepliedpost")
+    suspend fun getMyRepliedPost(
+        @Query("cursor") cursor: Int?, @Query("size") size: Int
     ): Response<PostsPage>
 
     @GET("/api/user/myscrap")
     suspend fun getMyScraps(
-        @Query("page") page: Int, @Query("size") size: Int
+        @Query("cursor") cursor: Int?, @Query("size") size: Int
     ): Response<PostsPage>
 
     @GET("/api/hotpost")
     suspend fun getHotPosts(
-        @Query("page") page: Int, @Query("size") size: Int
+        @Query("cursor") cursor: Int?, @Query("size") size: Int
     ): Response<PostsPage>
 
     @GET("/api/bestpost")
     suspend fun getBestPosts(
-        @Query("page") page: Int, @Query("size") size: Int
+        @Query("first") first: Int?, @Query("size") size: Int
     ): Response<PostsPage>
 
     @POST("/api/board/{boardId}/post")
     suspend fun createPost(
         @Path("boardId") boardId: Long,
         @Body() postRequest: PostRequest
-    ): Response<PostRequest>
+        ): Response<PostResponse>
 
     @DELETE("/api/board/{boardId}/post/{postId}")
     suspend fun deletePost(
@@ -134,7 +140,12 @@ interface WafflyApiService {
     //Reply 관련
     @GET("/api/board/{boardId}/post/{postId}/replies")
     suspend fun getReplies(
-        @Path("boardId") boardId: Long, @Path("postId") postId: Long
+        @Path("boardId") boardId: Long,
+        @Path("postId") postId: Long,
+        @Query("page") page: Int?,
+        @Query("first") first: Int?,
+        @Query("second") second: Int?,
+        @Query("size") size: Int?
     ): Response<RepliesPage>
 
     @POST("/api/board/{boardId}/post/{postId}/reply")
@@ -161,7 +172,7 @@ interface WafflyApiService {
 
     // Notification 관련 Api
     @GET("/api/user/notifications")
-    suspend fun getNotifications(@Query("page") page: Int, @Query("size") size: Int): Response<Notification>
+    suspend fun getNotifications(@Query("cursor") cursor: Int?, @Query("size") size: Int): Response<Notification>
 
     // Chat 관련 Api
     @POST("/api/board/{boardId}/post/{postId}/chat")
@@ -172,6 +183,28 @@ interface WafflyApiService {
         @Body() firstChatRequest: NewChatRequest
     ): Response<NewChatResponse>
 
-    @GET("/api/chat")
-    suspend fun getChatList() : Response<List<ChatSimpleInfo>>
+    @GET("/api/chats")
+    suspend fun getChatListPaged(
+        @Query("size") size: Long,
+        @Query("cursor") cursor: Long?,
+    ) : Response<GetChatListResponse>
+
+    @GET("/api/chat/{chatId}/messages")
+    suspend fun getMessagesPaged(
+        @Path("chatId") chatId: Long,
+        @Query("cursor") cursor: Long?,
+        @Query("size") size: Long,
+    ): Response<GetMessagesResponse>
+
+    @POST("/api/chat/{chatId}")
+    suspend fun sendChatMessage(
+        @Path("chatId") chatId: Long,
+        @Body() sendChatRequest: SendChatRequest
+    ): Response<MessageInfo>
+
+    @PUT("/api/chat/{chatId}")
+    suspend fun blockChatRoom(
+        @Path("chatId") chatId: Long,
+        @Body() blockChatRoomRequest: BlockChatRoomRequest
+    ): Response<ChatSimpleInfo>
 }

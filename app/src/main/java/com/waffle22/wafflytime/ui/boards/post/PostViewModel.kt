@@ -1,7 +1,6 @@
-package com.waffle22.wafflytime.ui.boards.postscreen
+package com.waffle22.wafflytime.ui.boards.post
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,6 +15,13 @@ enum class PostStatus{
     StandBy, Success, NotFound, BadRequest, Corruption
 }
 
+data class PageNation(
+    var firstCursor: Int?,
+    var secondCursor: Int?,
+    var pageSize: Int = 20,
+    var isEnd: Boolean = false
+)
+
 class PostViewModel(
     private val wafflyApiService: WafflyApiService,
 ) : ViewModel() {
@@ -29,17 +35,41 @@ class PostViewModel(
     val modifyReplyState: StateFlow<LoadingStatus>
         get() = _modifyReplyState
 
-    private lateinit var _curBoard : BoardDTO
-    val curBoard: BoardDTO
+    private var _curBoard: BoardDTO? = null
+    val curBoard: BoardDTO?
         get() = _curBoard
     private var _curPost = MutableLiveData<PostResponse>()
     val curPost: LiveData<PostResponse>
         get() = _curPost
+    private var _images = MutableLiveData<List<ImageResponse>>()
+    val images: LiveData<List<ImageResponse>>
+        get() = _images
     private var _replies = MutableLiveData<List<ReplyResponse>>()
     val replies: LiveData<List<ReplyResponse>>
         get() = _replies
 
+    private var isMyPost: Boolean = false
+
+    private val currentPageNation = PageNation(null, null)
+
+    fun initalization() {
+        _postState.value = PostStatus.StandBy
+        _repliesState.value = PostStatus.StandBy
+        _modifyReplyState.value = LoadingStatus.Standby
+        _curBoard = null
+        _curPost = MutableLiveData<PostResponse>()
+        _images = MutableLiveData<List<ImageResponse>>()
+        _replies = MutableLiveData<List<ReplyResponse>>()
+        isMyPost = false
+        currentPageNation.firstCursor = null
+        currentPageNation.secondCursor = null
+        currentPageNation.isEnd = false
+    }
+
     fun refresh(boardId: Long, postId: Long){
+        currentPageNation.firstCursor = null
+        currentPageNation.secondCursor = null
+        currentPageNation.isEnd = false
         _postState.value = PostStatus.StandBy
         _repliesState.value = PostStatus.StandBy
         getPost(boardId, postId)
@@ -57,6 +87,8 @@ class PostViewModel(
                         when (response.code().toString()){
                             "200" -> {
                                 _curPost.value = response.body()
+                                _images.value = _curPost.value!!.images ?: listOf()
+                                isMyPost = response.body()!!.isMyPost
                                 _postState.value = PostStatus.Success
                             }
                             "505" -> _postState.value = PostStatus.NotFound
@@ -72,12 +104,18 @@ class PostViewModel(
     }
 
     fun getReplies(boardId: Long, postId: Long){
+        if (currentPageNation.isEnd) return
         viewModelScope.launch {
             try{
                 _repliesState.value = PostStatus.StandBy
-                val response = wafflyApiService.getReplies(boardId, postId)
+                val response = wafflyApiService.getReplies(
+                    boardId, postId, null, currentPageNation.firstCursor, currentPageNation.secondCursor, currentPageNation.pageSize
+                )
                 when (response.code().toString()){
                     "200" -> {
+                        currentPageNation.firstCursor = response.body()!!.cursor?.first
+                        currentPageNation.secondCursor = response.body()!!.cursor?.second
+                        currentPageNation.isEnd = response.body()!!.isLast
                         _replies.value = response.body()!!.content ?: listOf()
                         _repliesState.value = PostStatus.Success
                     }
@@ -95,10 +133,10 @@ class PostViewModel(
         viewModelScope.launch {
             try{
                 val replyRequest = ReplyRequest(contents,parent,isAnonymous)
-                val response = wafflyApiService.createReply(_curBoard.boardId, _curPost.value!!.postId, replyRequest)
+                val response = wafflyApiService.createReply(_curBoard!!.boardId, _curPost.value!!.postId, replyRequest)
                 when (response.code().toString()){
                     "200" -> {
-                        getReplies(_curBoard.boardId, _curPost.value!!.postId)
+                        getReplies(_curBoard!!.boardId, _curPost.value!!.postId)
                     }
                 }
             } catch (e: java.lang.Exception) {
@@ -110,7 +148,7 @@ class PostViewModel(
     fun deletePost(){
         viewModelScope.launch {
             try {
-                val response = wafflyApiService.deletePost(_curBoard.boardId, _curPost.value!!.postId)
+                val response = wafflyApiService.deletePost(_curBoard!!.boardId, _curPost.value!!.postId)
                 when (response.code().toString()){
                     "200" -> {
                         Log.d("PostViewModel", "Delete Success")
@@ -127,7 +165,7 @@ class PostViewModel(
         if (contents == "") return
         viewModelScope.launch {
             try {
-                val response = wafflyApiService.editReply(_curBoard.boardId, _curPost.value!!.postId, reply.replyId, EditReplyRequest(contents))
+                val response = wafflyApiService.editReply(_curBoard!!.boardId, _curPost.value!!.postId, reply.replyId, EditReplyRequest(contents))
                 when (response.code().toString()){
                     "200" -> {
                         Log.d("PostViewModel", "Edit Success")
@@ -143,7 +181,7 @@ class PostViewModel(
         _modifyReplyState.value = LoadingStatus.Standby
         viewModelScope.launch {
             try {
-                val response = wafflyApiService.deleteReply(_curBoard.boardId, _curPost.value!!.postId, reply.replyId)
+                val response = wafflyApiService.deleteReply(_curBoard!!.boardId, _curPost.value!!.postId, reply.replyId)
                 if (response.body() == null)
                     Log.d("PostViewModel", "Delete Success")
             } catch (e: java.lang.Exception) {
@@ -153,17 +191,17 @@ class PostViewModel(
     }
 
     fun canEditPost(): Boolean{
-        return false
+        return isMyPost
     }
 
-    fun canEditReply(): Boolean{
-        return false
+    fun canEditReply(check: Boolean): Boolean{
+        return check
     }
 
     fun likePost(){
         viewModelScope.launch {
             try {
-                val response = wafflyApiService.likePost(_curBoard.boardId, _curPost.value!!.postId)
+                val response = wafflyApiService.likePost(_curBoard!!.boardId, _curPost.value!!.postId)
                 when(response.code().toString()){
                     "200" -> Log.d("PostViewModel", "Like post success")
                     else -> Log.d("PostViewModel", response.errorBody()!!.string())
@@ -177,7 +215,7 @@ class PostViewModel(
    fun scrapPost(){
         viewModelScope.launch {
             try {
-                val response = wafflyApiService.scrapPost(_curBoard.boardId, _curPost.value!!.postId)
+                val response = wafflyApiService.scrapPost(_curBoard!!.boardId, _curPost.value!!.postId)
                 when(response.code().toString()){
                     "200" -> Log.d("PostViewModel", "Scrap success")
                     else -> Log.d("PostViewModel", response.errorBody()!!.string())

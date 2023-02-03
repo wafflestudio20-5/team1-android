@@ -37,7 +37,7 @@ class SetProfilePicViewModel(
                     SetProfilePicRequest(fileName)
                 )
                 if(response.isSuccessful) {
-                    val response2: Response<Unit> = wafflyApiService.uploadProfilePic(response.body()!!.profileUrl!!, byteArray.toRequestBody("application/octet-stream".toMediaTypeOrNull()))
+                    val response2: Response<Unit> = wafflyApiService.uploadImage(response.body()!!.profileUrl!!, byteArray.toRequestBody("application/octet-stream".toMediaTypeOrNull()))
                     if(response2.isSuccessful) {
                         _state.value = SlackState(response.code().toString(), null, null, null)
                     }

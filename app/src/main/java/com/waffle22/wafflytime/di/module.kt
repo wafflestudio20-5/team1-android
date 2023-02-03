@@ -8,14 +8,15 @@ import com.waffle22.wafflytime.ui.AuthCheckViewModel
 import com.waffle22.wafflytime.ui.boards.boardlist.BoardListViewModel
 import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
 import com.waffle22.wafflytime.ui.boards.newchat.NewChatViewModel
-import com.waffle22.wafflytime.ui.boards.newpost.NewPostViewModel
-import com.waffle22.wafflytime.ui.boards.postscreen.PostViewModel
+import com.waffle22.wafflytime.ui.boards.post.newpost.NewPostViewModel
+import com.waffle22.wafflytime.ui.boards.post.PostViewModel
 import com.waffle22.wafflytime.ui.login.LoginViewModel
 import com.waffle22.wafflytime.ui.login.SignUpEmailViewModel
 import com.waffle22.wafflytime.ui.login.SignUpViewModel
 import com.waffle22.wafflytime.ui.mainpage.MainHomeViewModel
 import com.waffle22.wafflytime.ui.notification.BaseNotificationViewModel
 import com.waffle22.wafflytime.ui.notification.chat.list.ChatListViewModel
+import com.waffle22.wafflytime.ui.notification.chat.room.ChatRoomViewModel
 import com.waffle22.wafflytime.ui.preferences.LogoutViewModel
 import com.waffle22.wafflytime.ui.preferences.SetNicknameViewModel
 import com.waffle22.wafflytime.ui.preferences.SetProfilePicViewModel
@@ -74,12 +75,9 @@ val appModule = module {
     viewModel { SignUpViewModel(get(), get(), get()) }
     viewModel { SignUpEmailViewModel(get(), get(), get()) }
     viewModel { AuthCheckViewModel(get(), get(), get()) }
-
-    //User
     viewModel { SetNicknameViewModel(get(), get(), get()) }
     viewModel { SetProfilePicViewModel(get(), get(), get()) }
     viewModel { LogoutViewModel(get(), get(), get()) }
-    viewModel { ChangePasswordViewModel(get(), get(), get()) }
     viewModel { MypageEmailViewModel(get(), get(), get()) }
 
     // Main Home
@@ -96,5 +94,6 @@ val appModule = module {
     viewModel { BaseNotificationViewModel() }
     viewModel { NotifyViewModel(get(), get()) }
     viewModel { ChatListViewModel(get(), get()) }
+    viewModel { (chatId: Long) -> ChatRoomViewModel(chatId, get(), get())}
 }
 

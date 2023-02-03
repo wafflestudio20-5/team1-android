@@ -1,4 +1,4 @@
-package com.waffle22.wafflytime.ui.boards.postscreen
+package com.waffle22.wafflytime.ui.boards.post
 
 import android.os.Bundle
 import android.util.Log
@@ -12,12 +12,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentPostBinding
 import com.waffle22.wafflytime.network.dto.LoadingStatus
 import com.waffle22.wafflytime.network.dto.PostTaskType
 import com.waffle22.wafflytime.network.dto.ReplyResponse
 import com.waffle22.wafflytime.network.dto.TimeDTO
+import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
+import com.waffle22.wafflytime.util.timeToString
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.LocalDate
@@ -26,12 +29,22 @@ class PostFragment() : Fragment() {
     private lateinit var binding: FragmentPostBinding
 
     private val viewModel: PostViewModel by sharedViewModel()
+    private val boardViewModel: BoardViewModel by sharedViewModel()
     private val navigationArgs: PostFragmentArgs by navArgs()
 
     private var boardId = 0L
     private var postId = 0L
     private var replyParent: Long? = null
     private var editingReply: ReplyResponse? = null
+    private var isSetUpMenu: Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        boardId = navigationArgs.boardId
+        postId = navigationArgs.postId
+        viewModel.initalization()
+        viewModel.refresh(boardId, postId)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,42 +57,56 @@ class PostFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpMenu()
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh(boardId, postId)
-            binding.swipeRefreshLayout.isRefreshing = false
         }
 
         //게시글 부분
-        boardId = navigationArgs.boardId
-        postId = navigationArgs.postId
         viewModel.getPost(boardId, postId)
 
         lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.postState.collect {
-                    showPostLogic(it)
-                }
+            viewModel.postState.collect {
+                showPostLogic(it)
             }
         }
+
+        // 게시물 이미지
+        val postImageAdapter = PostImageAdapter()
+        viewModel.images.observe(this.viewLifecycleOwner) { items ->
+            items.let{
+                postImageAdapter.submitList(it.toList())
+            }
+        }
+        binding.images.adapter = postImageAdapter
+        binding.images.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
 
         // 댓글 부분
         val postReplyAdapter = PostReplyAdapter(
             {setReplyState(it.replyId)},
-            {viewModel.canEditReply()},
+            {viewModel.canEditReply(it.isMyReply)},
             {flag, reply -> modifyReplyLogic(flag, reply)},
             {reply -> moveToNewChat(reply.replyId)}
         )
+        binding.comments.adapter = postReplyAdapter
+
+        binding.comments.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                // 스크롤이 끝에 도달했는지 확인
+                if (!binding.comments.canScrollVertically(1)) {
+                    viewModel.getReplies(boardId, postId)
+                }
+            }
+        })
+
+
         viewModel.replies.observe(this.viewLifecycleOwner){ items ->
             items.let{
-                postReplyAdapter.submitList(it)
+                postReplyAdapter.submitList(it.toList())
             }
         }
-        binding.comments.adapter = postReplyAdapter
-        binding.comments.layoutManager = LinearLayoutManager(this.context)
 
-        viewModel.getReplies(boardId, postId)
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.repliesState.collect{
@@ -101,18 +128,20 @@ class PostFragment() : Fragment() {
                     replyParent,
                     binding.anonymous.isChecked
                 )
-                viewModel.getReplies(boardId, postId)
+                viewModel.refresh(boardId, postId)
                 binding.newCommentText.setText("")
                 setReplyState(null)
             }
             else {
                 editReply(binding.newCommentText.text.toString())
             }
+            replyParent = null
         }
         setReplyState(null)
     }
 
     private fun setUpMenu(){
+        isSetUpMenu = true
         binding.toolbar.addMenuProvider(object : MenuProvider{
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.post_actions, menu)
@@ -142,6 +171,7 @@ class PostFragment() : Fragment() {
                     }
                     R.id.delete -> {
                         viewModel.deletePost()
+                        boardViewModel.setRefresh()
                         findNavController().navigateUp()
                     }
                 }
@@ -154,11 +184,18 @@ class PostFragment() : Fragment() {
         when (status){
             PostStatus.StandBy -> Toast.makeText(context, "게시물 로딩중", Toast.LENGTH_SHORT).show()
             PostStatus.Success -> {
+                if(isSetUpMenu) null else setUpMenu()
                 Toast.makeText(context, "게시물 로딩 완료!", Toast.LENGTH_SHORT).show()
+                binding.swipeRefreshLayout.isRefreshing = false
                 binding.apply {
-                    binding.toolbar.title = viewModel.curBoard.title
+                    binding.toolbar.title = viewModel.curBoard!!.title
                     nickname.text = viewModel.curPost.value!!.nickname ?: "익명"
-                    time.text = timeToText(viewModel.curPost.value!!.createdAt)
+                    time.text = viewModel.curPost.value!!.createdAt.timeToString()
+                    if (viewModel.curPost.value!!.title != null) {
+                        title.text = viewModel.curPost.value!!.title
+                        title.visibility = View.VISIBLE
+                    }
+                    else    title.visibility = View.GONE
                     mainText.text = viewModel.curPost.value!!.contents
                     likesText.text = viewModel.curPost.value!!.nlikes.toString()
                     commentsText.text = viewModel.curPost.value!!.nreplies.toString()
@@ -169,11 +206,7 @@ class PostFragment() : Fragment() {
                 binding.scrapPost.setOnClickListener { viewModel.scrapPost() }
             }
             else -> {
-                binding.errorText.text = when(status){
-                    PostStatus.NotFound -> "존재하지 않는 게시물입니다."
-                    PostStatus.BadRequest -> "해당 게시판의 게시물이 아닙니다."
-                    else -> "알 수 없는 오류"
-                }
+                Toast.makeText(context, "오류", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -186,11 +219,7 @@ class PostFragment() : Fragment() {
                 Log.v("PostFragment", "댓글 받아오기 성공!")
             }
             else -> {
-                binding.errorText.text = when(status){
-                    PostStatus.NotFound -> "존재하지 않는 게시물입니다."
-                    PostStatus.BadRequest -> "해당 게시판의 게시물이 아닙니다."
-                    else -> "알 수 없는 오류"
-                }
+                Toast.makeText(context, "오류", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -257,12 +286,5 @@ class PostFragment() : Fragment() {
     private fun moveToNewChat(replyId: Long) {
         val action = PostFragmentDirections.actionPostFragmentToNewChatFragment(boardId, postId, replyId)
         findNavController().navigate(action)
-    }
-
-    private fun timeToText(time: TimeDTO): String{
-        var timeText = time.month.toString() + '/' + time.day.toString() + ' ' + time.hour.toString() + ':' + time.minute.toString()
-        if (LocalDate.now().year != time.year)
-            timeText = time.year.toString() + '/' + timeText
-        return timeText
     }
 }

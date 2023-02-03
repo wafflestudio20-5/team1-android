@@ -14,7 +14,7 @@ data class TimeDTO(
 //BoardList 관련
 data class BoardAbstract(
     @Json(name = "boardId") val boardId : Long,
-    @Json(name = "name") val name: String
+    @Json(name = "title") val name: String
 )
 
 data class BoardListResponse(
@@ -63,6 +63,7 @@ data class PostResponse( // PostResponse
     @Json(name = "writerId") val writerId: Long,
     @Json(name = "nickname") val nickname: String?,
     @Json(name = "isWriterAnonymous") val isWriterAnonymous : Boolean,
+    @Json(name = "isMyPost") val isMyPost: Boolean,
     @Json(name = "isQuestion") val isQuestion: Boolean,
     @Json(name = "title") val title: String?,
     @Json(name = "contents") val contents: String,
@@ -107,9 +108,9 @@ data class Pageable(
     @Json(name = "paged") val paged: Boolean,
     @Json(name = "unpaged") val unpaged: Boolean
 )
-
+/*
 data class PostsPage(
-    @Json(name = "content") val content: List<PostResponse>?,
+    @Json(name = "content") val content: List<PostResponse>,
     @Json(name = "pageable") val pageable: Pageable,
     @Json(name = "totalPages") val totalPages: Int,
     @Json(name = "totalElements") val totalElements: Int,
@@ -120,6 +121,13 @@ data class PostsPage(
     @Json(name = "numberOfElements") val numberOfElements: Int,
     @Json(name = "first") val first: Boolean,
     @Json(name = "empty") val empty: Boolean
+)*/
+
+data class PostsPage(
+    @Json(name = "contents") val content: List<PostResponse>,
+    @Json(name = "cursor") val cursor: Int?,
+    @Json(name = "size") val size: Int,
+    @Json(name = "isLast") val isLast: Boolean
 )
 
 //Post 관련
@@ -155,26 +163,27 @@ data class EditReplyRequest(
 
 data class ReplyResponse(
     @Json(name = "replyId") val replyId: Long,
-    @Json(name = "writerId") val writerId: Long,
     @Json(name = "nickname") val nickname: String,
+    @Json(name = "createdAt") val createdAt: TimeDTO,
     @Json(name = "isRoot") val isRoot: Boolean,
     @Json(name = "contents") val contents: String,
     @Json(name = "isDeleted") val isDeleted: Boolean,
-    @Json(name = "isPostWriter") val isPostWriter: Boolean
+    @Json(name = "isPostWriter") val isPostWriter: Boolean,
+    @Json(name = "isMyReply") val isMyReply: Boolean,
+    @Json(name = "nlikes") val nLikes: Int
 )
 
 data class RepliesPage(
-    @Json(name = "content") val content: List<ReplyResponse>?,
-    @Json(name = "pageable") val pageable: Pageable,
-    @Json(name = "totalPages") val totalPages: Int,
-    @Json(name = "totalElements") val totalElements: Int,
-    @Json(name = "last") val last: Boolean,
-    @Json(name = "size")  val size: Int,
-    @Json(name = "number") val number: Int,
-    @Json(name = "sort") val sort: PageableSorted,
-    @Json(name = "numberOfElements") val numberOfElements: Int,
-    @Json(name = "first") val first: Boolean,
-    @Json(name = "empty") val empty: Boolean
+    @Json(name = "contents") val content: List<ReplyResponse>?,
+    @Json(name = "page") val page: Int?,
+    @Json(name = "cursor") val cursor: DoubleCursorContainer?,
+    @Json(name = "size") val size: Int,
+    @Json(name = "isLast") val isLast: Boolean
+)
+
+data class DoubleCursorContainer(
+    @Json(name = "first") val first: Int,
+    @Json(name = "second") val second: Int
 )
 
 //기타 enum class
