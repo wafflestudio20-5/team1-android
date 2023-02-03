@@ -130,7 +130,7 @@ class BoardFragment : Fragment() {
                 //Log.d("BoardFragment", "OnMenuItemSelected")
                 when (menuItem.itemId) {
                     R.id.action_search -> {
-                        val action = BoardFragmentDirections.actionBoardFragmentToSearchPostFragment()
+                        val action = BoardFragmentDirections.actionBoardFragmentToSearchPostFragment(boardId)
                         findNavController().navigate(action)
                     }
                     R.id.refresh -> {

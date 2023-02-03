@@ -143,16 +143,16 @@ interface WafflyApiService {
     ): Response<cancelScrapResponse>
 
     @GET("api/posts/search")
-    suspend fun searchPosts(
-        @Path("keyword") keyword: String,
+    suspend fun globalSearch(
+        @Query("keyword") keyword: String,
         @Query("cursor") cursor: Int?,
         @Query("size") size: Int
     ): Response<PostsPage>
 
     @GET("api/board/{boardId}/posts/search")
-    suspend fun searchBoardPosts(
+    suspend fun boardSearch(
         @Path("boardId") boardId: Long,
-        @Path("keyword") keyword: String,
+        @Query("keyword") keyword: String,
         @Query("cursor") cursor: Int?,
         @Query("size") size: Int
     ): Response<PostsPage>
