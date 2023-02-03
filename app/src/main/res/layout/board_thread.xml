@@ -47,10 +47,10 @@
 
     <TextView
         android:id="@+id/preview_text"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/image_preview"
         app:layout_constraintTop_toBottomOf="@id/title"
         tools:text="Hello World\nHello World!!" />
 
@@ -59,7 +59,7 @@
         android:layout_width="@dimen/thread_icon"
         android:layout_height="@dimen/thread_icon"
         android:src="@drawable/ic_baseline_thumb_up_24"
-        app:layout_constraintEnd_toStartOf="@+id/likes_text"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/preview_text" />
 
     <TextView
@@ -67,7 +67,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/thread_icon"
         android:textSize="@dimen/thread_small_text"
-        app:layout_constraintEnd_toStartOf="@+id/comments_icon"
+        app:layout_constraintStart_toEndOf="@+id/likes_icon"
         app:layout_constraintTop_toBottomOf="@+id/preview_text"
         tools:text="100" />
 
@@ -76,7 +76,7 @@
         android:layout_width="@dimen/thread_icon"
         android:layout_height="@dimen/thread_icon"
         android:src="@drawable/ic_baseline_chat_bubble_24"
-        app:layout_constraintEnd_toStartOf="@id/comments_text"
+        app:layout_constraintStart_toEndOf="@+id/likes_text"
         app:layout_constraintTop_toBottomOf="@+id/preview_text" />
 
     <TextView
@@ -84,8 +84,17 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/thread_icon"
         android:textSize="@dimen/thread_small_text"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/comments_icon"
         app:layout_constraintTop_toBottomOf="@+id/preview_text"
         tools:text="100" />
+
+    <ImageView
+        android:id="@+id/image_preview"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toBottomOf="@id/time"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:src="@drawable/ic_baseline_edit_24"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

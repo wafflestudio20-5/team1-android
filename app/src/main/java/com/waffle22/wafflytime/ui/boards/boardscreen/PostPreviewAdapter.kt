@@ -1,11 +1,13 @@
 package com.waffle22.wafflytime.ui.boards.boardscreen
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.waffle22.wafflytime.databinding.BoardAnnouncementBinding
 import com.waffle22.wafflytime.databinding.BoardThreadBinding
 import com.waffle22.wafflytime.network.dto.PostResponse
@@ -31,7 +33,7 @@ class PostPreviewAdapter(
         else PostAbstractViewHolder(
                 BoardThreadBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
-                )
+                ), parent.context
         )
     }
 
@@ -41,9 +43,12 @@ class PostPreviewAdapter(
         else (holder as PostAbstractViewHolder).bind(current, clicked)
     }
 
-    class PostAbstractViewHolder(private var binding: BoardThreadBinding)
+    class PostAbstractViewHolder(private var binding: BoardThreadBinding, private val context: Context)
         : RecyclerView.ViewHolder(binding.root) {
-        fun bind(postAbstract: PostResponse, clicked: (PostResponse) -> Unit) {
+        fun bind(
+            postAbstract: PostResponse,
+            clicked: (PostResponse) -> Unit
+        ) {
             binding.apply{
                 nickname.text = postAbstract.nickname ?: "익명"
                 time.text = postAbstract.createdAt.timeToString()
@@ -52,6 +57,16 @@ class PostPreviewAdapter(
                 commentsText.text = postAbstract.nreplies.toString()
                 if (postAbstract.title != null) title.text = postAbstract.title
                 else    title.visibility = View.GONE
+                if(!postAbstract.images.isNullOrEmpty()){
+                    imagePreview.visibility = View.VISIBLE
+                    Glide.with(context)
+                        .asBitmap()
+                        .load(postAbstract.images[0].preSignedUrl)
+                        .into(imagePreview)
+                }
+                else {
+                    imagePreview.visibility = View.GONE
+                }
                 layout.setOnClickListener{clicked(postAbstract)}
             }
         }
