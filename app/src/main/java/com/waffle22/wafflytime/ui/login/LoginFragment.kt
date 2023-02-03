@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.JavascriptInterface
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -20,8 +19,6 @@ import com.waffle22.wafflytime.databinding.FragmentLoginBinding
 import com.waffle22.wafflytime.util.SlackState
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.net.URL
-
 
 
 class LoginFragment : Fragment() {
@@ -45,10 +42,26 @@ class LoginFragment : Fragment() {
         binding.apply {
             btnLogin.setOnClickListener { login() }
             btnSignup.setOnClickListener { signUp() }
-            kakaoLoginButton.setOnClickListener { kakaoLogin() }
-            naverLoginButton.setOnClickListener { naverLogin() }
-            googleLoginButton.setOnClickListener { googleLogin() }
-            githubLoginButton.setOnClickListener { githubLogin() }
+            kakaoLoginButton.setOnClickListener {
+                val navAction =
+                    LoginFragmentDirections.actionLoginFragmentToLoginSocialFragment("kakao")
+                findNavController().navigate(navAction)
+            }
+            naverLoginButton.setOnClickListener {
+                val navAction =
+                    LoginFragmentDirections.actionLoginFragmentToLoginSocialFragment("naver")
+                findNavController().navigate(navAction)
+            }
+            googleLoginButton.setOnClickListener {
+                val navAction =
+                    LoginFragmentDirections.actionLoginFragmentToLoginSocialFragment("google")
+                findNavController().navigate(navAction)
+            }
+            githubLoginButton.setOnClickListener {
+                val navAction =
+                    LoginFragmentDirections.actionLoginFragmentToLoginSocialFragment("github")
+                findNavController().navigate(navAction)
+            }
         }
 
         lifecycleScope.launch {
@@ -74,61 +87,7 @@ class LoginFragment : Fragment() {
     }
 
 
-    private fun kakaoLogin() {
-        alertDialog = MaterialAlertDialogBuilder(this.requireContext())
-            .setView(ProgressBar(this.requireContext()))
-            .setMessage("Loading...")
-            .show()
-        alertDialog.setCanceledOnTouchOutside(false)
 
-        val CLIENT_ID = "2e73508a53ba1108841a05a1612720fd"
-        val REDIRECT_URI = "http://localhost:3000/oauth/kakao/callback"
-        val KAKAO_AUTH_URL =
-           "https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code"
-
-        viewModel.socialLogin("kakao", KAKAO_AUTH_URL)
-    }
-
-    private fun naverLogin() {
-        alertDialog = MaterialAlertDialogBuilder(this.requireContext())
-            .setView(ProgressBar(this.requireContext()))
-            .setMessage("Loading...")
-            .show()
-        alertDialog.setCanceledOnTouchOutside(false)
-
-        val CLIENT_ID ="83lZcr9dJCEsE6H18g_Z"
-        val REDIRECT_URI = "http://localhost:3000/oauth/naver/callback"
-        val NAVER_AUTH_URL = ""
-
-        viewModel.socialLogin("naver", NAVER_AUTH_URL)
-    }
-
-    private fun googleLogin() {
-        alertDialog = MaterialAlertDialogBuilder(this.requireContext())
-            .setView(ProgressBar(this.requireContext()))
-            .setMessage("Loading...")
-            .show()
-        alertDialog.setCanceledOnTouchOutside(false)
-
-        val CLIENT_ID ="http://586425104922-9d6vrvjkncq158aeu0gon6ipobln6jkj.apps.googleusercontent.com"
-        val REDIRECT_URI = "http://localhost:3000/oauth/google/callback"
-        val GOOGLE_AUTH_URL = ""
-
-        viewModel.socialLogin("google", GOOGLE_AUTH_URL)
-    }
-
-    private fun githubLogin() {
-        alertDialog = MaterialAlertDialogBuilder(this.requireContext())
-        .setView(ProgressBar(this.requireContext()))
-        .setMessage("Loading...")
-        .show()
-        alertDialog.setCanceledOnTouchOutside(false)
-
-        val CLIENT_ID ="86fc35fdaf29999dcded"
-        val REDIRECT_URI = "http://localhost:3000/oauth/github/callback"
-        val GITHUB_AUTH_URL = ""
-        viewModel.socialLogin("github", GITHUB_AUTH_URL)
-    }
 
     private fun loginLogic(status: SlackState<Nothing>) {
         when (status.status) {

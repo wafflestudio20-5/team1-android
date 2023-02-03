@@ -65,7 +65,7 @@ public class SocialRedirect {
         InputStream is = openConnectionCheckRedirects(conn);
 
         System.out.println("to String(): " + conn.toString());
-        String ans = conn.toString();
+        String ans = conn.getURL().toString();
 
         is.close();
         return ans;

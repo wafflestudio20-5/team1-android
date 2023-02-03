@@ -1,7 +1,9 @@
 package com.waffle22.wafflytime.ui.login
 
 import android.content.ContentValues.TAG
-
+import android.net.Uri
+import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
@@ -12,21 +14,10 @@ import com.waffle22.wafflytime.util.SlackState
 import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.util.Log
-import androidx.core.content.ContextCompat.startActivity
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
-import com.waffle22.wafflytime.network.dto.SignUpRequest
-import com.waffle22.wafflytime.network.dto.TokenContainer
 import kotlinx.coroutines.launch
+import org.koin.core.component.getScopeId
 import retrofit2.HttpException
-import retrofit2.Response
-import com.waffle22.wafflytime.ui.login.SocialRedirect
+import java.net.URL
 
 // TODO: Add StateFlow Enum
 // Todo: Add Response Code Enum
@@ -63,23 +54,31 @@ class LoginViewModel(
     }
 
     fun socialLogin(provider: String, url:String) {
-        val socialredirect = SocialRedirect()
-        val code = socialredirect.makeConnection(url)
-        println(code)
-
-        viewModelScope.launch {
-            try {
-                val response = wafflyApiService.socialLogin(provider, code)
-                if (response.isSuccessful) {
-                    authStorage.setTokenInfo(response.body()!!.authToken.accessToken, response.body()!!.authToken.refreshToken)
-                    _loginState.value = SlackState("200",null,null,null)
-                } else {
-                    val errorResponse = HttpException(response).parseError(moshi)!!
-                    _loginState.value = SlackState(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message,null)
+        val uri: Uri = this.getScopeId().toUri()
+        val url = URL(uri.getScheme(), uri.getHost(), uri.getPath())
+        Thread {
+            val socialredirect = SocialRedirect()
+            val code = socialredirect.makeConnection(url.toString())
+            Log.e(TAG, code+"!!!!!!!!!!!!!!!!!!!!!!")
+            /*
+            viewModelScope.launch {
+                try {
+                    val response = wafflyApiService.socialLogin(provider, code)
+                    if (response.isSuccessful) {
+                        authStorage.setTokenInfo(response.body()!!.authToken.accessToken, response.body()!!.authToken.refreshToken)
+                        _loginState.value = SlackState("200",null,null,null)
+                    } else {
+                        val errorResponse = HttpException(response).parseError(moshi)!!
+                        _loginState.value = SlackState(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message,null)
+                    }
+                } catch (e:java.lang.Exception) {
+                    _loginState.value = SlackState("-1",null,"System Corruption",null)
                 }
-            } catch (e:java.lang.Exception) {
-                _loginState.value = SlackState("-1",null,"System Corruption",null)
             }
-        }
+            */
+
+        }.start()
+
+
     }
 }
