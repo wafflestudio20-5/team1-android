@@ -1,8 +1,11 @@
 package com.waffle22.wafflytime.ui.boards.post
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -29,11 +32,27 @@ class PostImageAdapter(): ListAdapter<ImageResponse, PostImageAdapter.PostImageV
         : RecyclerView.ViewHolder(binding.root){
         fun bind(image:ImageResponse){
             Glide.with(context)
+                .asBitmap()
                 .load(image.preSignedUrl)
                 .placeholder(R.drawable.ic_person)
                 .error(R.drawable.ic_person)
                 .fallback(R.drawable.ic_person)
                 .into(binding.image)
+            binding.image.setOnClickListener{
+                val dialog = AlertDialog.Builder(context)
+                val factory = LayoutInflater.from(context)
+                val customView = factory.inflate(R.layout.post_image_detail,null)
+                val imageView = customView.findViewById<ImageView>(R.id.image)
+                Glide.with(context)
+                    .load(image.preSignedUrl)
+                    .into(imageView)
+                customView.findViewById<TextView>(R.id.description).text = image.description
+                dialog.setView(customView)
+                dialog.setPositiveButton("닫기"){
+                    _, _ -> null
+                }
+                dialog.show()
+            }
         }
     }
 

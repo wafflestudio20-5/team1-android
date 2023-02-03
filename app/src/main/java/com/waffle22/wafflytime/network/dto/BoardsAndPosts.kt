@@ -60,13 +60,14 @@ data class BoardDTO(    //BoardResponse
 data class ImageRequest(
     @Json(name = "imageId") val imageId: Int,
     @Json(name = "fileName") val fileName: String,
-    @Json(name = "description") val description: String
+    @Json(name = "description") val description: String?
 )
 
 data class ImageResponse(
     @Json(name = "imageId") val imageId: Int,
-    @Json(name = "preSignedUrl") val preSignedUrl: String,
-    @Json(name = "description") val description: String
+    @Json(name = "filename") val filename: String,
+    @Json(name = "preSignedUrl") val preSignedUrl: String?,
+    @Json(name = "description") val description: String?
 )
 
 data class EditPostRequest(
@@ -159,7 +160,7 @@ data class PostRequest(
     @Json(name = "contents") val contents: String,
     @Json(name = "isQuestion") val isQuestion: Boolean,
     @Json(name = "isWriterAnonymous") val isWriterAnonymous : Boolean,
-    @Json(name = "images") val images: List<ImageRequest>
+    @Json(name = "images") val images: List<ImageRequest>?
 )
 
 data class DeletePostResponse(
