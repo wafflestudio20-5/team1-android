@@ -71,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/school_home"
+            android:text="학교 홈"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textSize="14sp" />
@@ -82,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/library_status"
+            android:text="열람실\n현황"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textSize="14sp" />
@@ -93,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/shuttle_bus"
+            android:text="셔틀\n버스"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
@@ -103,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/notifications"
+            android:text="학사\n공지"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
