@@ -88,6 +88,7 @@ val appModule = module {
     viewModel { BoardViewModel(get(), get()) }
     viewModel { PostViewModel(get()) }
     viewModel { NewPostViewModel(get(), get()) }
+    viewModel { NewChatViewModel(get(), get()) }
 
     // Notification && Chat
     viewModel { BaseNotificationViewModel() }

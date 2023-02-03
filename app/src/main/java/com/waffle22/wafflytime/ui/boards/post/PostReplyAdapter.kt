@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.PostReplyBinding
 import com.waffle22.wafflytime.network.dto.ReplyResponse
-//import com.waffle22.wafflytime.network.dto.TimeDTO
-//import java.time.LocalDate
 
 class PostReplyAdapter(
     private val replyClicked: (ReplyResponse) -> Unit,
@@ -72,12 +70,6 @@ class PostReplyAdapter(
                 }
             }
         }
-        /*private fun timeToText(time: TimeDTO): String{
-            var timeText = time.month.toString() + '/' + time.day.toString() + ' ' + time.hour.toString() + ':' + time.minute.toString()
-            if (LocalDate.now().year != time.year)
-                timeText = time.year.toString() + '/' + timeText
-            return timeText
-        }*/
     }
 
     companion object {
@@ -93,7 +85,7 @@ class PostReplyAdapter(
                 oldItem: ReplyResponse,
                 newItem: ReplyResponse
             ): Boolean {
-                return oldItem == newItem
+                return oldItem.replyId == newItem.replyId
             }
         }
     }

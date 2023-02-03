@@ -14,7 +14,10 @@ import com.waffle22.wafflytime.network.dto.PostResponse
 import com.waffle22.wafflytime.util.SlackState
 import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -32,139 +35,134 @@ data class PageNation(
     var isEnd: Boolean = false
 )
 
-enum class BoardViewModelState{
-    Init, Stanby, FromPostNone, FromPostRefresh, FromCancelThread, FromSendThread
-}
+data class NetWorkResultReturn(
+    var done: Boolean, var statusCode: String, var errorCode: String?, var errorMessage: String?
+)
 
 class BoardViewModel(
     private val wafflyApiService: WafflyApiService,
     private val moshi: Moshi
-) : ViewModel() {
-    private val _boardScreenState: MutableStateFlow<SlackState<BoardDataHolder>> = MutableStateFlow(INITIAL_STATE)
-    val boardScreenState: StateFlow<SlackState<BoardDataHolder>> = _boardScreenState
+) : ViewModel() {///MutableStateFlow(INITIAL_STATE)
+    private val _boardScreenState: MutableSharedFlow<SlackState<BoardDataHolder>> = MutableSharedFlow(replay = 0)
+    val boardScreenState: SharedFlow<SlackState<BoardDataHolder>> = _boardScreenState
 
-    private val currentData: BoardDataHolder = BoardDataHolder(null, mutableListOf())
+    private var currentState: SlackState<BoardDataHolder> =
+        SlackState("0",null,null,BoardDataHolder(null, mutableListOf()))
     private val currentPageNation: PageNation = PageNation(0)
 
-    var currentViewModelState: BoardViewModelState = BoardViewModelState.Init
+    private var reservedRefresh: Boolean = false
 
-    fun launchViewModel(boardId: Long, boardType: BoardType) {
-        when(currentViewModelState){
-            BoardViewModelState.Init -> {
-                refreshBoard(boardId, boardType)
-                currentViewModelState = BoardViewModelState.Stanby
-            }
-            BoardViewModelState.Stanby -> {
-                generateData()
-            }
-            BoardViewModelState.FromPostNone -> {
-                generateData()
-                currentViewModelState = BoardViewModelState.Stanby
-            }
-            BoardViewModelState.FromPostRefresh -> {
-                refreshBoard(boardId, boardType)
-                currentViewModelState = BoardViewModelState.Stanby
-            }
-            BoardViewModelState.FromCancelThread -> {
-                generateData()
-                currentViewModelState = BoardViewModelState.Stanby
-            }
-            BoardViewModelState.FromSendThread -> {
-                refreshBoard(boardId, boardType)
-                currentViewModelState = BoardViewModelState.Stanby
-            }
-            else -> null
-        }
-    }
-
-    fun refreshBoard(boardId: Long, boardType: BoardType){
+    // OnCreate 시점에서 호출되는 함수
+    fun reInitViewModel(boardId: Long, boardType: BoardType) {
         viewModelScope.launch {
-            currentData.boardInfo = null
-            currentData.boardData = mutableListOf()
-            currentPageNation.cursor = null
-            currentPageNation.isEnd = false
-            val asyncGetBoardInfo =
-                async{
-                    getBoardInfo(boardId, boardType)
-                }
-            val asyncGetPosts =
-                async{
-                    getPosts(boardId, boardType)
-                }
-
-            asyncGetBoardInfo.await()
-            asyncGetPosts.await()
-
+            _boardScreenState.resetReplayCache()
+            refreshBoard(boardId, boardType)
             // Make StateFlow
-            _boardScreenState.value = SlackState("200", null, null, currentData)
+            _boardScreenState.emit(currentState)
         }
     }
 
-    fun getBelowBoard(boardId: Long, boardType: BoardType){
+    // OnViewCreated 에서 호출되는 함수.
+    // reservedRefresh 가 true 면 새로고침해서 emit 한다.
+    fun requestData(boardId: Long, boardType: BoardType) {
         viewModelScope.launch {
-            getPosts(boardId, boardType)
-            _boardScreenState.value = SlackState("200", null, null, currentData)
+            if (reservedRefresh){
+                refreshBoard(boardId, boardType)
+                reservedRefresh = false
+            }
+            _boardScreenState.emit(currentState)
         }
-    }
 
-    suspend fun getBoardInfo(boardId: Long, boardType: BoardType){
-       when(boardType) {
-           BoardType.MyPosts -> currentData.boardInfo = BoardDTO(-1, "SPECIAL", "내가 작성한 글", "", true)
-           BoardType.MyReplies -> currentData.boardInfo = BoardDTO(-1, "SPECIAL", "내가 댓글을 단 글", "", true)
-           BoardType.Scraps -> currentData.boardInfo = BoardDTO(-1, "SPECIAL", "스크랩한 글", "", true)
-           BoardType.Hot -> currentData.boardInfo = BoardDTO(-1, "SPECIAL", "HOT 게시판", "", true)
-           BoardType.Best -> currentData.boardInfo = BoardDTO(-1, "SPECIAL", "BEST 게시판", "", true)
-           BoardType.Common -> {
-                   try {
-                       val response = wafflyApiService.getSingleBoard(boardId)
-                       if (response.isSuccessful) {
-                           currentData.boardInfo = response.body()!!
-                       } else {
-                           val errorResponse = HttpException(response).parseError(moshi)!!
-                           _boardScreenState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, currentData)
-                       }
-                   } catch (e: java.lang.Exception) {
-                       _boardScreenState.value = SlackState("-1", null, "System Corruption", currentData)
-                   }
-           }
-       }
     }
     
-    // TODO: 커서 기반 페이지네이션으로 바뀌면 currentPageNation.page -> currentPageNation.cursor 로 바꿀것
-    suspend fun getPosts(boardId: Long, boardType: BoardType){
-        if (currentPageNation.isEnd) {
-            return
+    // 아래있는 데이터 요청했을때 호출되는 함수
+    fun getBelowBoard(boardId: Long, boardType: BoardType){
+        viewModelScope.launch {
+            if (!currentPageNation.isEnd) {
+                val resultPosts = getPosts(boardId, boardType)
+                currentState.status = resultPosts.statusCode
+                currentState.errorCode = resultPosts.statusCode
+                currentState.errorMessage = resultPosts.errorMessage
+                _boardScreenState.emit(currentState)
+            }
         }
+    }
+
+    fun setRefresh() {
+        reservedRefresh = true
+    }
+
+    private suspend fun refreshBoard(boardId: Long, boardType: BoardType){
+        currentState =
+            SlackState("0",null,null,BoardDataHolder(null, mutableListOf()))
+        currentPageNation.cursor = null
+        currentPageNation.isEnd = false
+        val resultBoardInfo = getBoardInfo(boardId, boardType)
+        val resultPosts = getPosts(boardId, boardType)
+        // Make CurrentState
+        if (resultBoardInfo.done && resultPosts.done){
+            currentState.status = "200"
+            currentState.errorCode = null
+            currentState.errorMessage = null
+        } else{
+            val errorResult = if(!resultBoardInfo.done) resultBoardInfo else resultPosts
+            currentState.status = errorResult.statusCode
+            currentState.errorCode = errorResult.statusCode
+            currentState.errorMessage = errorResult.errorMessage
+        }
+    }
+
+    private suspend fun getBoardInfo(boardId: Long, boardType: BoardType): NetWorkResultReturn{
+           when(boardType) {
+               BoardType.MyPosts -> currentState.dataHolder!!.boardInfo = BoardDTO(-1, "SPECIAL", "내가 작성한 글", "", true)
+               BoardType.MyReplies -> currentState.dataHolder!!.boardInfo = BoardDTO(-1, "SPECIAL", "내가 댓글을 단 글", "", true)
+               BoardType.Scraps -> currentState.dataHolder!!.boardInfo = BoardDTO(-1, "SPECIAL", "스크랩한 글", "", true)
+               BoardType.Hot -> currentState.dataHolder!!.boardInfo = BoardDTO(-1, "SPECIAL", "HOT 게시판", "", true)
+               BoardType.Best -> currentState.dataHolder!!.boardInfo = BoardDTO(-1, "SPECIAL", "BEST 게시판", "", true)
+               BoardType.Common -> {
+                       try {
+                           val response = wafflyApiService.getSingleBoard(boardId)
+                           if (response.isSuccessful) {
+                               currentState.dataHolder!!.boardInfo = response.body()!!
+                           } else {
+                               val errorResponse = HttpException(response).parseError(moshi)!!
+                               currentState.dataHolder!!.boardInfo = null
+                               return NetWorkResultReturn(false, errorResponse.statusCode, errorResponse.errorCode, errorResponse.message)
+                           }
+                       } catch (e: java.lang.Exception) {
+                           currentState.dataHolder!!.boardInfo = null
+                           return NetWorkResultReturn(false, "-1", null,"SystemCorruption")
+                       }
+               }
+            }
+        return NetWorkResultReturn(true,"200",null,null)
+    }
+
+    private suspend fun getPosts(boardId: Long, boardType: BoardType): NetWorkResultReturn{
         try{
             val response = when(boardType){
                 BoardType.Common -> wafflyApiService.getAllPosts(boardId, currentPageNation.cursor, currentPageNation.pageSize)
                 BoardType.MyPosts -> wafflyApiService.getMyPosts(currentPageNation.cursor, currentPageNation.pageSize)
+                BoardType.MyReplies -> wafflyApiService.getMyRepliedPost(currentPageNation.cursor, currentPageNation.pageSize)
                 BoardType.Scraps -> wafflyApiService.getMyScraps(currentPageNation.cursor, currentPageNation.pageSize)
                 BoardType.Hot -> wafflyApiService.getHotPosts(currentPageNation.cursor, currentPageNation.pageSize)
-                BoardType.Best -> wafflyApiService.getBestPosts(currentPageNation.cursor, currentPageNation.pageSize)
+                BoardType.Best -> wafflyApiService.getBestPosts(currentPageNation.cursor, currentPageNation.pageSize) // TODO 더블커서...
                 else -> {null}
             }
 
-            if(response!!.isSuccessful){
+            return if(response!!.isSuccessful){
                 currentPageNation.cursor = response.body()!!.cursor
-                if (currentPageNation.cursor == 1) currentPageNation.isEnd = true
-                currentData.boardData.addAll(response.body()!!.content)
+                if (currentPageNation.isEnd) currentPageNation.isEnd = true
+                currentState.dataHolder!!.boardData.addAll(response.body()!!.content)
+                NetWorkResultReturn(true,"200",null,null)
             } else{
                 val errorResponse = HttpException(response).parseError(moshi)!!
-                _boardScreenState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, currentData)
+                NetWorkResultReturn(false, errorResponse.statusCode, errorResponse.errorCode, errorResponse.message)
             }
 
         } catch (e: java.lang.Exception){
-            _boardScreenState.value = SlackState("-1", null, "System Corruption", currentData)
+            return NetWorkResultReturn(false, "-1", null,"SystemCorruption")
         }
-    }
-
-    fun generateData(){
-        _boardScreenState.value = SlackState("200",null,null,currentData)
-    }
-
-    fun resetState(){
-        _boardScreenState.value = SlackState("0",null,null,currentData)
     }
 
     /*
@@ -177,30 +175,6 @@ class BoardViewModel(
                 if(post.title.contains(keyword))    _searchResults.value!! += post
             }
         }
-    }
-
-    private fun notQuestion(response: PostResponse): PostResponse {
-        return PostResponse(
-            response.boardId,
-            response.boardTitle,
-            response.postId,
-            response.createdAt,
-            response.writerId,
-            response.nickname,
-            response.isWriterAnonymous,
-            response.isMyPost,
-            false,
-            response.title,
-            response.contents,
-            response.images,
-            response.nlikes,
-            response.nscraps,
-            response.nreplies
-        )
-    }
-
-    fun reset(){
-        _page = 0
     }
      */
 }

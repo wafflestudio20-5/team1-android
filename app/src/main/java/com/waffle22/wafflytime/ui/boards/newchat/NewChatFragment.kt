@@ -14,14 +14,17 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentNewchatBinding
+import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
 import com.waffle22.wafflytime.util.SlackState
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NewChatFragment: Fragment() {
     private lateinit var binding: FragmentNewchatBinding
     private lateinit var alertDialog: AlertDialog
-    private val viewModel: NewChatViewModel by sharedViewModel()
+    private val viewModel: NewChatViewModel by viewModel()
+    private val boardViewModel: BoardViewModel by sharedViewModel()
     private val navigationArgs: NewChatFragmentArgs by navArgs()
 
     override fun onCreateView(
