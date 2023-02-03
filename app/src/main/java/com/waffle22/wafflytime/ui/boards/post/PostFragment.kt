@@ -20,6 +20,7 @@ import com.waffle22.wafflytime.network.dto.PostTaskType
 import com.waffle22.wafflytime.network.dto.ReplyResponse
 import com.waffle22.wafflytime.network.dto.TimeDTO
 import com.waffle22.wafflytime.ui.boards.boardscreen.BoardViewModel
+import com.waffle22.wafflytime.util.timeToString
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.LocalDate
