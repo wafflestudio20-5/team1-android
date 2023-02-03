@@ -11,6 +11,9 @@
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_signUpSocialFragment"
+            app:destination="@id/signUpSocialFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -189,4 +192,8 @@
             android:name="blocked"
             app:argType="boolean"/>
     </fragment>
+    <fragment
+        android:id="@+id/signUpSocialFragment"
+        android:name="com.waffle22.wafflytime.ui.login.SignUpSocialFragment"
+        android:label="SignUpSocialFragment" />
 </navigation>
