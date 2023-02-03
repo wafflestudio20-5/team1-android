@@ -143,9 +143,10 @@ class BoardViewModel(
             val response = when(boardType){
                 BoardType.Common -> wafflyApiService.getAllPosts(boardId, currentPageNation.cursor, currentPageNation.pageSize)
                 BoardType.MyPosts -> wafflyApiService.getMyPosts(currentPageNation.cursor, currentPageNation.pageSize)
+                BoardType.MyReplies -> wafflyApiService.getMyRepliedPost(currentPageNation.cursor, currentPageNation.pageSize)
                 BoardType.Scraps -> wafflyApiService.getMyScraps(currentPageNation.cursor, currentPageNation.pageSize)
                 BoardType.Hot -> wafflyApiService.getHotPosts(currentPageNation.cursor, currentPageNation.pageSize)
-                BoardType.Best -> wafflyApiService.getBestPosts(currentPageNation.cursor, currentPageNation.pageSize)
+                BoardType.Best -> wafflyApiService.getBestPosts(currentPageNation.cursor, currentPageNation.pageSize) // TODO 더블커서...
                 else -> {null}
             }
 

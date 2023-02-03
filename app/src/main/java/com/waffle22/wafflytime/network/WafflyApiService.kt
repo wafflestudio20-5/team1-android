@@ -83,6 +83,11 @@ interface WafflyApiService {
         @Query("cursor") cursor: Int?, @Query("size") size: Int
     ): Response<PostsPage>
 
+    @GET("/api/user/myrepliedpost")
+    suspend fun getMyRepliedPost(
+        @Query("cursor") cursor: Int?, @Query("size") size: Int
+    ): Response<PostsPage>
+
     @GET("/api/user/myscrap")
     suspend fun getMyScraps(
         @Query("cursor") cursor: Int?, @Query("size") size: Int
@@ -95,7 +100,7 @@ interface WafflyApiService {
 
     @GET("/api/bestpost")
     suspend fun getBestPosts(
-        @Query("cursor") cursor: Int?, @Query("size") size: Int
+        @Query("first") first: Int?, @Query("size") size: Int
     ): Response<PostsPage>
 
     @POST("/api/board/{boardId}/post")
