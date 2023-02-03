@@ -1,15 +1,11 @@
 package com.waffle22.wafflytime.ui.boards.boardscreen
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.network.dto.BoardDTO
 import com.waffle22.wafflytime.network.dto.BoardType
-import com.waffle22.wafflytime.network.dto.LoadingStatus
 import com.waffle22.wafflytime.network.dto.PostResponse
 import com.waffle22.wafflytime.util.SlackState
 import com.waffle22.wafflytime.util.parseError
@@ -33,7 +29,7 @@ data class PageNation(
 )
 
 enum class BoardViewModelState{
-    Init, Stanby, FromPostNone, FromPostRefresh, FromCancelThread, FromSendThread
+    Init, Standby, FromPostNone, FromPostRefresh, FromCancelThread, FromSendThread
 }
 
 class BoardViewModel(
@@ -52,26 +48,26 @@ class BoardViewModel(
         when(currentViewModelState){
             BoardViewModelState.Init -> {
                 refreshBoard(boardId, boardType)
-                currentViewModelState = BoardViewModelState.Stanby
+                currentViewModelState = BoardViewModelState.Standby
             }
-            BoardViewModelState.Stanby -> {
+            BoardViewModelState.Standby -> {
                 generateData()
             }
             BoardViewModelState.FromPostNone -> {
                 generateData()
-                currentViewModelState = BoardViewModelState.Stanby
+                currentViewModelState = BoardViewModelState.Standby
             }
             BoardViewModelState.FromPostRefresh -> {
                 refreshBoard(boardId, boardType)
-                currentViewModelState = BoardViewModelState.Stanby
+                currentViewModelState = BoardViewModelState.Standby
             }
             BoardViewModelState.FromCancelThread -> {
                 generateData()
-                currentViewModelState = BoardViewModelState.Stanby
+                currentViewModelState = BoardViewModelState.Standby
             }
             BoardViewModelState.FromSendThread -> {
                 refreshBoard(boardId, boardType)
-                currentViewModelState = BoardViewModelState.Stanby
+                currentViewModelState = BoardViewModelState.Standby
             }
             else -> null
         }

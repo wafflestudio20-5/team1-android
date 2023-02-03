@@ -14,7 +14,7 @@ data class TimeDTO(
 //BoardList 관련
 data class BoardAbstract(
     @Json(name = "boardId") val boardId : Long,
-    @Json(name = "name") val name: String
+    @Json(name = "title") val name: String
 )
 
 data class BoardListResponse(

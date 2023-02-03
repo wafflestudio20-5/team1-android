@@ -67,6 +67,11 @@ interface WafflyApiService {
         @Path("boardId") boardId: Long
     ): Response<DeleteBoardResponse>
 
+    @GET("/api/boards/search")
+    suspend fun searchBoard(
+        @Path("keyword") keyword: String
+    ): Response<List<BoardDTO>>
+
     // Post 관련
     @GET("/api/board/{boardId}/post/{postId}")
     suspend fun getSinglePost(
@@ -131,6 +136,21 @@ interface WafflyApiService {
     suspend fun scrapCancel(
         @Query("post") postId: Long
     ): Response<cancelScrapResponse>
+
+    @GET("api/posts/search")
+    suspend fun searchPosts(
+        @Path("keyword") keyword: String,
+        @Query("cursor") cursor: Int?,
+        @Query("size") size: Int
+    ): Response<PostsPage>
+
+    @GET("api/board/{boardId}/posts/search")
+    suspend fun searchBoardPosts(
+        @Path("boardId") boardId: Long,
+        @Path("keyword") keyword: String,
+        @Query("cursor") cursor: Int?,
+        @Query("size") size: Int
+    ): Response<PostsPage>
 
     //Reply 관련
     @GET("/api/board/{boardId}/post/{postId}/replies")
