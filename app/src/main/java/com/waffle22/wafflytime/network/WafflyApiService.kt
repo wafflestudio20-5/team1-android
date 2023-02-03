@@ -20,7 +20,8 @@ interface WafflyApiService {
 
     @POST("/api/auth/social/login/{provider}")
     suspend fun socialLogin(
-        @Path("provider") provider: String
+        @Path("provider") provider: String,
+        @Query("code") code: String
     ): Response<SocialLoginRequest>
 
     @PUT("/api/auth/refresh")
@@ -107,18 +108,20 @@ interface WafflyApiService {
     suspend fun createPost(
         @Path("boardId") boardId: Long,
         @Body() postRequest: PostRequest
-        ): Response<PostResponse>
+    ): Response<PostResponse>
 
     @DELETE("/api/board/{boardId}/post/{postId}")
     suspend fun deletePost(
         @Path("boardId") boardId: Long,
-        @Path("postId") postId: Long): Response<DeletePostResponse>
+        @Path("postId") postId: Long
+    ): Response<DeletePostResponse>
 
     @PUT("/api/board/{boardId}/post/{postId}")
     suspend fun editPost(
         @Path("boardId") boardId: Long,
         @Path("postId") postId: Long,
-        @Body() editPostRequest: EditPostRequest): Response<PostResponse>
+        @Body() editPostRequest: EditPostRequest
+    ): Response<PostResponse>
 
     @POST("/api/board/{boardId}/post/{postId}/like")
     suspend fun likePost(
@@ -167,7 +170,10 @@ interface WafflyApiService {
 
     // Notification 관련 Api
     @GET("/api/user/notifications")
-    suspend fun getNotifications(@Query("page") page: Int, @Query("size") size: Int): Response<Notification>
+    suspend fun getNotifications(
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ): Response<Notification>
 
     // Chat 관련 Api
     @POST("/api/board/{boardId}/post/{postId}/chat")
@@ -179,5 +185,5 @@ interface WafflyApiService {
     ): Response<NewChatResponse>
 
     @GET("/api/chat")
-    suspend fun getChatList() : Response<List<ChatSimpleInfo>>
+    suspend fun getChatList(): Response<List<ChatSimpleInfo>>
 }

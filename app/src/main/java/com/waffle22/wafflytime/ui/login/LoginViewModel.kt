@@ -26,6 +26,7 @@ import com.waffle22.wafflytime.network.dto.TokenContainer
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import retrofit2.Response
+import com.waffle22.wafflytime.ui.login.SocialRedirect
 
 // TODO: Add StateFlow Enum
 // Todo: Add Response Code Enum
@@ -61,10 +62,14 @@ class LoginViewModel(
         }
     }
 
-    fun socialLogin(provider: String) {
+    fun socialLogin(provider: String, url:String) {
+        val socialredirect = SocialRedirect()
+        val code = socialredirect.makeConnection(url)
+        println(code)
+
         viewModelScope.launch {
             try {
-                val response = wafflyApiService.socialLogin(provider)
+                val response = wafflyApiService.socialLogin(provider, code)
                 if (response.isSuccessful) {
                     authStorage.setTokenInfo(response.body()!!.authToken.accessToken, response.body()!!.authToken.refreshToken)
                     _loginState.value = SlackState("200",null,null,null)

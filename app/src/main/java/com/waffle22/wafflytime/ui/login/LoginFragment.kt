@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.JavascriptInterface
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -20,6 +21,7 @@ import com.waffle22.wafflytime.util.SlackState
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.net.URL
+
 
 
 class LoginFragment : Fragment() {
@@ -83,10 +85,8 @@ class LoginFragment : Fragment() {
         val REDIRECT_URI = "http://localhost:3000/oauth/kakao/callback"
         val KAKAO_AUTH_URL =
            "https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code"
-        val intent= Intent(Intent.ACTION_VIEW, Uri.parse(KAKAO_AUTH_URL))
-        startActivity(intent)
 
-        viewModel.socialLogin("kakao")
+        viewModel.socialLogin("kakao", KAKAO_AUTH_URL)
     }
 
     private fun naverLogin() {
@@ -98,9 +98,9 @@ class LoginFragment : Fragment() {
 
         val CLIENT_ID ="83lZcr9dJCEsE6H18g_Z"
         val REDIRECT_URI = "http://localhost:3000/oauth/naver/callback"
-        val naver_AUTH_URL = ""
+        val NAVER_AUTH_URL = ""
 
-        viewModel.socialLogin("naver")
+        viewModel.socialLogin("naver", NAVER_AUTH_URL)
     }
 
     private fun googleLogin() {
@@ -112,9 +112,9 @@ class LoginFragment : Fragment() {
 
         val CLIENT_ID ="http://586425104922-9d6vrvjkncq158aeu0gon6ipobln6jkj.apps.googleusercontent.com"
         val REDIRECT_URI = "http://localhost:3000/oauth/google/callback"
-        val KAKAO_AUTH_URL = ""
+        val GOOGLE_AUTH_URL = ""
 
-        viewModel.socialLogin("google")
+        viewModel.socialLogin("google", GOOGLE_AUTH_URL)
     }
 
     private fun githubLogin() {
@@ -126,9 +126,8 @@ class LoginFragment : Fragment() {
 
         val CLIENT_ID ="86fc35fdaf29999dcded"
         val REDIRECT_URI = "http://localhost:3000/oauth/github/callback"
-        val KAKAO_AUTH_URL = ""
-
-        viewModel.socialLogin("github")
+        val GITHUB_AUTH_URL = ""
+        viewModel.socialLogin("github", GITHUB_AUTH_URL)
     }
 
     private fun loginLogic(status: SlackState<Nothing>) {
