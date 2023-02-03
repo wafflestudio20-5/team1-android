@@ -12,6 +12,8 @@ import com.waffle22.wafflytime.databinding.MyMessageItemBinding
 import com.waffle22.wafflytime.databinding.OppoMessageItemBinding
 import com.waffle22.wafflytime.network.dto.ChatSimpleInfo
 import com.waffle22.wafflytime.network.dto.MessageInfo
+import com.waffle22.wafflytime.util.timeToString
+import com.waffle22.wafflytime.util.timeToStringSimple
 
 class ChatRoomAdapter(): ListAdapter<MessageInfo, RecyclerView.ViewHolder>(DiffCallback) {
     class MyMessageViewHolder(
@@ -19,9 +21,7 @@ class ChatRoomAdapter(): ListAdapter<MessageInfo, RecyclerView.ViewHolder>(DiffC
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(messageInfo: MessageInfo) {
             binding.messageText.text = messageInfo.contents
-            binding.timeText.text = itemView.context.getString(R.string.message_time).format(
-                messageInfo.sentAt.hour, messageInfo.sentAt.minute
-            )
+            binding.timeText.text = messageInfo.sentAt.timeToStringSimple()
         }
     }
 
@@ -30,9 +30,7 @@ class ChatRoomAdapter(): ListAdapter<MessageInfo, RecyclerView.ViewHolder>(DiffC
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(messageInfo: MessageInfo) {
             binding.messageText.text = messageInfo.contents
-            binding.timeText.text = itemView.context.getString(R.string.message_time).format(
-                messageInfo.sentAt.hour, messageInfo.sentAt.minute
-            )
+            binding.timeText.text = messageInfo.sentAt.timeToStringSimple()
         }
     }
 

@@ -6,30 +6,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardview"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/message_text"
         android:layout_width="wrap_content"
+        android:maxWidth="250dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="6dp"
-        app:cardBackgroundColor="@color/purple_500"
-        app:contentPadding="6dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:background="@drawable/bg_my_message_item"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp"
+        android:layout_marginVertical="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginVertical="2dp">
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/message_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            tools:text="test message"/>
-    </com.google.android.material.card.MaterialCardView>
+        tools:text="test message"/>
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/time_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/cardview"
-        app:layout_constraintBottom_toBottomOf="@id/cardview"
+        app:layout_constraintEnd_toStartOf="@id/message_text"
+        app:layout_constraintBottom_toBottomOf="@id/message_text"
         android:textSize="11sp"
         android:layout_marginHorizontal="4dp"
         tools:text="14:37"/>

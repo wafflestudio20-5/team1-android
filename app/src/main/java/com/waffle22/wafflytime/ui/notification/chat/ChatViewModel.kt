@@ -102,7 +102,7 @@ class ChatViewModel(
         viewModelScope.launch {
             val response = wafflyApiService.getMessagesPaged(
                 chatId = curChat!!.id,
-                size = 10,
+                size = 20,
                 cursor = messageCursor
             )
             try {

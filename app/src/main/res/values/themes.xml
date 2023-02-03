@@ -12,5 +12,42 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+
+    </style>
+
+    <style name="chatTitleText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#343434</item>
+        <item name="fontWeight">600</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="chatUnreadContentText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#343434</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="chatReadContentText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#A3A3A3</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="chatTimeText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#343434</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="SettingsTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">#C72A19</item>
+        <item name="colorPrimaryVariant">#d8796f</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/purple_500</item>
+        <item name="colorSecondaryVariant">@color/purple_700</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
     </style>
 </resources>
