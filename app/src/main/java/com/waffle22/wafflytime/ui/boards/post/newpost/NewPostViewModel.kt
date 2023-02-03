@@ -145,9 +145,11 @@ class NewPostViewModel(
 
     fun getFormerImages(){
         _oldImages.value = mutableListOf()
+        _images.value = mutableListOf()
         for (image in _currentState.dataHolder!!.originalPost!!.images ?: listOf()){
             viewModelScope.launch {
                 try {
+                    Log.v("NewPostFragment", "loading old image " + image.preSignedUrl)
                     val conn = withContext(Dispatchers.IO) {
                         URL(image.preSignedUrl).openConnection()
                     }
@@ -169,13 +171,16 @@ class NewPostViewModel(
                         outputStream.write(buffer, 0, size)
                     }
                     val byteArray = outputStream.toByteArray()
-                    _oldImages.value!! += ImageStorage(
+                    val imageStorage = ImageStorage(
                         ImageRequest(
                             image.imageId,
                             image.filename,
                             image.description
                         ), byteArray
                     )
+                    _oldImages.value!! += imageStorage
+                    _images.value!! += imageStorage
+                    Log.v("NewPostViewModel", "loading complete")
                 } catch (e: java.lang.Exception) {
                     Log.v("NewPostViewModel", e.toString())
                     _currentState.status = "-1"
@@ -183,7 +188,6 @@ class NewPostViewModel(
                 }
             }
         }
-        _images.value = _oldImages.value!!.toMutableList()
     }
 
     fun submitPost(title: String?, contents: String, isQuestion: Boolean, isAnonymous: Boolean){
