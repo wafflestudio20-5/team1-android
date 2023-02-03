@@ -1,5 +1,6 @@
 package com.waffle22.wafflytime.di
 
+import WebSocketManager
 import android.content.Context
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -16,8 +17,7 @@ import com.waffle22.wafflytime.ui.login.SignUpEmailViewModel
 import com.waffle22.wafflytime.ui.login.SignUpViewModel
 import com.waffle22.wafflytime.ui.mainpage.MainHomeViewModel
 import com.waffle22.wafflytime.ui.notification.BaseNotificationViewModel
-import com.waffle22.wafflytime.ui.notification.chat.list.ChatListViewModel
-import com.waffle22.wafflytime.ui.notification.chat.room.ChatRoomViewModel
+import com.waffle22.wafflytime.ui.notification.chat.ChatViewModel
 import com.waffle22.wafflytime.ui.preferences.LogoutViewModel
 import com.waffle22.wafflytime.ui.preferences.SetNicknameViewModel
 import com.waffle22.wafflytime.ui.preferences.SetProfilePicViewModel
@@ -65,6 +65,13 @@ val appModule = module {
             .build()
     }
 
+    single {
+        val context: Context = get()
+        val sharedPreference =
+            context.getSharedPreferences(AuthStorage.SharedPreferenceName, Context.MODE_PRIVATE)
+        WebSocketManager(sharedPreference, get(), get())
+    }
+
     // 이곳에 inject 되는 viewModel 추가
     /*
     viewModel { UserViewModel(get(), get(), get()) }
@@ -95,7 +102,6 @@ val appModule = module {
     // Notification && Chat
     viewModel { BaseNotificationViewModel() }
     viewModel { NotifyViewModel(get(), get()) }
-    viewModel { ChatListViewModel(get(), get()) }
-    viewModel { (chatId: Long) -> ChatRoomViewModel(chatId, get(), get())}
+    viewModel { ChatViewModel(get(), get(), get()) }
 }
 

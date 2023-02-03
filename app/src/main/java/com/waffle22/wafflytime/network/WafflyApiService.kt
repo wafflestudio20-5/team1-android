@@ -215,16 +215,16 @@ interface WafflyApiService {
         @Query("cursor") cursor: Long?,
         @Query("size") size: Long,
     ): Response<GetMessagesResponse>
-
-    @POST("/api/chat/{chatId}")
-    suspend fun sendChatMessage(
-        @Path("chatId") chatId: Long,
-        @Body() sendChatRequest: SendChatRequest
-    ): Response<MessageInfo>
+    
 
     @PUT("/api/chat/{chatId}")
     suspend fun blockChatRoom(
         @Path("chatId") chatId: Long,
         @Body() blockChatRoomRequest: BlockChatRoomRequest
     ): Response<ChatSimpleInfo>
+
+    @PUT("/api/chat/unread")
+    suspend fun putUnread(
+        @Body() putUnreadRequest: PutUnreadRequest
+    ): Response<ResponseBody>
 }
