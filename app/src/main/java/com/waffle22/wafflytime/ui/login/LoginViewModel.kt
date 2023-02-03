@@ -1,6 +1,7 @@
 package com.waffle22.wafflytime.ui.login
 
 import android.content.ContentValues.TAG
+
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
@@ -14,10 +15,22 @@ import com.waffle22.wafflytime.util.SlackState
 import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApiClient
+import com.waffle22.wafflytime.network.dto.SignUpRequest
+import com.waffle22.wafflytime.network.dto.TokenContainer
 import kotlinx.coroutines.launch
 import org.koin.core.component.getScopeId
 import retrofit2.HttpException
 import java.net.URL
+import retrofit2.Response
 
 // TODO: Add StateFlow Enum
 // Todo: Add Response Code Enum
@@ -78,6 +91,14 @@ class LoginViewModel(
             */
 
         }.start()
+
+    fun kakaoSocialLogin(context : Context) {
+      
+    }
+    fun naverSocialLogin() {
+
+    }
+    fun googleSocialLogin() {
 
 
     }

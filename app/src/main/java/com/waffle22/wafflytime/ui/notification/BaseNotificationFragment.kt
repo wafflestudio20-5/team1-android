@@ -38,7 +38,7 @@ class BaseNotificationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pageAdapter = BaseNotificationPageAdapter(this.requireActivity())
+        pageAdapter = BaseNotificationPageAdapter(childFragmentManager, lifecycle)
         pageAdapter.addItems(NotifyFragment())
         pageAdapter.addItems(ChatListFragment())
         viewPager = binding.viewPager

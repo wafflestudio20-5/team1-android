@@ -19,6 +19,13 @@ import com.waffle22.wafflytime.databinding.FragmentLoginBinding
 import com.waffle22.wafflytime.util.SlackState
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import android.content.Intent.getIntent
+import androidx.compose.ui.focus.FocusDirection.Companion.In
+import org.json.JSONObject
+import java.net.MalformedURLException
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.URL
 
 
 class LoginFragment : Fragment() {
@@ -42,26 +49,11 @@ class LoginFragment : Fragment() {
         binding.apply {
             btnLogin.setOnClickListener { login() }
             btnSignup.setOnClickListener { signUp() }
-            kakaoLoginButton.setOnClickListener {
-                val navAction =
-                    LoginFragmentDirections.actionLoginFragmentToLoginSocialFragment("kakao")
-                findNavController().navigate(navAction)
-            }
-            naverLoginButton.setOnClickListener {
-                val navAction =
-                    LoginFragmentDirections.actionLoginFragmentToLoginSocialFragment("naver")
-                findNavController().navigate(navAction)
-            }
-            googleLoginButton.setOnClickListener {
-                val navAction =
-                    LoginFragmentDirections.actionLoginFragmentToLoginSocialFragment("google")
-                findNavController().navigate(navAction)
-            }
-            githubLoginButton.setOnClickListener {
-                val navAction =
-                    LoginFragmentDirections.actionLoginFragmentToLoginSocialFragment("github")
-                findNavController().navigate(navAction)
-            }
+            kakaoLoginButton.setOnClickListener { kakaoLogin() }
+            naverLoginButton.setOnClickListener { naverLogin() }
+            googleLoginButton.setOnClickListener { googleLogin() }
+            githubLoginButton.setOnClickListener { githubLogin() }
+
         }
 
         lifecycleScope.launch {
@@ -84,6 +76,24 @@ class LoginFragment : Fragment() {
             binding.passwordEditText.text.toString()
         )
 
+    }
+
+    private fun kakaoLogin() {
+
+        val CLIENT_ID = "14e86042a3842d295c4ef5af422fac3d"
+        val REDIRECT_URI = "http://localhost:3000/api/auth/social/login/kakao"
+        val KAKAO_AUTH_URL =
+            URL("https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code")
+        val thread = Thread(){
+            val connection = KAKAO_AUTH_URL.openConnection()
+            BufferedReader(InputStreamReader(connection.getInputStream())).use { inp ->
+                var line: String?
+                while (inp.readLine().also { line = it } != null) {
+                    println(line)
+                }
+            }
+        }
+        thread.start()
     }
 
 

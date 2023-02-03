@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.databinding.FragmentChatboxBinding
 import com.waffle22.wafflytime.network.dto.ChatSimpleInfo
 import com.waffle22.wafflytime.ui.notification.BaseNotificationViewModel
+import com.waffle22.wafflytime.ui.notification.chat.ChatViewModel
 import com.waffle22.wafflytime.util.PagingLoadStateAdapter
 import com.waffle22.wafflytime.util.SlackState
 import kotlinx.coroutines.flow.collectLatest
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ChatListFragment : Fragment() {
-    private val viewModel: ChatListViewModel by sharedViewModel()
+    private val viewModel: ChatViewModel by sharedViewModel()
     private val baseNotificationViewModel: BaseNotificationViewModel by sharedViewModel()
     private lateinit var binding : FragmentChatboxBinding
     private lateinit var adapter: ChatListAdapter
@@ -41,54 +42,44 @@ class ChatListFragment : Fragment() {
 
         recyclerView = binding.chatBoxRecyclerView
         adapter = ChatListAdapter { moveToChatRoom(it) }
-//        adapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver(){
-//            override fun onItemRangeInserted(positionStart: Int, itemCount: Int){
-//                if (positionStart == 0){
-//                    recyclerView.scrollToPosition(0)
-//                }
-//            }
-//        })
         recyclerView.adapter = adapter
-        viewLifecycleOwner.lifecycle.coroutineScope.launch {
-            viewModel.chatListPager.collectLatest {
-                    pagingData -> adapter.submitData(pagingData)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.chatList.collect {
+                adapter.submitList(it)
             }
         }
-        adapter.withLoadStateHeaderAndFooter(
-            header = PagingLoadStateAdapter(adapter::retry),
-            footer = PagingLoadStateAdapter(adapter::retry)
-        )
-//        binding.swipeRefreshLayout.setOnRefreshListener { showChatList() }
+        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(!recyclerView.canScrollVertically(1)) {
+                    getChatList()
+                }
+            }
+        })
+        getChatList()
+        viewModel.startWebSocket()
     }
 
-    //BottomNavigation으로 다른 fragment로 갔다가 다시 왔을 때 실행되지 않음(소켓 통신 구현하며 해결 예정)
-    override fun onStart() {
-        super.onStart()
-//        showChatList()
+    fun getChatList() {
+        viewModel.getChatList()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.chatListState.collect {
+                if(it.status != "0") {
+                    if(it.status != "200") {
+                        Toast.makeText(context, it.errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                    coroutineContext.job.cancel()
+                }
+            }
+        }
     }
-
-//    private fun showChatList() {
-//        viewModel.getChatList()
-//        lifecycleScope.launch {
-//            viewModel.chatBoxState.collect {
-//                if(it.status != "0") {
-//                    when(it.status) {
-//                        "200" -> {
-//                            adapter.submitList(it.dataHolder)
-//                        }
-//                        else -> {
-//                            Toast.makeText(context, it.errorMessage, Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                    viewModel.resetState()
-//                    binding.swipeRefreshLayout.isRefreshing = false
-//                    coroutineContext.job.cancel()
-//                }
-//            }
-//        }
-//    }
 
     private fun moveToChatRoom(chatSimpleInfo: ChatSimpleInfo) {
         baseNotificationViewModel.setStateChatRoom(chatSimpleInfo)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("CHATLIST", "onDestroy()")
     }
 }
