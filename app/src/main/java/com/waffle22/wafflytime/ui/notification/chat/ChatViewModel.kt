@@ -173,7 +173,7 @@ class ChatViewModel(
                     0, temp.copy(
                         recentMessage = info.contents,
                         recentTime = info.sentAt,
-                        unread = temp.unread + 1
+                        unread = if(curChat?.id != info.chatId) temp.unread + 1 else temp.unread
                     )
                 )
                 _chatList.value = newList
