@@ -14,7 +14,10 @@ import com.waffle22.wafflytime.network.dto.PostResponse
 import com.waffle22.wafflytime.util.SlackState
 import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -39,7 +42,7 @@ enum class BoardViewModelState{
 class BoardViewModel(
     private val wafflyApiService: WafflyApiService,
     private val moshi: Moshi
-) : ViewModel() {
+) : ViewModel() {///MutableStateFlow(INITIAL_STATE)
     private val _boardScreenState: MutableStateFlow<SlackState<BoardDataHolder>> = MutableStateFlow(INITIAL_STATE)
     val boardScreenState: StateFlow<SlackState<BoardDataHolder>> = _boardScreenState
 
@@ -49,7 +52,6 @@ class BoardViewModel(
     var currentViewModelState: BoardViewModelState = BoardViewModelState.Init
 
     fun launchViewModel(boardId: Long, boardType: BoardType) {
-        _boardScreenState.value = INITIAL_STATE
         currentData.boardInfo = null
         currentData.boardData = mutableListOf()
         currentPageNation.cursor = null
@@ -89,27 +91,20 @@ class BoardViewModel(
             currentData.boardData = mutableListOf()
             currentPageNation.cursor = null
             currentPageNation.isEnd = false
-            val asyncGetBoardInfo =
-                async{
-                    getBoardInfo(boardId, boardType)
-                }
-            val asyncGetPosts =
-                async{
-                    getPosts(boardId, boardType)
-                }
-
-            asyncGetBoardInfo.await()
-            asyncGetPosts.await()
+            getBoardInfo(boardId, boardType)
+            getPosts(boardId, boardType)
 
             // Make StateFlow
-            _boardScreenState.value = SlackState("200", null, null, currentData)
+            _boardScreenState.emit(SlackState("200", null, null, currentData))
         }
     }
 
     fun getBelowBoard(boardId: Long, boardType: BoardType){
         viewModelScope.launch {
-            getPosts(boardId, boardType)
-            _boardScreenState.value = SlackState("200", null, null, currentData)
+            if (!currentPageNation.isEnd) {
+                getPosts(boardId, boardType)
+                _boardScreenState.emit(SlackState("200", null, null, currentData))
+            }
         }
     }
 
@@ -127,10 +122,10 @@ class BoardViewModel(
                            currentData.boardInfo = response.body()!!
                        } else {
                            val errorResponse = HttpException(response).parseError(moshi)!!
-                           _boardScreenState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, currentData)
+                           _boardScreenState.emit(SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, currentData))
                        }
                    } catch (e: java.lang.Exception) {
-                       _boardScreenState.value = SlackState("-1", null, "System Corruption", currentData)
+                       _boardScreenState.emit(SlackState("-1", null, "System Corruption", currentData))
                    }
            }
        }
@@ -138,9 +133,6 @@ class BoardViewModel(
     
     // TODO: 커서 기반 페이지네이션으로 바뀌면 currentPageNation.page -> currentPageNation.cursor 로 바꿀것
     suspend fun getPosts(boardId: Long, boardType: BoardType){
-        if (currentPageNation.isEnd) {
-            return
-        }
         try{
             val response = when(boardType){
                 BoardType.Common -> wafflyApiService.getAllPosts(boardId, currentPageNation.cursor, currentPageNation.pageSize)
@@ -157,12 +149,16 @@ class BoardViewModel(
                 currentData.boardData.addAll(response.body()!!.content)
             } else{
                 val errorResponse = HttpException(response).parseError(moshi)!!
-                _boardScreenState.value = SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, currentData)
+                _boardScreenState.emit(SlackState(errorResponse.statusCode, errorResponse.errorCode, errorResponse.message, currentData))
             }
 
         } catch (e: java.lang.Exception){
-            _boardScreenState.value = SlackState("-1", null, "System Corruption", currentData)
+            _boardScreenState.emit(SlackState("-1", null, "System Corruption", currentData))
         }
+    }
+
+    fun resetState(){
+        _boardScreenState.value = SlackState("0",null,null,null)
     }
 
     fun generateData(){
@@ -179,30 +175,6 @@ class BoardViewModel(
                 if(post.title.contains(keyword))    _searchResults.value!! += post
             }
         }
-    }
-
-    private fun notQuestion(response: PostResponse): PostResponse {
-        return PostResponse(
-            response.boardId,
-            response.boardTitle,
-            response.postId,
-            response.createdAt,
-            response.writerId,
-            response.nickname,
-            response.isWriterAnonymous,
-            response.isMyPost,
-            false,
-            response.title,
-            response.contents,
-            response.images,
-            response.nlikes,
-            response.nscraps,
-            response.nreplies
-        )
-    }
-
-    fun reset(){
-        _page = 0
     }
      */
 }

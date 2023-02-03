@@ -34,6 +34,8 @@ class BoardFragment : Fragment() {
     private var boardId = 0L
     private lateinit var boardType: BoardType
 
+    private var isCreated = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         boardId = navigationArgs.boardId
@@ -106,6 +108,12 @@ class BoardFragment : Fragment() {
                     }
                 }
             })
+
+            if (isCreated) {
+                viewModel.resetState()
+                viewModel.generateData()
+            }
+            isCreated = true
         }
     }
 
