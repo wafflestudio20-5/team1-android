@@ -78,6 +78,7 @@ val appModule = module {
     viewModel { SetNicknameViewModel(get(), get(), get()) }
     viewModel { SetProfilePicViewModel(get(), get(), get()) }
     viewModel { LogoutViewModel(get(), get(), get()) }
+    viewModel { MypageEmailViewModel(get(), get(), get()) }
 
     // Main Home
     viewModel { MainHomeViewModel(get(), get(), get()) }

@@ -22,10 +22,10 @@ interface WafflyApiService {
     suspend fun refresh(): Response<TokenContainer>
 
     @POST("/api/user/verify-mail")
-    suspend fun emailAuth(@Body() email: EmailRequest): Response<EmailCode>
+    suspend fun emailAuth(@Body() email: EmailRequest): Response<ResponseBody>
 
-    @PATCH("/api/user/verified-mail")
-    suspend fun emailPatch(@Body() email: EmailRequest): Response<TokenContainer>
+    @PATCH("/api/user/verify-mail")
+    suspend fun emailPatch(@Body() email: EmailCodeRequest): Response<TokenContainer>
 
     @GET("/api/user/me")
     suspend fun getUserInfo(): Response<UserDTO>
