@@ -68,7 +68,7 @@ class BoardListViewModel(
                                 "OTHER" -> _customBoards.value = boardListResponse.boards ?: mutableListOf()
                                 else -> _taggedBoards.value?.plusAssign(boardListResponse)
                             }
-                            Log.v("BoardListViewModel", boardListResponse.category)
+                            //Log.v("BoardListViewModel", boardListResponse.category)
                         }
                     }
                     else -> {

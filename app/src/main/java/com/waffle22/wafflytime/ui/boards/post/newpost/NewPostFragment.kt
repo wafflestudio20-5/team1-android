@@ -58,15 +58,9 @@ class NewPostFragment : Fragment() {
 
         viewModel.initViewModel(boardId, postId, taskType)
 
-        resetStates()
-
-        if (taskType == PostTaskType.EDIT){
-            //뷰모델에서 제목, 내용 가져오기
-        }
-
         lifecycleScope.launch {
             viewModel.boardInfoState.collect {
-                bindSubmitButton(it)
+                setNewPostScreenLogic(it)
             }
         }
         lifecycleScope.launch {
@@ -101,7 +95,7 @@ class NewPostFragment : Fragment() {
         binding.contents.setText("")
     }
 
-    fun bindSubmitButton(state: SlackState<NewPostInfoHolder>){
+    fun setNewPostScreenLogic(state: SlackState<NewPostInfoHolder>){
         when (state.status){
             "0" -> null
             else -> {
@@ -109,20 +103,35 @@ class NewPostFragment : Fragment() {
                     "200" -> {
                         binding.title.visibility =
                             if (state.dataHolder!!.boardInfo!!.boardType == "DEFAULT") View.VISIBLE else View.GONE
+                        if (taskType == PostTaskType.EDIT){
+                            if (state.dataHolder!!.boardInfo!!.boardType == "DEFAULT")
+                                binding.title.setText(state.dataHolder!!.originalPost!!.title!!)
+                            binding.contents.setText(state.dataHolder!!.originalPost!!.contents)
+                        }
+                        else{
+                            binding.title.setText("")
+                            binding.contents.setText("")
+                        }
                         binding.submitButton.setOnClickListener {
-//                    if(taskType == PostTaskType.CREATE)
+                            if(state.dataHolder!!.boardInfo!!.boardType == "DEFAULT" && binding.title.text.toString() == "")
+                                Toast.makeText(context,"제목은 비워 둘 수 없습니다", Toast.LENGTH_SHORT).show()
+                            else if (binding.contents.text.toString() == "")
+                                Toast.makeText(context, "내용은 비워 둘 수 없습니다", Toast.LENGTH_SHORT).show()
+                            else {
+//                                if(taskType == PostTaskType.CREATE)
 //                        viewModel.submitPost(if(viewModel.boardInfo.value!!.boardType == "DEFAULT") binding.title.text.toString() else null,
 //                        binding.contents.text.toString(), binding.isQuestion.isChecked, binding.isAnonymous.isChecked)
 //                    else
 //                        viewModel.editPost(postViewModel.curPost.value!!,
 //                            if(viewModel.boardInfo.value!!.boardType == "DEFAULT") binding.title.text.toString() else null,
 //                            binding.contents.text.toString())
-                            viewModel.submitPost(
-                                if (state.dataHolder!!.boardInfo!!.boardType == "DEFAULT") binding.title.text.toString() else null,
-                                binding.contents.text.toString(),
-                                binding.isQuestion.isChecked,
-                                binding.isAnonymous.isChecked
-                            )
+                                    viewModel.submitPost(
+                                        if (state.dataHolder!!.boardInfo!!.boardType == "DEFAULT") binding.title.text.toString() else null,
+                                        binding.contents.text.toString(),
+                                        binding.isQuestion.isChecked,
+                                        binding.isAnonymous.isChecked
+                                    )
+                            }
                         }
                     }
                     else -> {
