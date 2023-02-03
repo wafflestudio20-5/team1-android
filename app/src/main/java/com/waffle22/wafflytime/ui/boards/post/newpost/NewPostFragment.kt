@@ -118,19 +118,17 @@ class NewPostFragment : Fragment() {
                             else if (binding.contents.text.toString() == "")
                                 Toast.makeText(context, "내용은 비워 둘 수 없습니다", Toast.LENGTH_SHORT).show()
                             else {
-//                                if(taskType == PostTaskType.CREATE)
-//                        viewModel.submitPost(if(viewModel.boardInfo.value!!.boardType == "DEFAULT") binding.title.text.toString() else null,
-//                        binding.contents.text.toString(), binding.isQuestion.isChecked, binding.isAnonymous.isChecked)
-//                    else
-//                        viewModel.editPost(postViewModel.curPost.value!!,
-//                            if(viewModel.boardInfo.value!!.boardType == "DEFAULT") binding.title.text.toString() else null,
-//                            binding.contents.text.toString())
+                                if (taskType == PostTaskType.CREATE)
                                     viewModel.submitPost(
                                         if (state.dataHolder!!.boardInfo!!.boardType == "DEFAULT") binding.title.text.toString() else null,
                                         binding.contents.text.toString(),
                                         binding.isQuestion.isChecked,
                                         binding.isAnonymous.isChecked
                                     )
+                                else viewModel.editPost(
+                                    if (state.dataHolder!!.boardInfo!!.boardType == "DEFAULT") binding.title.text.toString() else null,
+                                    binding.contents.text.toString()
+                                )
                             }
                         }
                     }

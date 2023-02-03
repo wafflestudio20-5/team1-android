@@ -76,9 +76,7 @@ class NewPostViewModel(
     fun initViewModel(boardId: Long, postId: Long, taskType: PostTaskType){
         viewModelScope.launch {
             val resultBoardInfo = getBoardInfo(boardId)
-            val resultOriginalPost =
-                if (taskType == PostTaskType.EDIT) getPostInfo(boardId, postId)
-                else NetWorkResultReturn(true,"200",null,null)
+            val resultOriginalPost = getPostInfo(boardId, postId, taskType)
             if (resultBoardInfo.done && resultOriginalPost.done){
                 _currentState.apply{
                     status = "200"
@@ -123,7 +121,11 @@ class NewPostViewModel(
     }
 
     // 게시물을 편집하는 경우 호출
-    suspend fun getPostInfo(boardId: Long, postId: Long): NetWorkResultReturn{
+    suspend fun getPostInfo(boardId: Long, postId: Long, taskType: PostTaskType): NetWorkResultReturn{
+        if (taskType == PostTaskType.CREATE){
+            _currentState.dataHolder!!.originalPost = null
+            return NetWorkResultReturn(true,"200",null,null)
+        }
         try{
             val response = wafflyApiService.getSinglePost(boardId, postId)
             if(response.isSuccessful) {
@@ -170,7 +172,7 @@ class NewPostViewModel(
                     _oldImages.value!! += ImageStorage(
                         ImageRequest(
                             image.imageId,
-                            image.preSignedUrl,
+                            image.filename,
                             image.description
                         ), byteArray
                     )
@@ -181,16 +183,20 @@ class NewPostViewModel(
                 }
             }
         }
-        _images.value = _oldImages.value
+        _images.value = _oldImages.value!!.toMutableList()
     }
 
     fun submitPost(title: String?, contents: String, isQuestion: Boolean, isAnonymous: Boolean){
         viewModelScope.launch {
             try {
                 val requestImages = mutableListOf<ImageRequest>()
-                for(image in _images.value!!)
-                    requestImages += image.imageRequest
-                val request = PostRequest(title, contents, isQuestion, isAnonymous, requestImages)
+                if (_images.value != null)
+                    for(image in _images.value!!)
+                        requestImages += image.imageRequest
+                val request = PostRequest(
+                    title, contents, isQuestion, isAnonymous,
+                    if (requestImages.isEmpty()) null else requestImages.toList()
+                )
                 val response = wafflyApiService.createPost(_currentState.dataHolder!!.boardInfo!!.boardId, request)
                 if (response.isSuccessful){
                     _currentCreatePostState.dataHolder!!.postResponse = response.body()
@@ -200,7 +206,7 @@ class NewPostViewModel(
                             for (imageStorage in _images.value!!){
                                 if (image.imageId == imageStorage.imageRequest.imageId){
                                     val imageResponse = image.preSignedUrl.let{
-                                        wafflyApiService.uploadImage(it,
+                                        wafflyApiService.uploadImage(it!!,
                                             imageStorage.byteArray.toRequestBody("application/octet-stream".toMediaTypeOrNull())
                                         )
                                     }
@@ -233,33 +239,39 @@ class NewPostViewModel(
         viewModelScope.launch {
             try {
                 val requestImages = mutableListOf<ImageRequest>()
-                for (image in _images.value!!)
-                    requestImages += image.imageRequest
-                val deletedImages = mutableListOf<String>()
-                for (oldImage in _oldImages.value!!){
-                    var imageStillIncluded = false
+                if (_images.value != null)
                     for (image in _images.value!!)
-                        if (image.imageRequest.fileName == oldImage.imageRequest.fileName){
-                            imageStillIncluded = true
-                            break
-                        }
-                    if (!imageStillIncluded)    deletedImages += oldImage.imageRequest.fileName
-                }
+                        requestImages += image.imageRequest
+                val deletedImages = mutableListOf<String>()
+                if (_oldImages.value != null)
+                    for (oldImage in _oldImages.value!!){
+                        var imageStillIncluded = false
+                        for (image in _images.value!!)
+                            if (image.imageRequest.fileName == oldImage.imageRequest.fileName){
+                                imageStillIncluded = true
+                                break
+                            }
+                        if (!imageStillIncluded)    deletedImages += oldImage.imageRequest.fileName
+                    }
                 val request = EditPostRequest(
                     newTitle,
                     newContents,
                     _currentState.dataHolder!!.originalPost!!.isQuestion,
                     _currentState.dataHolder!!.originalPost!!.isWriterAnonymous,
-                    requestImages,
-                    deletedImages
+                    if (requestImages.isEmpty()) null else requestImages,
+                    if (deletedImages.isEmpty()) null else deletedImages
                 )
+                //Log.v("NewPostViewModel", request.toString())
                 val response = wafflyApiService.editPost(_currentState.dataHolder!!.boardInfo!!.boardId, _currentState.dataHolder!!.originalPost!!.postId, request)
                 if (response.isSuccessful){
                     _currentCreatePostState.dataHolder!!.postResponse = response.body()
+                    //Log.v("NewPostViewModel", _currentCreatePostState.dataHolder!!.postResponse.toString())
                     if (_currentCreatePostState.dataHolder!!.postResponse!!.images != null) {
                         for (imageStorage in _images.value!!){
+                            Log.v("NewPostViewModel", imageStorage.imageRequest.fileName)
                             var needsUpload = true
                             for (oldImage in _oldImages.value!!){
+                                Log.v("NewPostViewModel", "old: "+ oldImage.imageRequest.fileName)
                                 if (imageStorage.imageRequest.fileName == oldImage.imageRequest.fileName){
                                     needsUpload = false
                                     break
@@ -269,9 +281,10 @@ class NewPostViewModel(
                             var url = ""
                             for (image in _currentCreatePostState.dataHolder!!.postResponse!!.images!!)
                                 if (image.filename == imageStorage.imageRequest.fileName){
-                                    url = image.preSignedUrl
+                                    url = image.preSignedUrl!!
                                     break
                                 }
+                            Log.v("NewPostViewModel", url)
                             val imageResponse = url.let{
                                 wafflyApiService.uploadImage(it,
                                     imageStorage.byteArray.toRequestBody("application/octet-stream".toMediaTypeOrNull())
