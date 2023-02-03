@@ -94,4 +94,7 @@ dependencies {
 
     // Paging 3
     implementation "androidx.paging:paging-runtime:3.1.1"
+
+    // WebSocket
+    implementation "com.squareup.okhttp3:okhttp:4.9.0"
 }

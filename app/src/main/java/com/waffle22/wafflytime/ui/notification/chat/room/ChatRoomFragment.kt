@@ -14,10 +14,12 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentChatRoomBinding
+import com.waffle22.wafflytime.ui.notification.chat.ChatViewModel
 import com.waffle22.wafflytime.util.PagingLoadStateAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.net.Socket
@@ -25,9 +27,7 @@ import java.net.Socket
 class ChatRoomFragment: Fragment() {
     private lateinit var binding: FragmentChatRoomBinding
     private val navigationArgs: ChatRoomFragmentArgs by navArgs()
-    private val viewModel: ChatRoomViewModel by viewModel {
-        parametersOf(navigationArgs.chatId)
-    }
+    private val viewModel: ChatViewModel by sharedViewModel()
     private lateinit var recyclerView: RecyclerView
     private lateinit var messagesAdapter: ChatRoomAdapter
 
@@ -42,6 +42,7 @@ class ChatRoomFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.setupChatRoom(navigationArgs.chatId)
         binding.apply {
             toolBar.title = navigationArgs.chatTarget
             toolBar.setNavigationOnClickListener { findNavController().navigateUp() }
@@ -67,66 +68,46 @@ class ChatRoomFragment: Fragment() {
         recyclerView = binding.chatRoomRecyclerView
         messagesAdapter = ChatRoomAdapter()
         recyclerView.adapter = messagesAdapter
-        viewLifecycleOwner.lifecycle.coroutineScope.launch {
-            viewModel.messagesPager.collectLatest {
-                    pagingData -> messagesAdapter.submitData(pagingData)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.messageList.collect {
+                messagesAdapter.submitList(it)
             }
         }
-        messagesAdapter.withLoadStateHeaderAndFooter(
-            header = PagingLoadStateAdapter(messagesAdapter::retry),
-            footer = PagingLoadStateAdapter(messagesAdapter::retry)
-        )
-//        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//                if(!recyclerView.canScrollVertically(-1)) {
-//                    getMessages()
-//                }
-//            }
-//        })
+        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(!recyclerView.canScrollVertically(-1)) {
+                    getMessages()
+                }
+            }
+        })
+        getMessages()
     }
 
-    override fun onStart() {
-        super.onStart()
-//        getMessages()
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.clearChatRoom()
     }
 
-//    fun getMessages() {
-//        viewModel.getMessages()
-//        lifecycleScope.launch {
-//            viewModel.messagesState.collect {
-//                if(it.status != "0") {
-//                    if(it.status == "200") {
-//                        messagesAdapter.submitList(it.dataHolder)
-//                    }
-//                    else {
-//                        Toast.makeText(context, it.errorMessage, Toast.LENGTH_SHORT).show()
-//                    }
-//                    coroutineContext.job.cancel()
-//                }
-//            }
-//        }
-//    }
+    fun getMessages() {
+        viewModel.getMessages()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.messagesState.collect {
+                if(it.status != "0") {
+                    if(it.status != "200") {
+                        Toast.makeText(context, it.errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                    coroutineContext.job.cancel()
+                }
+            }
+        }
+    }
 
     fun sendMessage() {
-//        val content = binding.messageInputText.editText!!.text.toString()
-//        if(content.isEmpty()) return
-//        binding.messageInputText.editText!!.text.clear()
-//        viewModel.sendMessage(content)
-//        lifecycleScope.launch {
-//            viewModel.messagesState.collect {
-//                if(it.status != "0") {
-//                    if(it.status == "200") {
-//                        messagesAdapter.submitList(it.dataHolder)
-//                        recyclerView.scrollToPosition(messagesAdapter.itemCount-1)
-//                    }
-//                    else {
-//                        Toast.makeText(context, it.errorMessage, Toast.LENGTH_SHORT).show()
-//                    }
-//                    coroutineContext.job.cancel()
-//                }
-//            }
-//        }
+        val content = binding.messageInputText.editText!!.text.toString()
+        if(content.isEmpty()) return
+        binding.messageInputText.editText!!.text.clear()
+        viewModel.sendMessage(content)
     }
 
     fun blockChatRoom() {
@@ -154,8 +135,7 @@ class ChatRoomFragment: Fragment() {
                 if(it.status != "0") {
                     if(it.status == "200") {
                         Toast.makeText(context, "채팅방을 차단 해제하였습니다.", Toast.LENGTH_SHORT).show()
-//                        setBlockMenu()
-                        findNavController().navigateUp()
+                        setBlockMenu()
                     }
                     else {
                         Toast.makeText(context, it.errorMessage, Toast.LENGTH_SHORT).show()
@@ -168,25 +148,8 @@ class ChatRoomFragment: Fragment() {
 
     fun setBlockMenu() {
         binding.apply {
-            if (navigationArgs.blocked) {
-                toolBar.menu.getItem(0).apply {
-                    isVisible = false
-                    isEnabled = false
-                }
-                toolBar.menu.getItem(1).apply {
-                    isVisible = true
-                    isEnabled = true
-                }
-            } else {
-                toolBar.menu.getItem(0).apply {
-                    isVisible = true
-                    isEnabled = true
-                }
-                toolBar.menu.getItem(1).apply {
-                    isVisible = false
-                    isEnabled = false
-                }
-            }
+            toolBar.menu.getItem(0).isVisible = !viewModel.curChat!!.blocked
+            toolBar.menu.getItem(1).isVisible = viewModel.curChat!!.blocked
         }
     }
 }

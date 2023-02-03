@@ -13,7 +13,7 @@ import com.waffle22.wafflytime.databinding.OppoMessageItemBinding
 import com.waffle22.wafflytime.network.dto.ChatSimpleInfo
 import com.waffle22.wafflytime.network.dto.MessageInfo
 
-class ChatRoomAdapter(): PagingDataAdapter<MessageInfo, RecyclerView.ViewHolder>(DiffCallback) {
+class ChatRoomAdapter(): ListAdapter<MessageInfo, RecyclerView.ViewHolder>(DiffCallback) {
     class MyMessageViewHolder(
         private val binding: MyMessageItemBinding
     ): RecyclerView.ViewHolder(binding.root) {
@@ -77,7 +77,7 @@ class ChatRoomAdapter(): PagingDataAdapter<MessageInfo, RecyclerView.ViewHolder>
             oldItem: MessageInfo,
             newItem: MessageInfo
         ): Boolean {
-            return (oldItem.sentAt == newItem.sentAt)   //id값이 없어서 sentAt을 대신 사용
+            return (oldItem.id == newItem.id)
         }
 
         override fun areContentsTheSame(

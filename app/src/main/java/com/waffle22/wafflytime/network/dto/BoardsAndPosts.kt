@@ -3,13 +3,36 @@ package com.waffle22.wafflytime.network.dto
 import com.squareup.moshi.Json
 
 //공통
-data class TimeDTO(
+data class TimeDTO (
     @Json(name ="year") val year: Int,
     @Json(name ="month") val month: Int,
     @Json(name ="day") val day: Int,
     @Json(name ="hour") val hour: Int,
-    @Json(name ="minute")val minute: Int
-)
+    @Json(name ="minute")val minute: Int,
+    @Json(name = "second") val second: Int?,
+) : Comparable<TimeDTO> {
+    override fun compareTo(other: TimeDTO): Int {
+        if(this.year < other.year) return 1
+        if(this.year > other.year) return -1
+
+        if(this.month < other.month) return 1
+        if(this.month > other.month) return -1
+
+        if(this.day < other.day) return 1
+        if(this.day > other.day) return -1
+
+        if(this.hour < other.hour) return 1
+        if(this.hour > other.hour) return -1
+
+        if(this.minute < other.minute) return 1
+        if(this.minute > other.minute) return -1
+
+        if((this.second ?: 0) < (other.second ?: 0)) return 1
+        if((this.second ?: 0) >= (other.second ?: 0)) return -1
+
+        return 1
+    }
+}
 
 //BoardList 관련
 data class BoardAbstract(
