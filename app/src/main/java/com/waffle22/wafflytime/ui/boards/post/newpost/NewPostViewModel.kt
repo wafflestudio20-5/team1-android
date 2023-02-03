@@ -154,8 +154,8 @@ class NewPostViewModel(
     }
 
     private fun newImageId(): Int{
-        if (_images.value!!.isNotEmpty())  return _images.value!![_images.value!!.size-1].imageRequest.imageId + 1
-        else    return 0
+        return if (_images.value!!.isNotEmpty()) _images.value!![_images.value!!.size-1].imageRequest.imageId + 1
+        else 0
     }
 
     fun addNewImage(filename: String, byteArray: ByteArray){
