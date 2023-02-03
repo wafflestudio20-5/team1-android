@@ -16,15 +16,9 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentLoginBinding
-import kotlinx.coroutines.launch
 import com.waffle22.wafflytime.util.SlackState
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import android.content.Intent.getIntent
-import androidx.compose.ui.focus.FocusDirection.Companion.In
-import org.json.JSONObject
-import java.net.MalformedURLException
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.net.URL
 
 
@@ -77,34 +71,64 @@ class LoginFragment : Fragment() {
 
     }
 
-    private fun kakaoLogin() {
 
-        val CLIENT_ID = "14e86042a3842d295c4ef5af422fac3d"
-        val REDIRECT_URI = "http://localhost:3000/api/auth/social/login/kakao"
+    private fun kakaoLogin() {
+        alertDialog = MaterialAlertDialogBuilder(this.requireContext())
+            .setView(ProgressBar(this.requireContext()))
+            .setMessage("Loading...")
+            .show()
+        alertDialog.setCanceledOnTouchOutside(false)
+
+        val CLIENT_ID = "2e73508a53ba1108841a05a1612720fd"
+        val REDIRECT_URI = "http://localhost:3000/oauth/kakao/callback"
         val KAKAO_AUTH_URL =
-            URL("https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code")
-        val thread = Thread(){
-            val connection = KAKAO_AUTH_URL.openConnection()
-            BufferedReader(InputStreamReader(connection.getInputStream())).use { inp ->
-                var line: String?
-                while (inp.readLine().also { line = it } != null) {
-                    println(line)
-                }
-            }
-        }
-        thread.start()
+           "https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code"
+        val intent= Intent(Intent.ACTION_VIEW, Uri.parse(KAKAO_AUTH_URL))
+        startActivity(intent)
+
+        viewModel.socialLogin("kakao")
     }
 
     private fun naverLogin() {
-        viewModel.naverSocialLogin()
+        alertDialog = MaterialAlertDialogBuilder(this.requireContext())
+            .setView(ProgressBar(this.requireContext()))
+            .setMessage("Loading...")
+            .show()
+        alertDialog.setCanceledOnTouchOutside(false)
+
+        val CLIENT_ID ="83lZcr9dJCEsE6H18g_Z"
+        val REDIRECT_URI = "http://localhost:3000/oauth/naver/callback"
+        val naver_AUTH_URL = ""
+
+        viewModel.socialLogin("naver")
     }
 
     private fun googleLogin() {
-        viewModel.googleSocialLogin()
+        alertDialog = MaterialAlertDialogBuilder(this.requireContext())
+            .setView(ProgressBar(this.requireContext()))
+            .setMessage("Loading...")
+            .show()
+        alertDialog.setCanceledOnTouchOutside(false)
+
+        val CLIENT_ID ="http://586425104922-9d6vrvjkncq158aeu0gon6ipobln6jkj.apps.googleusercontent.com"
+        val REDIRECT_URI = "http://localhost:3000/oauth/google/callback"
+        val KAKAO_AUTH_URL = ""
+
+        viewModel.socialLogin("google")
     }
 
     private fun githubLogin() {
-        viewModel.githubSocialLogin()
+        alertDialog = MaterialAlertDialogBuilder(this.requireContext())
+        .setView(ProgressBar(this.requireContext()))
+        .setMessage("Loading...")
+        .show()
+        alertDialog.setCanceledOnTouchOutside(false)
+
+        val CLIENT_ID ="86fc35fdaf29999dcded"
+        val REDIRECT_URI = "http://localhost:3000/oauth/github/callback"
+        val KAKAO_AUTH_URL = ""
+
+        viewModel.socialLogin("github")
     }
 
     private fun loginLogic(status: SlackState<Nothing>) {

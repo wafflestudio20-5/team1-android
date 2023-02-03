@@ -46,8 +46,6 @@ class LoginViewModel(
 
     fun login(id: String, password: String){
         viewModelScope.launch {
-
-
             try {
                 val response = wafflyApiService.basicLogin(LoginRequest(id, password))
                 if (response.isSuccessful) {
@@ -63,18 +61,20 @@ class LoginViewModel(
         }
     }
 
-
-    fun kakaoSocialLogin(context : Context) {
-      
+    fun socialLogin(provider: String) {
+        viewModelScope.launch {
+            try {
+                val response = wafflyApiService.socialLogin(provider)
+                if (response.isSuccessful) {
+                    authStorage.setTokenInfo(response.body()!!.authToken.accessToken, response.body()!!.authToken.refreshToken)
+                    _loginState.value = SlackState("200",null,null,null)
+                } else {
+                    val errorResponse = HttpException(response).parseError(moshi)!!
+                    _loginState.value = SlackState(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message,null)
+                }
+            } catch (e:java.lang.Exception) {
+                _loginState.value = SlackState("-1",null,"System Corruption",null)
+            }
+        }
     }
-    fun naverSocialLogin() {
-
-    }
-    fun googleSocialLogin() {
-
-    }
-    fun githubSocialLogin() {
-
-    }
-
 }
