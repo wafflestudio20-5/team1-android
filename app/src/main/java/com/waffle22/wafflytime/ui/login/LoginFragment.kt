@@ -16,8 +16,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.FragmentLoginBinding
-import kotlinx.coroutines.launch
 import com.waffle22.wafflytime.util.SlackState
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import android.content.Intent.getIntent
 import android.util.Log
@@ -59,6 +59,7 @@ class LoginFragment : Fragment() {
             naverLoginButton.setOnClickListener { naverLogin() }
             googleLoginButton.setOnClickListener { googleLogin() }
             githubLoginButton.setOnClickListener { githubLogin() }
+
         }
 
         lifecycleScope.launch {
@@ -88,6 +89,7 @@ class LoginFragment : Fragment() {
         val action = LoginFragmentDirections.actionLoginFragmentToWebViewFragment()
         findNavController().navigate(action)
     }
+
 
     private fun naverLogin() {
 
