@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat
 //First Chat 관련
 data class NewChatRequest(
     @Json(name = "isAnonymous") val isAnonymous: Boolean,
-    @Json(name = "content") val content: String
+    @Json(name = "contents") val contents: String
 )
 
 data class NewChatResponse(

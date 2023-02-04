@@ -9,6 +9,7 @@
         android:id="@+id/input_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,6 +23,7 @@
         android:id="@+id/submit_code_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="15dp"
         android:text="인증"
         app:layout_constraintTop_toBottomOf="@id/input_code"
         app:layout_constraintStart_toStartOf="parent"

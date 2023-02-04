@@ -8,6 +8,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.ChatboxItemBinding
 import com.waffle22.wafflytime.network.dto.ChatSimpleInfo
 import com.waffle22.wafflytime.util.timeToString
@@ -29,12 +30,14 @@ class ChatListAdapter(
                     unreadNum.text = chatSimpleInfo.unread.toString()
                     if(chatSimpleInfo.unread == 0) {
                         unreadNum.visibility = View.INVISIBLE
+                        commentContent.setTextAppearance(R.style.chatReadContentText)
                     } else {
                         unreadNum.visibility = View.VISIBLE
+                        commentContent.setTextAppearance(R.style.chatUnreadContentText)
                     }
                     commentTime.text = chatSimpleInfo.recentTime?.timeToString()
                     root.setOnClickListener { onClickedChat(chatSimpleInfo) }
-                    executePendingBindings()
+//                    executePendingBindings()
                 }
             }
         }

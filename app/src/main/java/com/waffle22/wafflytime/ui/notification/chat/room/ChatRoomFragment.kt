@@ -67,12 +67,6 @@ class ChatRoomFragment: Fragment() {
 
         recyclerView = binding.chatRoomRecyclerView
         messagesAdapter = ChatRoomAdapter()
-        recyclerView.adapter = messagesAdapter
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.messageList.collect {
-                messagesAdapter.submitList(it)
-            }
-        }
         recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -81,6 +75,19 @@ class ChatRoomFragment: Fragment() {
                 }
             }
         })
+        messagesAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == messagesAdapter.itemCount - 1) {
+                    recyclerView.layoutManager?.scrollToPosition(messagesAdapter.itemCount-1)
+                }
+            }
+        })
+        recyclerView.adapter = messagesAdapter
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.messageList.collect {
+                messagesAdapter.submitList(it)
+            }
+        }
         getMessages()
     }
 
@@ -104,9 +111,9 @@ class ChatRoomFragment: Fragment() {
     }
 
     fun sendMessage() {
-        val content = binding.messageInputText.editText!!.text.toString()
+        val content = binding.messageEditText.text.toString()
         if(content.isEmpty()) return
-        binding.messageInputText.editText!!.text.clear()
+        binding.messageEditText.text.clear()
         viewModel.sendMessage(content)
     }
 

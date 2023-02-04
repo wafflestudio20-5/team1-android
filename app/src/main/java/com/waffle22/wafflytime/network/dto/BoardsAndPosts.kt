@@ -30,7 +30,7 @@ data class TimeDTO (
         if((this.second ?: 0) < (other.second ?: 0)) return 1
         if((this.second ?: 0) >= (other.second ?: 0)) return -1
 
-        return 1
+        return 0
     }
 }
 

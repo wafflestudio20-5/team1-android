@@ -48,12 +48,16 @@ fun getStringFromOkHttp(response: Response): String {
 
 //연도(필요시)와 날짜까지 표시
 fun TimeDTO.timeToString(): String{
-    var timeText = this.hour.toString() + ':' + this.minute.toString()
+    var timeText = this.hour.toString() + ':' + this.minute.toString().padStart(2,'0')
     if (LocalDate.now().monthValue != this.month || LocalDate.now().dayOfMonth != this.day)
         timeText = this.month.toString() + '/' + this.day.toString() + ' ' + timeText
     if (LocalDate.now().year != this.year)
         timeText = this.year.toString() + '/' + timeText
     return timeText
+}
+
+fun TimeDTO.timeToStringSimple(): String {
+    return this.hour.toString() + ':' + this.minute.toString().padStart(2,'0')
 }
 
 // lines 수 혹은 30*lines 글자만큼 잘라서 미리보기용 문자열을 만듦
