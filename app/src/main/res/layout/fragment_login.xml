@@ -69,7 +69,6 @@
         android:layout_marginTop="2dp"
         android:hint="비밀번호"
         app:passwordToggleEnabled="true"
-        app:passwordToggleDrawable="true"
         app:boxCornerRadiusBottomEnd="20dp"
         app:boxCornerRadiusTopEnd="20dp"
         app:boxCornerRadiusBottomStart="20dp"
