@@ -162,7 +162,7 @@ class PostFragment() : Fragment() {
                 when(menuItem.itemId){
                     R.id.refresh -> viewModel.refresh(boardId, postId)
                     R.id.edit -> {
-                        val action = PostFragmentDirections.actionPostFragmentToNewPostFragment(boardId, PostTaskType.EDIT)
+                        val action = PostFragmentDirections.actionPostFragmentToNewPostFragment(boardId, postId, PostTaskType.EDIT)
                         findNavController().navigate(action)
                     }
                     R.id.dm -> {

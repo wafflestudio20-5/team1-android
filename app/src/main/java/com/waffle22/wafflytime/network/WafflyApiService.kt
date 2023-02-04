@@ -18,6 +18,19 @@ interface WafflyApiService {
     @POST("/api/auth/local/signup")
     suspend fun signUp(@Body() request: SignUpRequest): Response<TokenContainer>
 
+    @POST("/api/auth/social/login/{provider}")
+    suspend fun socialLogin(
+        @Path("provider") provider: String,
+        @Query("code") code: String
+    ): Response<SocialLoginRequest>
+
+    @POST("/api/auth/social/signup/{provider}")
+    suspend fun socialSignUp(
+        @Path("provider") provider: String,
+        @Query("code") code: String,
+        @Body() nickname: ChangeNicknameRequest
+    ): Response<TokenContainer>
+
     @PUT("/api/auth/refresh")
     suspend fun refresh(): Response<TokenContainer>
 
@@ -66,6 +79,11 @@ interface WafflyApiService {
     suspend fun deleteBoard(
         @Path("boardId") boardId: Long
     ): Response<DeleteBoardResponse>
+
+    @GET("/api/boards/search")
+    suspend fun searchBoard(
+        @Path("keyword") keyword: String
+    ): Response<List<BoardDTO>>
 
     // Post 관련
     @GET("/api/board/{boardId}/post/{postId}")
@@ -136,6 +154,21 @@ interface WafflyApiService {
     suspend fun scrapCancel(
         @Query("post") postId: Long
     ): Response<cancelScrapResponse>
+
+    @GET("api/posts/search")
+    suspend fun globalSearch(
+        @Query("keyword") keyword: String,
+        @Query("cursor") cursor: Int?,
+        @Query("size") size: Int
+    ): Response<PostsPage>
+
+    @GET("api/board/{boardId}/posts/search")
+    suspend fun boardSearch(
+        @Path("boardId") boardId: Long,
+        @Query("keyword") keyword: String,
+        @Query("cursor") cursor: Int?,
+        @Query("size") size: Int
+    ): Response<PostsPage>
 
     //Reply 관련
     @GET("/api/board/{boardId}/post/{postId}/replies")
