@@ -1,69 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-    </data>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/notify_holder"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="4dp"
-        >
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/comment_title"
+            style="@style/chatTitleText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            >
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="익명" />
 
-            <TextView
-                android:id="@+id/comment_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="익명"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:text="익명"/>
+        <TextView
+            android:id="@+id/comment_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            style="@style/chatUnreadContentText"
+            app:layout_constraintTop_toBottomOf="@id/comment_title"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="파이팅"/>
 
-            <TextView
-                android:id="@+id/comment_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="자유게시판"
-                app:layout_constraintTop_toBottomOf="@id/comment_title"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:text="파이팅"/>
+        <TextView
+            android:id="@+id/comment_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/chatTimeText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/comment_title"
+            app:layout_constraintBottom_toBottomOf="@id/comment_title"
+            tools:text="01/05 18:00" />
 
-            <TextView
-                android:id="@+id/comment_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="자유게시판"
+        <TextView
+            android:id="@+id/unread_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/comment_content"
+            app:layout_constraintBottom_toBottomOf="@id/comment_content"
+            android:background="@drawable/bg_unread"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            tools:text="1"/>
 
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="01/05 18:00" />
-
-            <TextView
-                android:id="@+id/unread_num"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/comment_time"
-                android:background="@drawable/bg_unread"
-                android:textColor="@color/white"
-                tools:text="1"/>
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
-</layout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_200"/>
+</LinearLayout>

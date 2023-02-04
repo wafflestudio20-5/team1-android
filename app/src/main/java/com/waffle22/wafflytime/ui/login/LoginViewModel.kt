@@ -1,8 +1,8 @@
 package com.waffle22.wafflytime.ui.login
 
+import android.content.ContentValues.TAG
 
 import androidx.lifecycle.ViewModel
-import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService
@@ -12,8 +12,25 @@ import com.waffle22.wafflytime.util.SlackState
 import com.waffle22.wafflytime.util.parseError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApiClient
+import com.waffle22.wafflytime.network.dto.ChangeNicknameRequest
+import com.waffle22.wafflytime.network.dto.SignUpRequest
+import com.waffle22.wafflytime.network.dto.TokenContainer
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import retrofit2.Response
+
+// TODO: Add StateFlow Enum
+// Todo: Add Response Code Enum
 
 class LoginViewModel(
     private val wafflyApiService: WafflyApiService,
@@ -24,42 +41,113 @@ class LoginViewModel(
     // TODO: Change String type to Enum Class!!!
     private val _loginState = MutableStateFlow(SlackState("0",null,null,null))
     val loginState: StateFlow<SlackState<Nothing>> = _loginState
+    private var codeHolder: String? = null
+    private var providerHolder: String? = null
+    private var stateHolder: SlackState<Nothing> = SlackState("0",null,null,null)
+
+    fun initViewModel() {
+        codeHolder = null
+        providerHolder = null
+        stateHolder = SlackState("0",null,null,null)
+    }
 
     fun resetAuthState(){
         _loginState.value = SlackState("0",null,null,null)
     }
 
-    fun login(id: String, password: String){
+    fun login(id: String, password: String) {
         viewModelScope.launch {
 
 
             try {
                 val response = wafflyApiService.basicLogin(LoginRequest(id, password))
                 if (response.isSuccessful) {
-                    authStorage.setTokenInfo(response.body()!!.accessToken, response.body()!!.refreshToken)
-                    _loginState.value = SlackState("200",null,null,null)
+                    authStorage.setTokenInfo(
+                        response.body()!!.accessToken,
+                        response.body()!!.refreshToken
+                    )
+                    _loginState.value = SlackState("200", null, null, null)
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
-                    _loginState.value = SlackState(errorResponse.statusCode,errorResponse.errorCode,errorResponse.message,null)
+                    _loginState.value = SlackState(
+                        errorResponse.statusCode,
+                        errorResponse.errorCode,
+                        errorResponse.message,
+                        null
+                    )
                 }
-            } catch (e:java.lang.Exception) {
-                _loginState.value = SlackState("-1",null,"System Corruption",null)
+            } catch (e: java.lang.Exception) {
+                _loginState.value = SlackState("-1", null, "System Corruption", null)
             }
         }
     }
 
-
-    fun kakaoSocialLogin(context : Context) {
+    fun socialLogin(provider: String, code: String) {
+        viewModelScope.launch {
+            codeHolder = code
+            providerHolder = provider
+            try {
+                val response = wafflyApiService.socialLogin(provider,code)
+                if (response.isSuccessful) {
+                    // 회원가입 필요!!!!
+                    if (response.body()!!.needNickName) {
+                        stateHolder = SlackState("-2", null, null, null)
+                        _loginState.value = SlackState("-2", null, null, null)
+                    } else { // 로그인 진행
+                        authStorage.setTokenInfo(
+                            response.body()!!.authToken!!.accessToken,
+                            response.body()!!.authToken!!.refreshToken
+                        )
+                        stateHolder = SlackState("200", null, null, null)
+                        _loginState.value = SlackState("200", null, null, null)
+                    }
+                } else {
+                    val errorResponse = HttpException(response).parseError(moshi)!!
+                    stateHolder = SlackState(
+                        errorResponse.statusCode,
+                        errorResponse.errorCode,
+                        errorResponse.message,
+                        null
+                    )
+                }
+            } catch (e: java.lang.Exception) {
+                stateHolder = SlackState("-1", null, "System Corruption", null)
+                _loginState.value = SlackState("-1", null, "System Corruption", null)
+            }
+        }
 
     }
-    fun naverSocialLogin() {
+
+    fun socialSignUp(nickName: String) {
+        viewModelScope.launch {
+            try {
+                val response = wafflyApiService.socialSignUp(providerHolder!!,codeHolder!!,ChangeNicknameRequest(nickName))
+                if (response.isSuccessful) {
+                    // 로그인 진행
+                        authStorage.setTokenInfo(
+                            response.body()!!.accessToken,
+                            response.body()!!.refreshToken
+                        )
+                        _loginState.value = SlackState("200", null, null, null)
+                    }
+                else {
+                    val errorResponse = HttpException(response).parseError(moshi)!!
+                    _loginState.value = SlackState(
+                        errorResponse.statusCode,
+                        errorResponse.errorCode,
+                        errorResponse.message,
+                        null
+                    )
+                }
+            } catch (e: java.lang.Exception) {
+                _loginState.value = SlackState("-1", null, "System Corruption", null)
+            }
+        }
 
     }
-    fun googleSocialLogin() {
 
-    }
-    fun githubSocialLogin() {
-
+    fun getState() {
+        _loginState.value = stateHolder
     }
 
 }

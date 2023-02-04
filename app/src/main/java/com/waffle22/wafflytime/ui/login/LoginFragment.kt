@@ -1,9 +1,9 @@
 package com.waffle22.wafflytime.ui.login
 
 
-import android.os.Bundle
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,12 +19,26 @@ import com.waffle22.wafflytime.databinding.FragmentLoginBinding
 import kotlinx.coroutines.launch
 import com.waffle22.wafflytime.util.SlackState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import android.content.Intent.getIntent
+import android.util.Log
+import androidx.compose.ui.focus.FocusDirection.Companion.In
+import org.json.JSONObject
+import java.net.MalformedURLException
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.URL
 
-class LoginFragment :  Fragment() {
+
+class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
-    private lateinit var alertDialog: AlertDialog
+    private var alertDialog: AlertDialog? = null
 
     private val viewModel: LoginViewModel by sharedViewModel()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.initViewModel()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,20 +52,13 @@ class LoginFragment :  Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.apply{
+        binding.apply {
             btnLogin.setOnClickListener { login() }
             btnSignup.setOnClickListener { signUp() }
-            kakaoLoginButton.setOnClickListener{
-                val CLIENT_ID = "14e86042a3842d295c4ef5af422fac3d"
-                val REDIRECT_URI =  "http://localhost:3000/api/auth/social/login/kakao"
-                val KAKAO_AUTH_URL = "https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code"
-                var intent = Intent(Intent.ACTION_VIEW, Uri.parse(KAKAO_AUTH_URL))
-                startActivity(intent)
-
-            }
-            naverLoginButton.setOnClickListener{ naverLogin()}
-            googleLoginButton.setOnClickListener{ googleLogin()}
-            githubLoginButton.setOnClickListener{ githubLogin()}
+            kakaoLoginButton.setOnClickListener { kakaoLogin() }
+            naverLoginButton.setOnClickListener { naverLogin() }
+            googleLoginButton.setOnClickListener { googleLogin() }
+            githubLoginButton.setOnClickListener { githubLogin() }
         }
 
         lifecycleScope.launch {
@@ -59,45 +66,54 @@ class LoginFragment :  Fragment() {
                 loginLogic(it)
             }
         }
+        viewModel.getState()
 
     }
 
-    private fun login(){
-        alertDialog =MaterialAlertDialogBuilder(this.requireContext())
+    private fun login() {
+        alertDialog = MaterialAlertDialogBuilder(this.requireContext())
             .setView(ProgressBar(this.requireContext()))
             .setMessage("Loading...")
             .show()
-        alertDialog.setCanceledOnTouchOutside(false)
+        alertDialog!!.setCanceledOnTouchOutside(false)
 
-        viewModel.login(binding.idEditText.text.toString(), binding.passwordEditText.text.toString())
+        viewModel.login(
+            binding.idEditText.text.toString(),
+            binding.passwordEditText.text.toString()
+        )
+
     }
 
     private fun kakaoLogin() {
-        viewModel.kakaoSocialLogin(requireContext())
+        val action = LoginFragmentDirections.actionLoginFragmentToWebViewFragment()
+        findNavController().navigate(action)
     }
 
     private fun naverLogin() {
-        viewModel.naverSocialLogin()
+
     }
 
     private fun googleLogin() {
-        viewModel.googleSocialLogin()
+
     }
 
     private fun githubLogin() {
-        viewModel.githubSocialLogin()
+
     }
 
-    private fun loginLogic(status: SlackState<Nothing>){
-        when (status.status){
+    private fun loginLogic(status: SlackState<Nothing>) {
+        when (status.status) {
             "0" -> {
                 null
             }
             else -> {
-                alertDialog.dismiss()
-                when(status.status) {
+                alertDialog?.dismiss()
+                when (status.status) {
                     "200" -> {
                         findNavController().navigate(LoginFragmentDirections.actionGlobalAuthCheckFragment())
+                    }
+                    "-2" -> {
+                        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToNickNameFragment())
                     }
                     else -> {
                         Toast.makeText(context, status.errorMessage, Toast.LENGTH_SHORT).show()
@@ -108,7 +124,7 @@ class LoginFragment :  Fragment() {
         }
     }
 
-    private fun signUp(){
+    private fun signUp() {
         findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
     }
 }

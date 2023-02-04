@@ -1,8 +1,10 @@
 package com.waffle22.wafflytime.ui.boards.post.newpost
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -40,8 +42,18 @@ class NewPostImageAdapter(
                 .load(image.byteArray)
                 .into(binding.image)
             binding.addDescription.setOnClickListener {
-                var newDescription = ""
-                onEditDescription(image.imageRequest, newDescription)
+                val editText = EditText(context)
+                editText.setText(image.imageRequest.description)
+                val dialog = AlertDialog.Builder(context)
+                dialog.setTitle("이미지 설명을 입력하세요")
+                dialog.setView(editText)
+                dialog.setPositiveButton("확인"
+                ) { _, _ ->
+                    onEditDescription(image.imageRequest, editText.text.toString())
+                }
+                dialog.setNegativeButton("취소"
+                ) { _, _ -> null }
+                dialog.show()
             }
             binding.deleteImage.setOnClickListener {
                 onDeleteImage(image.imageRequest)

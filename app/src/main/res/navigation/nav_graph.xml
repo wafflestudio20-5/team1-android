@@ -11,6 +11,15 @@
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_signUpSocialFragment"
+            app:destination="@id/signUpSocialFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_webViewFragment"
+            app:destination="@id/webViewFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_nickNameFragment"
+            app:destination="@id/nickNameFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -78,6 +87,9 @@
         android:label="NewPostFragment">
         <argument
             android:name="boardId"
+            app:argType="long"/>
+        <argument
+            android:name="postId"
             app:argType="long"/>
         <argument
             android:name="taskType"
@@ -158,6 +170,9 @@
         <action
             android:id="@+id/action_searchPostFragment_to_postFragment"
             app:destination="@id/postFragment" />
+        <argument
+            android:name="boardId"
+            app:argType="long"/>
     </fragment>
     <fragment
         android:id="@+id/newChatFragment"
@@ -189,4 +204,16 @@
             android:name="blocked"
             app:argType="boolean"/>
     </fragment>
+    <fragment
+        android:id="@+id/signUpSocialFragment"
+        android:name="com.waffle22.wafflytime.ui.login.SignUpSocialFragment"
+        android:label="SignUpSocialFragment" />
+    <fragment
+        android:id="@+id/webViewFragment"
+        android:name="com.waffle22.wafflytime.ui.login.WebViewFragment"
+        android:label="WebViewFragment" />
+    <fragment
+        android:id="@+id/nickNameFragment"
+        android:name="com.waffle22.wafflytime.ui.login.NickNameFragment"
+        android:label="NickNameFragment" />
 </navigation>

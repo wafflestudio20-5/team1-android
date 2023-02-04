@@ -12,16 +12,16 @@ import com.waffle22.wafflytime.databinding.MyMessageItemBinding
 import com.waffle22.wafflytime.databinding.OppoMessageItemBinding
 import com.waffle22.wafflytime.network.dto.ChatSimpleInfo
 import com.waffle22.wafflytime.network.dto.MessageInfo
+import com.waffle22.wafflytime.util.timeToString
+import com.waffle22.wafflytime.util.timeToStringSimple
 
-class ChatRoomAdapter(): PagingDataAdapter<MessageInfo, RecyclerView.ViewHolder>(DiffCallback) {
+class ChatRoomAdapter(): ListAdapter<MessageInfo, RecyclerView.ViewHolder>(DiffCallback) {
     class MyMessageViewHolder(
         private val binding: MyMessageItemBinding
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(messageInfo: MessageInfo) {
             binding.messageText.text = messageInfo.contents
-            binding.timeText.text = itemView.context.getString(R.string.message_time).format(
-                messageInfo.sentAt.hour, messageInfo.sentAt.minute
-            )
+            binding.timeText.text = messageInfo.sentAt.timeToStringSimple()
         }
     }
 
@@ -30,9 +30,7 @@ class ChatRoomAdapter(): PagingDataAdapter<MessageInfo, RecyclerView.ViewHolder>
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(messageInfo: MessageInfo) {
             binding.messageText.text = messageInfo.contents
-            binding.timeText.text = itemView.context.getString(R.string.message_time).format(
-                messageInfo.sentAt.hour, messageInfo.sentAt.minute
-            )
+            binding.timeText.text = messageInfo.sentAt.timeToStringSimple()
         }
     }
 
@@ -77,7 +75,7 @@ class ChatRoomAdapter(): PagingDataAdapter<MessageInfo, RecyclerView.ViewHolder>
             oldItem: MessageInfo,
             newItem: MessageInfo
         ): Boolean {
-            return (oldItem.sentAt == newItem.sentAt)   //id값이 없어서 sentAt을 대신 사용
+            return (oldItem.id == newItem.id)
         }
 
         override fun areContentsTheSame(

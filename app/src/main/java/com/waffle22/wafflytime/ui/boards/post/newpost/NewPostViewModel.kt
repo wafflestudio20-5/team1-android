@@ -8,13 +8,19 @@ import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
 import com.waffle22.wafflytime.network.WafflyApiService
 import com.waffle22.wafflytime.network.dto.*
+import com.waffle22.wafflytime.ui.boards.boardscreen.NetWorkResultReturn
+import com.waffle22.wafflytime.util.SlackState
 import com.waffle22.wafflytime.util.parseError
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
+import java.io.ByteArrayOutputStream
+import java.net.URL
 
 data class ImageStorage(
     var imageRequest: ImageRequest,
@@ -39,132 +45,294 @@ data class ImageStorage(
     }
 }
 
+data class NewPostInfoHolder(
+    var boardInfo: BoardDTO?,
+    var originalPost: PostResponse?
+)
+data class PostResponseHolder(
+    var postResponse: PostResponse?
+)
+
 class NewPostViewModel(
     private val wafflyApiService: WafflyApiService,
     private val moshi: Moshi
 ) : ViewModel() {
-    private var _boardInfo = MutableLiveData<BoardDTO>()
-    val boardInfo: LiveData<BoardDTO>
-        get() = _boardInfo
-    private var _images = MutableLiveData<MutableList<ImageStorage>>()
-    val images : LiveData<MutableList<ImageStorage>>
-        get() = _images
+    private var _boardInfoState = MutableSharedFlow<SlackState<NewPostInfoHolder>>()
+    val boardInfoState: SharedFlow<SlackState<NewPostInfoHolder>> = _boardInfoState
+    private var _currentState: SlackState<NewPostInfoHolder> =
+        SlackState("0", null, null, NewPostInfoHolder(null, null))
 
-    private var _boardLoadingStatus = MutableStateFlow(LoadingStatus.Standby)
-    val boardLoadingStatus: StateFlow<LoadingStatus>
-        get() = _boardLoadingStatus
-    private var _createPostStatus = MutableStateFlow(LoadingStatus.Standby)
-    val createPostStatus: StateFlow<LoadingStatus>
-        get() = _createPostStatus
-    var errorMessage = ""
+    private var _createPostState = MutableSharedFlow<SlackState<PostResponseHolder>>()
+    val createPostState: SharedFlow<SlackState<PostResponseHolder>> = _createPostState
+    private var _currentCreatePostState : SlackState<PostResponseHolder> =
+        SlackState("0", null, null, PostResponseHolder(null))
 
-    fun getBoardInfo(boardId: Long){
+    private var _imageStorageState = MutableSharedFlow<List<ImageStorage>>()
+    val imageStorageState: SharedFlow<List<ImageStorage>> = _imageStorageState
+    private lateinit var _images : MutableList<ImageStorage>
+    private lateinit var _oldImages : MutableList<ImageStorage>
+
+    // OnCreate
+    fun initViewModel(boardId: Long, postId: Long, taskType: PostTaskType){
         viewModelScope.launch {
-            try{
-                val response = wafflyApiService.getSingleBoard(boardId)
-                when(response.code().toString()){
-                    "200" -> {
-                        Log.v("BoardViewModel", response.body()!!.title)
-                        _boardInfo.value = response.body()
-                        _boardLoadingStatus.value = LoadingStatus.Success
-                    }
-                    else -> {
-                        Log.v("BoardViewModel", response.errorBody()!!.string())
-                        _boardLoadingStatus.value = LoadingStatus.Error
-                        errorMessage = HttpException(response).parseError(moshi)!!.message
-                    }
+            val resultBoardInfo = getBoardInfo(boardId)
+            val resultOriginalPost = getPostInfo(boardId, postId, taskType)
+            if (resultBoardInfo.done && resultOriginalPost.done){
+                _currentState.apply{
+                    status = "200"
+                    errorCode = null
+                    errorMessage = null
                 }
-            } catch (e: java.lang.Exception){
-                _boardLoadingStatus.value = LoadingStatus.Corruption
-                Log.v("BoardViewModel", e.toString())
+            } else {
+                val errorResult = if(!resultBoardInfo.done) resultBoardInfo else resultOriginalPost
+                _currentState.apply{
+                    status = errorResult.statusCode
+                    errorCode = errorResult.errorCode
+                    errorMessage = errorResult.errorMessage
+                }
+            }
+            if (_currentState.dataHolder!!.originalPost != null) {
+                getFormerImages()
+            }
+            else{
+                _images = mutableListOf()
+                _oldImages = mutableListOf()
+            }
+            _boardInfoState.emit(_currentState)
+            _imageStorageState.emit(_images.toList())
+        }
+    }
+
+    suspend fun getBoardInfo(boardId: Long): NetWorkResultReturn {
+        try{
+            val response = wafflyApiService.getSingleBoard(boardId)
+            if(response.isSuccessful) {
+                _currentState.dataHolder!!.boardInfo = response.body()!!
+            } else {
+                val errorResponse = HttpException(response).parseError(moshi)!!
+                _currentState.dataHolder!!.boardInfo = null
+                return NetWorkResultReturn(false, errorResponse.statusCode, errorResponse.errorCode, errorResponse.message)
+            }
+        } catch (e: java.lang.Exception){
+            _currentState.dataHolder!!.boardInfo = null
+            Log.v("NewPostViewModel", e.toString())
+            return NetWorkResultReturn(false, "-1", null,"SystemCorruption")
+        }
+        return NetWorkResultReturn(true,"200",null,null)
+    }
+
+    // 게시물을 편집하는 경우 호출
+    suspend fun getPostInfo(boardId: Long, postId: Long, taskType: PostTaskType): NetWorkResultReturn{
+        if (taskType == PostTaskType.CREATE){
+            _currentState.dataHolder!!.originalPost = null
+            return NetWorkResultReturn(true,"200",null,null)
+        }
+        try{
+            val response = wafflyApiService.getSinglePost(boardId, postId)
+            if(response.isSuccessful) {
+                _currentState.dataHolder!!.originalPost = response.body()!!
+            } else {
+                val errorResponse = HttpException(response).parseError(moshi)!!
+                _currentState.dataHolder!!.originalPost = null
+                return NetWorkResultReturn(false, errorResponse.statusCode, errorResponse.errorCode, errorResponse.message)
+            }
+        } catch (e: java.lang.Exception) {
+            _currentState.dataHolder!!.originalPost = null
+            Log.v("NewPostViewModel", e.toString())
+            return NetWorkResultReturn(false, "-1", null,"SystemCorruption")
+        }
+        return NetWorkResultReturn(true,"200",null,null)
+    }
+
+    fun getFormerImages(){
+        _oldImages = mutableListOf()
+        _images = mutableListOf()
+        for (image in _currentState.dataHolder!!.originalPost!!.images ?: listOf()){
+            viewModelScope.launch {
+                try {
+                    Log.v("NewPostFragment", "loading old image " + image.preSignedUrl)
+                    val conn = withContext(Dispatchers.IO) {
+                        URL(image.preSignedUrl).openConnection()
+                    }
+                    withContext(Dispatchers.IO) {
+                        conn.connect()
+                    }
+                    val inputStream =
+                        withContext(Dispatchers.IO) {
+                            conn.getInputStream()
+                        }
+                    val outputStream = ByteArrayOutputStream()
+                    val buffer = ByteArray(1000)
+                    var size: Int
+                    while (true) {
+                        size = withContext(Dispatchers.IO) {
+                            inputStream.read(buffer)
+                        }
+                        if (size == -1) break
+                        outputStream.write(buffer, 0, size)
+                    }
+                    val byteArray = outputStream.toByteArray()
+                    val imageStorage = ImageStorage(
+                        ImageRequest(
+                            image.imageId,
+                            image.filename,
+                            image.description
+                        ), byteArray
+                    )
+                    _oldImages += imageStorage
+                    _images += imageStorage
+                    Log.v("NewPostViewModel", "loading complete")
+                } catch (e: java.lang.Exception) {
+                    Log.v("NewPostViewModel", e.toString())
+                    _currentState.status = "-1"
+                    _currentState.errorMessage = "SystemCorruption"
+                }
             }
         }
     }
 
-    fun createNewPost(title: String?, contents: String, isQuestion: Boolean, isAnonymous: Boolean){
+    fun submitPost(title: String?, contents: String, isQuestion: Boolean, isAnonymous: Boolean){
         viewModelScope.launch {
             try {
-                var requestImages = mutableListOf<ImageRequest>()
-                for(image in _images.value!!)
-                    requestImages += image.imageRequest
-                val request = PostRequest(title, contents, isQuestion, isAnonymous, requestImages)
-                val response = wafflyApiService.createPost(_boardInfo.value!!.boardId, request)
-                when (response.code().toString()){
-                    "200" -> {
-                        Log.v("NewPostViewModel", "New Post Created")
-                        if (response.body()!!.images != null) {
-                            for (i in 0 until _images.value!!.size) {
-                                val url = response.body()!!.images?.get(i)?.preSignedUrl
-                                val imageResponse = url?.let {
-                                    wafflyApiService.uploadImage(
-                                        it,
-                                        _images.value!![i].byteArray.toRequestBody("application/octet-stream".toMediaTypeOrNull())
-                                    )
-                                }
-                                if (url != null) {
-                                    Log.d("NewPostViewModel", url)
+                val requestImages = mutableListOf<ImageRequest>()
+                if (!_images.isEmpty())
+                    for(image in _images)
+                        requestImages += image.imageRequest
+                val request = PostRequest(
+                    title, contents, isQuestion, isAnonymous,
+                    if (requestImages.isEmpty()) null else requestImages.toList()
+                )
+                val response = wafflyApiService.createPost(_currentState.dataHolder!!.boardInfo!!.boardId, request)
+                if (response.isSuccessful){
+                    _currentCreatePostState.dataHolder!!.postResponse = response.body()
+                    if (_currentCreatePostState.dataHolder!!.postResponse!!.images != null){
+                        val currentImages = _currentCreatePostState.dataHolder!!.postResponse!!.images
+                        for (image in currentImages!!){
+                            for (imageStorage in _images){
+                                if (image.imageId == imageStorage.imageRequest.imageId){
+                                    val imageResponse = image.preSignedUrl.let{
+                                        wafflyApiService.uploadImage(it!!,
+                                            imageStorage.byteArray.toRequestBody("application/octet-stream".toMediaTypeOrNull())
+                                        )
+                                    }
+                                    if(!imageResponse.isSuccessful){
+                                        Log.v("NewPostViewModel", "Cannot Uplaod Image")
+                                    }
                                 }
                             }
                         }
-                        _createPostStatus.value = LoadingStatus.Success
                     }
-                    else -> {
-                        Log.v("NewPostViewModel", response.errorBody()!!.string())
-                        errorMessage = HttpException(response).parseError(moshi)!!.message
-                        _createPostStatus.value = LoadingStatus.Error
-                    }
+                    _currentCreatePostState.status = "200"
+                    _currentCreatePostState.errorCode = null
+                    _currentCreatePostState.errorMessage = null
+                } else {
+                    val errorResponse = HttpException(response).parseError(moshi)!!
+                    _currentCreatePostState.status = errorResponse.statusCode
+                    _currentCreatePostState.errorCode = errorResponse.errorCode
+                    _currentCreatePostState.errorMessage = errorResponse.message
                 }
             } catch(e: java.lang.Exception) {
-                Log.v("NewPostViewModel", e.toString())
-                _createPostStatus.value = LoadingStatus.Corruption
+                _currentCreatePostState.status = "-1"
+                _currentCreatePostState.errorCode = null
+                _currentCreatePostState.errorMessage = e.toString()
             }
+            _createPostState.emit(_currentCreatePostState)
         }
     }
 
-    fun editPost(post: PostResponse, newTitle: String?, newContents: String){
+    fun editPost(newTitle: String?, newContents: String){
         viewModelScope.launch {
             try {
+                val requestImages = mutableListOf<ImageRequest>()
+                if (!_images.isEmpty())
+                    for (image in _images)
+                        requestImages += image.imageRequest
+                val deletedImages = mutableListOf<String>()
+                if (_oldImages != null)
+                    for (oldImage in _oldImages){
+                        var imageStillIncluded = false
+                        for (image in _images)
+                            if (image.imageRequest.fileName == oldImage.imageRequest.fileName){
+                                imageStillIncluded = true
+                                break
+                            }
+                        if (!imageStillIncluded)    deletedImages += oldImage.imageRequest.fileName
+                    }
                 val request = EditPostRequest(
                     newTitle,
                     newContents,
-                    post.isQuestion,
-                    post.isWriterAnonymous,
-                    null,
-                    null
+                    _currentState.dataHolder!!.originalPost!!.isQuestion,
+                    _currentState.dataHolder!!.originalPost!!.isWriterAnonymous,
+                    if (requestImages.isEmpty()) null else requestImages,
+                    if (deletedImages.isEmpty()) null else deletedImages
                 )
-                Log.d("EditPost", "Made a request")
-                val response = wafflyApiService.editPost(_boardInfo.value!!.boardId, post.postId, request)
-                when (response.code().toString()){
-                    "200" -> {
-                        Log.v("NewPostViewModel", "New Post Created")
-                        _createPostStatus.value = LoadingStatus.Success
+                //Log.v("NewPostViewModel", request.toString())
+                val response = wafflyApiService.editPost(_currentState.dataHolder!!.boardInfo!!.boardId, _currentState.dataHolder!!.originalPost!!.postId, request)
+                if (response.isSuccessful){
+                    _currentCreatePostState.dataHolder!!.postResponse = response.body()
+                    //Log.v("NewPostViewModel", _currentCreatePostState.dataHolder!!.postResponse.toString())
+                    if (_currentCreatePostState.dataHolder!!.postResponse!!.images != null) {
+                        for (imageStorage in _images){
+                            Log.v("NewPostViewModel", imageStorage.imageRequest.fileName)
+                            var needsUpload = true
+                            for (oldImage in _oldImages){
+                                Log.v("NewPostViewModel", "old: "+ oldImage.imageRequest.fileName)
+                                if (imageStorage.imageRequest.fileName == oldImage.imageRequest.fileName){
+                                    needsUpload = false
+                                    break
+                                }
+                            }
+                            if (!needsUpload)   continue
+                            var url = ""
+                            for (image in _currentCreatePostState.dataHolder!!.postResponse!!.images!!)
+                                if (image.filename == imageStorage.imageRequest.fileName){
+                                    url = image.preSignedUrl!!
+                                    break
+                                }
+                            Log.v("NewPostViewModel", url)
+                            val imageResponse = url.let{
+                                wafflyApiService.uploadImage(it,
+                                    imageStorage.byteArray.toRequestBody("application/octet-stream".toMediaTypeOrNull())
+                                )
+                            }
+                            if(!imageResponse.isSuccessful){
+                                Log.v("NewPostViewModel", "Cannot Uplaod Image")
+                            }
+                        }
                     }
-                    else -> {
-                        Log.v("NewPostViewModel", response.errorBody()!!.string())
-                        errorMessage = HttpException(response).parseError(moshi)!!.message
-                        _createPostStatus.value = LoadingStatus.Error
-                    }
+                    _currentCreatePostState.status = "200"
+                    _currentCreatePostState.errorCode = null
+                    _currentCreatePostState.errorMessage = null
+                } else {
+                    val errorResponse = HttpException(response).parseError(moshi)!!
+                    _currentCreatePostState.status = errorResponse.statusCode
+                    _currentCreatePostState.errorCode = errorResponse.errorCode
+                    _currentCreatePostState.errorMessage = errorResponse.message
                 }
             } catch(e: java.lang.Exception) {
-                Log.v("NewPostViewModel", e.toString())
-                _createPostStatus.value = LoadingStatus.Corruption
+                _currentCreatePostState.status = "-1"
+                _currentCreatePostState.errorCode = null
+                _currentCreatePostState.errorMessage = e.toString()
             }
+            _createPostState.emit(_currentCreatePostState)
         }
-
     }
 
     private fun newImageId(): Int{
-        if (_images.value!!.isNotEmpty())  return _images.value!![_images.value!!.size-1].imageRequest.imageId + 1
-        else    return 0
+        return if (_images.isNotEmpty()) _images[_images.size-1].imageRequest.imageId + 1
+        else 0
     }
 
     fun addNewImage(filename: String, byteArray: ByteArray){
-        if (_images.value == null)  _images.value = mutableListOf()
-        _images.value!! += ImageStorage(ImageRequest(newImageId(),filename, ""),byteArray)
+        if (_images == null)  _images = mutableListOf()
+        _images += ImageStorage(ImageRequest(newImageId(),filename, ""),byteArray)
+        viewModelScope.launch {
+            _imageStorageState.emit(_images.toList())
+        }
     }
 
     fun editImageDescription(imageRequest: ImageRequest, newDescription: String){
-        for (image in _images.value!!){
+        for (image in _images){
             if (image.imageRequest == imageRequest){
                 image.imageRequest = ImageRequest(
                     imageRequest.imageId,
@@ -174,15 +342,15 @@ class NewPostViewModel(
                 break
             }
         }
+        viewModelScope.launch {
+            _imageStorageState.emit(_images.toList())
+        }
     }
 
     fun deleteImage(imageRequest: ImageRequest){
-        _images.value!!.removeIf{imageStorage -> imageStorage.imageRequest == imageRequest}
-    }
-
-    fun resetStates(){
-        _createPostStatus.value = LoadingStatus.Standby
-        _boardLoadingStatus.value = LoadingStatus.Standby
-        _images.value = mutableListOf()
+        _images.removeIf{imageStorage -> imageStorage.imageRequest == imageRequest}
+        viewModelScope.launch {
+            _imageStorageState.emit(_images.toList())
+        }
     }
 }

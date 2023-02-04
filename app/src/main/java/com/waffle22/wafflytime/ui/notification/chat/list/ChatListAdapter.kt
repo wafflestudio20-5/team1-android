@@ -8,12 +8,14 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.ChatboxItemBinding
 import com.waffle22.wafflytime.network.dto.ChatSimpleInfo
+import com.waffle22.wafflytime.util.timeToString
 
 class ChatListAdapter(
     private val onClickedChat: (ChatSimpleInfo) -> Unit
-): PagingDataAdapter<ChatSimpleInfo, ChatListAdapter.ChatViewHolder>(DiffCallback){
+): ListAdapter<ChatSimpleInfo, ChatListAdapter.ChatViewHolder>(DiffCallback){
 
     class ChatViewHolder(
         private val binding: ChatboxItemBinding,
@@ -25,14 +27,17 @@ class ChatListAdapter(
                 binding.apply {
                     commentTitle.text = chatSimpleInfo.target
                     commentContent.text = chatSimpleInfo.recentMessage
-                    if(chatSimpleInfo.unread > 0) {
-                        unreadNum.text = chatSimpleInfo.unread.toString()
+                    unreadNum.text = chatSimpleInfo.unread.toString()
+                    if(chatSimpleInfo.unread == 0) {
+                        unreadNum.visibility = View.INVISIBLE
+                        commentContent.setTextAppearance(R.style.chatReadContentText)
                     } else {
-                        unreadNum.visibility = View.GONE
+                        unreadNum.visibility = View.VISIBLE
+                        commentContent.setTextAppearance(R.style.chatUnreadContentText)
                     }
-                    commentTime.text = "No Data from the server"
+                    commentTime.text = chatSimpleInfo.recentTime?.timeToString()
                     root.setOnClickListener { onClickedChat(chatSimpleInfo) }
-                    executePendingBindings()
+//                    executePendingBindings()
                 }
             }
         }
@@ -54,7 +59,7 @@ class ChatListAdapter(
             oldItem: ChatSimpleInfo,
             newItem: ChatSimpleInfo
         ): Boolean {
-            return (oldItem.id == newItem.id) && (oldItem.recentMessage == newItem.recentMessage)
+            return (oldItem.id == newItem.id)
         }
 
         override fun areContentsTheSame(

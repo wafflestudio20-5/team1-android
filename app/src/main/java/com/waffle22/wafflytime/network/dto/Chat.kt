@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat
 //First Chat 관련
 data class NewChatRequest(
     @Json(name = "isAnonymous") val isAnonymous: Boolean,
-    @Json(name = "content") val content: String
+    @Json(name = "contents") val contents: String
 )
 
 data class NewChatResponse(
@@ -21,13 +21,14 @@ data class NewChatResponse(
 data class ChatSimpleInfo(
     @Json(name = "id") val id: Long,
     @Json(name = "target") val target: String,
-    @Json(name = "recentMessage") val recentMessage: String,
-    @Json(name = "recentTime") val recentTime: TimeDTO,
+    @Json(name = "recentMessage") val recentMessage: String?,
+    @Json(name = "recentTime") val recentTime: TimeDTO?,
     @Json(name = "unread") val unread: Int,
     @Json(name = "blocked") val blocked: Boolean
 )
 
 data class MessageInfo(
+    @Json(name = "id") val id: Long,
     @Json(name = "sentAt") val sentAt: TimeDTO,
     @Json(name = "received") val received: Boolean,
     @Json(name = "contents") val contents: String
@@ -53,8 +54,33 @@ data class MessagesPage(
     @Json(name = "empty") val empty: Boolean
 )
 
-data class SendChatRequest(
-    @Json(name = "content") val content: String,
+data class WebSocketClientMessage(
+    @Json(name = "chatId") val chatId: Long,
+    @Json(name = "contents") val contents: String,
+)
+
+data class WebSocketServerMessage(
+    @Json(name = "type") val type: String,
+)
+
+data class WebChatMessageInfo(
+    @Json(name = "chatId") val chatId: Long,
+    @Json(name = "sentAt") val sentAt: TimeDTO,
+    @Json(name = "received") val received: Boolean,
+    @Json(name = "contents") val contents: String,
+    @Json(name = "type") val type: String,
+)
+
+data class WebChatCreationInfo(
+    @Json(name = "chatId") val chatId: Long,
+    @Json(name = "target") val target: String,
+    @Json(name = "type") val type: String,
+)
+
+data class WebChatNeedUpdateInfo(
+    @Json(name = "chatId") val chatId: List<Long>,
+    @Json(name = "unread") val unread: List<Int>,
+    @Json(name = "type") val type: String,
 )
 
 data class BlockChatRoomRequest(
@@ -71,4 +97,10 @@ data class GetMessagesResponse(
     @Json(name = "contents") val contents: List<MessageInfo>,
     @Json(name = "cursor") val cursor: Long?,
     @Json(name = "size") val size: Long,
+    @Json(name = "isLast") val isLast: Boolean,
+)
+
+data class PutUnreadRequest(
+    @Json(name = "chatId") val chatId: List<Long>,
+    @Json(name = "unread") val unread: List<Int>,
 )
