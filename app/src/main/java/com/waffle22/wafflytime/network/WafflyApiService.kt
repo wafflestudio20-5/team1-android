@@ -18,6 +18,19 @@ interface WafflyApiService {
     @POST("/api/auth/local/signup")
     suspend fun signUp(@Body() request: SignUpRequest): Response<TokenContainer>
 
+    @POST("/api/auth/social/login/{provider}")
+    suspend fun socialLogin(
+        @Path("provider") provider: String,
+        @Query("code") code: String
+    ): Response<SocialLoginRequest>
+
+    @POST("/api/auth/social/signup/{provider}")
+    suspend fun socialSignUp(
+        @Path("provider") provider: String,
+        @Query("code") code: String,
+        @Body() nickname: ChangeNicknameRequest
+    ): Response<TokenContainer>
+
     @PUT("/api/auth/refresh")
     suspend fun refresh(): Response<TokenContainer>
 
