@@ -82,7 +82,7 @@ interface WafflyApiService {
 
     @GET("/api/boards/search")
     suspend fun searchBoard(
-        @Path("keyword") keyword: String
+        @Query("keyword") keyword: String
     ): Response<List<BoardDTO>>
 
     // Post 관련
