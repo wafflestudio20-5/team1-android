@@ -39,13 +39,3 @@ data class SocialLoginRequest(
 data class EmailCode(
     @Json(name = "code") val emailCode: String
 )
-
-data class SocialLoginRequest(
-    @Json(name="authToken") val authToken: AuthToken,
-    @Json(name="needNickname") val needNickName: Boolean
-)
-
-data class AuthToken(
-    val accessToken: String,
-    val refreshToken: String
-)
