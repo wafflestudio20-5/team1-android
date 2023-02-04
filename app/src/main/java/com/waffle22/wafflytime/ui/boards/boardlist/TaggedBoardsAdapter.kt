@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.waffle22.wafflytime.R
 import com.waffle22.wafflytime.databinding.BoardTaggedBinding
 import com.waffle22.wafflytime.network.dto.BoardListResponse
 import com.waffle22.wafflytime.network.dto.BoardType
@@ -47,8 +48,12 @@ class TaggedBoardsAdapter(private val parentFragment: BoardListFragment)
                 binding.recyclerview.layoutManager = LinearLayoutManager(this.context)
                 expanded.put(adapterPosition,false)
                 when (expanded[adapterPosition]){
-                    true -> binding.recyclerview.visibility = View.VISIBLE
-                    else -> binding.recyclerview.visibility = View.GONE
+                    true ->{
+                        binding.recyclerview.visibility = View.VISIBLE
+                    }
+                    else ->{
+                        binding.recyclerview.visibility = View.GONE
+                    }
                 }
                 binding.arrowButton.setOnClickListener{
                     when(expanded[adapterPosition]){
