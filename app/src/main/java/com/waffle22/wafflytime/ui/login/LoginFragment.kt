@@ -31,7 +31,7 @@ import java.net.URL
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
-    private lateinit var alertDialog: AlertDialog
+    private var alertDialog: AlertDialog? = null
 
     private val viewModel: LoginViewModel by sharedViewModel()
 
@@ -66,7 +66,7 @@ class LoginFragment : Fragment() {
                 loginLogic(it)
             }
         }
-
+        viewModel.getState()
 
     }
 
@@ -75,7 +75,7 @@ class LoginFragment : Fragment() {
             .setView(ProgressBar(this.requireContext()))
             .setMessage("Loading...")
             .show()
-        alertDialog.setCanceledOnTouchOutside(false)
+        alertDialog!!.setCanceledOnTouchOutside(false)
 
         viewModel.login(
             binding.idEditText.text.toString(),
@@ -107,7 +107,7 @@ class LoginFragment : Fragment() {
                 null
             }
             else -> {
-                alertDialog.dismiss()
+                alertDialog?.dismiss()
                 when (status.status) {
                     "200" -> {
                         findNavController().navigate(LoginFragmentDirections.actionGlobalAuthCheckFragment())

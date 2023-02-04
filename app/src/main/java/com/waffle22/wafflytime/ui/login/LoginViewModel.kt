@@ -43,10 +43,12 @@ class LoginViewModel(
     val loginState: StateFlow<SlackState<Nothing>> = _loginState
     private var codeHolder: String? = null
     private var providerHolder: String? = null
+    private var stateHolder: SlackState<Nothing> = SlackState("0",null,null,null)
 
     fun initViewModel() {
         codeHolder = null
         providerHolder = null
+        stateHolder = SlackState("0",null,null,null)
     }
 
     fun resetAuthState(){
@@ -82,7 +84,6 @@ class LoginViewModel(
 
     fun socialLogin(provider: String, code: String) {
         viewModelScope.launch {
-            delay(1000)
             codeHolder = code
             providerHolder = provider
             try {
@@ -90,17 +91,19 @@ class LoginViewModel(
                 if (response.isSuccessful) {
                     // 회원가입 필요!!!!
                     if (response.body()!!.needNickName) {
+                        stateHolder = SlackState("-2", null, null, null)
                         _loginState.value = SlackState("-2", null, null, null)
                     } else { // 로그인 진행
                         authStorage.setTokenInfo(
                             response.body()!!.authToken!!.accessToken,
                             response.body()!!.authToken!!.refreshToken
                         )
+                        stateHolder = SlackState("200", null, null, null)
                         _loginState.value = SlackState("200", null, null, null)
                     }
                 } else {
                     val errorResponse = HttpException(response).parseError(moshi)!!
-                    _loginState.value = SlackState(
+                    stateHolder = SlackState(
                         errorResponse.statusCode,
                         errorResponse.errorCode,
                         errorResponse.message,
@@ -108,6 +111,7 @@ class LoginViewModel(
                     )
                 }
             } catch (e: java.lang.Exception) {
+                stateHolder = SlackState("-1", null, "System Corruption", null)
                 _loginState.value = SlackState("-1", null, "System Corruption", null)
             }
         }
@@ -140,6 +144,10 @@ class LoginViewModel(
             }
         }
 
+    }
+
+    fun getState() {
+        _loginState.value = stateHolder
     }
 
 }
