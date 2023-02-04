@@ -30,7 +30,7 @@ class WebViewFragment: Fragment() {
         binding.webView.settings.javaScriptCanOpenWindowsAutomatically = true
         binding.webView.settings.setSupportMultipleWindows(true)
         binding.webView.webViewClient = object: WebViewClient(){
-            val target = "http://localhost:3000/oauth/kakao/callback?code="
+            val target = "http://wafflytime.com/oauth/kakao/callback?code="
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 Log.d("debug",url!!)
@@ -44,7 +44,7 @@ class WebViewFragment: Fragment() {
         }
 
         val CLIENT_ID = "2e73508a53ba1108841a05a1612720fd"
-        val REDIRECT_URI = "http://localhost:3000/oauth/kakao/callback"
+        val REDIRECT_URI = "http://wafflytime.com/oauth/kakao/callback"
         val kakaoAuthUrl = "https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code"
         binding.webView.loadUrl(kakaoAuthUrl)
         return binding.root
