@@ -34,9 +34,9 @@ class PostImageAdapter(): ListAdapter<ImageResponse, PostImageAdapter.PostImageV
             Glide.with(context)
                 .asBitmap()
                 .load(image.preSignedUrl)
-                .placeholder(R.drawable.ic_person)
-                .error(R.drawable.ic_person)
-                .fallback(R.drawable.ic_person)
+                .placeholder(R.drawable.ic_baseline_person_24)
+                .error(R.drawable.ic_baseline_person_24)
+                .fallback(R.drawable.ic_baseline_person_24)
                 .into(binding.image)
             binding.image.setOnClickListener{
                 val dialog = AlertDialog.Builder(context)
