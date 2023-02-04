@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_loginFragment_to_webViewFragment"
             app:destination="@id/webViewFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_nickNameFragment"
+            app:destination="@id/nickNameFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -206,4 +209,8 @@
         android:id="@+id/webViewFragment"
         android:name="com.waffle22.wafflytime.ui.login.WebViewFragment"
         android:label="WebViewFragment" />
+    <fragment
+        android:id="@+id/nickNameFragment"
+        android:name="com.waffle22.wafflytime.ui.login.NickNameFragment"
+        android:label="NickNameFragment" />
 </navigation>

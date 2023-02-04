@@ -113,7 +113,7 @@ class LoginFragment : Fragment() {
                         findNavController().navigate(LoginFragmentDirections.actionGlobalAuthCheckFragment())
                     }
                     "-2" -> {
-                        Log.d("debug","hellooo")
+                        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToNickNameFragment())
                     }
                     else -> {
                         Toast.makeText(context, status.errorMessage, Toast.LENGTH_SHORT).show()
