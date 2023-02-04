@@ -7,6 +7,8 @@
 |                   회원가입, 소셜로그인                    |                   게시판, 게시글, 댓글                   |               메인페이지, 소셜로그인               |                       마이페이지, 채팅                        |
 
 ## UI
+<img width="534" alt="제목 없음" src="https://user-images.githubusercontent.com/68140623/216775249-f1e09509-5933-4956-a1e7-267af630bbb1.png">
+
 ### 1. 로그인 페이지
   - 앱을 켜면 가장 먼저 나타나는 화면입니다. 이미 등록된 회원 정보로 로그인하거나 회원가입, 소셜로그인을 할 수 있습니다.<br/>
 <img src="https://user-images.githubusercontent.com/68140623/216771867-deb6607a-9f63-457f-86cc-7e848c0d1046.jpg" height="30%" width="30%">
