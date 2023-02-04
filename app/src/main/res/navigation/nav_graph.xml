@@ -170,6 +170,9 @@
         <action
             android:id="@+id/action_searchPostFragment_to_postFragment"
             app:destination="@id/postFragment" />
+        <argument
+            android:name="boardId"
+            app:argType="long"/>
     </fragment>
     <fragment
         android:id="@+id/newChatFragment"
