@@ -13,8 +13,14 @@
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
         <action
-            android:id="@+id/action_loginFragment_to_loginSocialFragment"
-            app:destination="@id/loginSocialFragment" />
+            android:id="@+id/action_loginFragment_to_signUpSocialFragment"
+            app:destination="@id/signUpSocialFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_webViewFragment"
+            app:destination="@id/webViewFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_nickNameFragment"
+            app:destination="@id/nickNameFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -205,24 +211,13 @@
     <fragment
         android:id="@+id/signUpSocialFragment"
         android:name="com.waffle22.wafflytime.ui.login.SignUpSocialFragment"
-
-        android:label="SignUpSocialFragment" >
-        <argument
-            android:name="path"
-            app:argType="string"
-            android:defaultValue="null" />
-    </fragment>
+        android:label="SignUpSocialFragment" />
     <fragment
-        android:id="@+id/loginSocialFragment"
-        android:name="com.waffle22.wafflytime.ui.login.LoginSocialFragment"
-        android:label="fragment_login_social"
-        tools:layout="@layout/fragment_login_social" >
-        <action
-            android:id="@+id/action_loginSocialFragment_to_signUpSocialFragment"
-            app:destination="@id/signUpSocialFragment" />
-        <argument
-            android:name="path"
-            app:argType="string" />
-    </fragment>
-
+        android:id="@+id/webViewFragment"
+        android:name="com.waffle22.wafflytime.ui.login.WebViewFragment"
+        android:label="WebViewFragment" />
+    <fragment
+        android:id="@+id/nickNameFragment"
+        android:name="com.waffle22.wafflytime.ui.login.NickNameFragment"
+        android:label="NickNameFragment" />
 </navigation>

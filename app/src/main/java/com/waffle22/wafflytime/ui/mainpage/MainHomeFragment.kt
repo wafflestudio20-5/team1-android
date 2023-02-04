@@ -121,8 +121,8 @@ class MainHomeFragment : Fragment() {
         }
         binding.buttonSearch.setOnClickListener {
             viewModel.logOut()
-            this.findNavController()
-                .navigate(MainHomeFragmentDirections.actionGlobalLoginFragment())
+            this.findNavController().navigate(MainHomeFragmentDirections.actionGlobalLoginFragment())
+            activity?.viewModelStore?.clear()
         }
 
         binding.buttonMyPage.setOnClickListener {
@@ -137,6 +137,7 @@ class MainHomeFragment : Fragment() {
                 val doLogout = it.getBooleanExtra("doLogout", false)
                 if (doLogout) {
                     findNavController().navigate(MainHomeFragmentDirections.actionGlobalLoginFragment())
+                    activity?.viewModelStore?.clear()
                 }
             }
         }

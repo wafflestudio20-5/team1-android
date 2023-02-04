@@ -31,6 +31,11 @@ data class TokenContainer(
     @Json(name = "refreshToken") val refreshToken: String
 )
 
+data class SocialLoginRequest(
+    @Json(name="authToken") val authToken: TokenContainer?,
+    @Json(name="needNickname") val needNickName: Boolean
+)
+
 data class EmailCode(
     @Json(name = "code") val emailCode: String
 )

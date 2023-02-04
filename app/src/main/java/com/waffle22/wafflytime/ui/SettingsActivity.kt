@@ -3,10 +3,13 @@ package com.waffle22.wafflytime.ui
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -15,6 +18,8 @@ import com.waffle22.wafflytime.R
 class SettingsActivity: AppCompatActivity(),
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
     SharedPreferences.OnSharedPreferenceChangeListener {
+
+    lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +32,7 @@ class SettingsActivity: AppCompatActivity(),
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController = navHostFragment.navController
+        appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController)
 
         PreferenceManager.getDefaultSharedPreferences(this)
@@ -35,20 +41,6 @@ class SettingsActivity: AppCompatActivity(),
 
     override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference)
             : Boolean {
-//        // Instantiate the new Fragment
-//        val args = pref.extras
-//        val fragment = supportFragmentManager.fragmentFactory.instantiate(
-//            classLoader,
-//            pref.fragment!!)
-//        fragment.arguments = args
-//        // Replace the existing Fragment with the new Fragment
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.fragment_container, fragment)
-//            .addToBackStack(null)
-//            .commit()
-////        supportFragmentManager.setFragmentResultListener("requestKey", this) { key, bundle ->
-////        }
-//        return true
         val navController = findNavController(R.id.fragment_container)
         val navDestination = navController.graph.find { target -> pref.fragment!!.endsWith(target.label?:"") }
         navDestination?.let { target -> navController.navigate(target.id) }
@@ -57,7 +49,7 @@ class SettingsActivity: AppCompatActivity(),
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.fragment_container)
-        return navController.navigateUp() || super.onSupportNavigateUp()
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {

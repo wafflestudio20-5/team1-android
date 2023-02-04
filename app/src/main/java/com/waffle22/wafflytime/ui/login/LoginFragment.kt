@@ -20,6 +20,7 @@ import com.waffle22.wafflytime.util.SlackState
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import android.content.Intent.getIntent
+import android.util.Log
 import androidx.compose.ui.focus.FocusDirection.Companion.In
 import org.json.JSONObject
 import java.net.MalformedURLException
@@ -30,9 +31,14 @@ import java.net.URL
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
-    private lateinit var alertDialog: AlertDialog
+    private var alertDialog: AlertDialog? = null
 
     private val viewModel: LoginViewModel by sharedViewModel()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.initViewModel()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,6 +67,7 @@ class LoginFragment : Fragment() {
                 loginLogic(it)
             }
         }
+        viewModel.getState()
 
     }
 
@@ -69,7 +76,7 @@ class LoginFragment : Fragment() {
             .setView(ProgressBar(this.requireContext()))
             .setMessage("Loading...")
             .show()
-        alertDialog.setCanceledOnTouchOutside(false)
+        alertDialog!!.setCanceledOnTouchOutside(false)
 
         viewModel.login(
             binding.idEditText.text.toString(),
@@ -79,25 +86,22 @@ class LoginFragment : Fragment() {
     }
 
     private fun kakaoLogin() {
-
-        val CLIENT_ID = "14e86042a3842d295c4ef5af422fac3d"
-        val REDIRECT_URI = "http://localhost:3000/api/auth/social/login/kakao"
-        val KAKAO_AUTH_URL =
-            URL("https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code")
-        val thread = Thread(){
-            val connection = KAKAO_AUTH_URL.openConnection()
-            BufferedReader(InputStreamReader(connection.getInputStream())).use { inp ->
-                var line: String?
-                while (inp.readLine().also { line = it } != null) {
-                    println(line)
-                }
-            }
-        }
-        thread.start()
+        val action = LoginFragmentDirections.actionLoginFragmentToWebViewFragment()
+        findNavController().navigate(action)
     }
 
 
+    private fun naverLogin() {
 
+    }
+
+    private fun googleLogin() {
+
+    }
+
+    private fun githubLogin() {
+
+    }
 
     private fun loginLogic(status: SlackState<Nothing>) {
         when (status.status) {
@@ -105,10 +109,13 @@ class LoginFragment : Fragment() {
                 null
             }
             else -> {
-                alertDialog.dismiss()
+                alertDialog?.dismiss()
                 when (status.status) {
                     "200" -> {
                         findNavController().navigate(LoginFragmentDirections.actionGlobalAuthCheckFragment())
+                    }
+                    "-2" -> {
+                        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToNickNameFragment())
                     }
                     else -> {
                         Toast.makeText(context, status.errorMessage, Toast.LENGTH_SHORT).show()
