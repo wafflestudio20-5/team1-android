@@ -8,8 +8,10 @@
 
 ## UI
 ### 1. 로그인 페이지
-![1](https://user-images.githubusercontent.com/68140623/216771867-deb6607a-9f63-457f-86cc-7e848c0d1046.jpg)
 앱을 켜면 가장 먼저 나타나는 화면입니다. 이미 등록된 회원 정보로 로그인하거나 회원가입, 소셜로그인을 할 수 있습니다.
+![1](https://user-images.githubusercontent.com/68140623/216771867-deb6607a-9f63-457f-86cc-7e848c0d1046.jpg)
+<br />
+<br />
 ### 2. 회원가입 페이지
 ![2](https://user-images.githubusercontent.com/68140623/216771909-9994d2aa-3812-4363-bffd-f3a01676509e.jpg)
 아이디, 비밀번호, 닉네임을 입력하여 회원가입을 진행할 수 있습니다. 회원가입 후 바로 학교 이메일 페이지로 이동할 수 있으며, 그러지 않을 경우 후에 마이페이지에서 이메일 인증을 할 수 있습니다.
@@ -39,15 +41,15 @@
 유저 및 앱 관련 설정을 할 수 있는 페이지입니다. 회원가입 시 학교인증을 하지 않았다면 이곳에서 진행할 수 있습니다. 비밀번호 변경, 닉네임 설정, 프로필 이미지 변경, 로그아웃을 할 수 있습니다. 다크모드를 설정할 수 있습니다.
 ## 기능 상세
 # 웹소켓
--okHttp3의 웹소켓 기능을 이용하였습니다.
--okHttp3 클라이언트를 생성하고, client.newWebSocket()을 실행합니다. 이때 인자로 추상클래스 WebSocketListener를 구현한 object를 생성하여 인자로 넘겨줍니다.
--WebSocketListener의 onOpen()에서 webSocket 객체를 받아 저장해 둡니다.
--메시지의 송신, 연결 종료는 받아둔 webSocket 객체의 send() 메서드를 이용합니다.
--메시지의 수신과 에러처리는 WebSocketListener의 onMessage()와 onFailure()를 이용합니다.
+- okHttp3의 웹소켓 기능을 이용하였습니다.
+- okHttp3 클라이언트를 생성하고, client.newWebSocket()을 실행합니다. 이때 인자로 추상클래스 WebSocketListener를 구현한 object를 생성하여 인자로 넘겨줍니다.
+- WebSocketListener의 onOpen()에서 webSocket 객체를 받아 저장해 둡니다.
+- 메시지의 송신, 연결 종료는 받아둔 webSocket 객체의 send() 메서드를 이용합니다.
+- 메시지의 수신과 에러처리는 WebSocketListener의 onMessage()와 onFailure()를 이용합니다.
 # Preference
--Androidx에서 지원하는 기능으로, 앱의 환경설정 화면을 별도의 레이아웃 지정 없이 빠르게 만들 수 있게 햬주며 key-value 쌍을 SharedPreference에 자동으로 저장할 수 있습니다.
--다른 화면들과 달리 별도의 activity로 실행됩니다.
--항목을 클릭하면 관련된 fragment로 이동하여 설정할 수 있습니다.
+- Androidx에서 지원하는 기능으로, 앱의 환경설정 화면을 별도의 레이아웃 지정 없이 빠르게 만들 수 있게 햬주며 key-value 쌍을 SharedPreference에 자동으로 저장할 수 있습니다.
+- 다른 화면들과 달리 별도의 activity로 실행됩니다.
+- 항목을 클릭하면 관련된 fragment로 이동하여 설정할 수 있습니다.
 # 커서기반 페이지네이션
 # 소셜로그인
 # AAC lifecycle 관리
