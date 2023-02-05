@@ -53,12 +53,24 @@
 
 ## 기능 상세
 ### 커서기반 페이지네이션
-
-### 소셜로그인
+ - 무한스크롤에서 유저가 새로운 정보를 누락없이 제공받을 수 있도록 프로젝트에 커서기반 페이지네이션을 적용시켰습니다.
+ - 구현은 주로 Flow, MutableList로 했으나 paging 라이브러리를 사용하기도 하였습니다.(채팅목록)
+ 
+### 소셜로그인(웹뷰 적용)
+ - RestApi로 Authorization Code를 넘겨주기 위하여 프로젝트에 웹뷰를 추가하였습니다.
+ - Android Sdk를 이용하여 서버쪽으로 Auth Token을 넘겨주는 방법도 있었지만 웹쪽이 이미 Rest Api를 이용하고 있었고 서버 로직이 완성되있는 상황이어서 RestApi를 사용하기로 했습니다.
+ - Rest Api 응답이 Intent로 카카오톡을 호출하게끔 만들고 싶었지만 실패했습니다. (웹뷰에 크롬을 popup처럼 띄워서 해결할 수 있다고 듣긴 했습니다.)
 
 ### AAC lifecycle 관리
+ - 게시판 작업을 할 때 가장 어려웠던 점은 event에 따라 게시판이 의도된 동작을 하도록 만드는것이었습니다. 예를들어 유저가 글쓰기 layout에서 글쓰기 버튼을 눌렀다면, 게시물 목록으로 돌아오는 동시에 유저에게 새롭게 업데이트 된 게시물 목록이 보여야 합니다. 하지만 글쓰기 layout에서 취소를 눌렀다면 굳이 게시물 목록이 업데이트 될 필요가 없습니다. 이처럼 세밀한 동작로직을 구현하는 과정에서 많은 버그에 시달렸습니다.
+ - 따라서 복잡성을 줄이기 위하여 ViewModel에서 Fragment로의 데이터 전달을 자동화 하였고 소통창구도 하나로 통일하였습니다.(일부 Fragment/ViewModel 에만 적용함)
+ - 데이터 전달을 자동화하기 위해서 StateFlow, SharedFlow를 사용하였습니다.
+ - 소통 창구를 통일시키기 위하여 StatusCode, ErrorCode, ErrorMessage, Data를 담는 DataClass를 만들고 이것만을 이용해 ViewModel에서 Fragment로의 데이터 전달이 이뤄지도록 했습니다.
 
-### Interceptor
+### Network Interceptor
+ - Accesss Token refresh 작업을 자동화하기 위해 okHttp3의 Network Interceptor를 사용하였습니다.
+ - 모든 response 패킷을 검사해 Token에 오류가 있다는 응답을 받은 경우, refresh를 진행한 뒤 다시 해당 request를 보내도록 구현했습니다.
+ <img src="https://square.github.io/okhttp/assets/images/interceptors%402x.png">
 
 ### Web Socket
 - okHttp3의 웹소켓 기능을 이용하였습니다.
